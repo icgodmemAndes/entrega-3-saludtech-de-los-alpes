@@ -2,7 +2,7 @@ import os
 import json
 from google.cloud import storage
 from google.oauth2 import service_account
-from ..utils.secrets import SecretManagerUtil
+from ..utils_secrets.secrets import SecretManagerUtil
 from .exceptions import StorageException
 
 class CloudStorageRepository:
