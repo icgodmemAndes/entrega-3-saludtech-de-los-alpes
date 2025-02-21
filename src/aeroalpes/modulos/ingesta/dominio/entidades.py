@@ -37,4 +37,4 @@ class Ingesta(AgregacionRaiz):
         self.url_path = ingesta.url_path
         self.estado = ingesta.estado
 
-        self.agregar_evento(IngestaCreada(id_ingesta=self.id, id_proveedor=self.id_proveedor, id_paciente=self.id_paciente, url_path = self.url_path,estado=self.estado, fecha_creacion=self.fecha_creacion))
+        self.agregar_evento(IngestaCreada(id_proveedor=self.id_proveedor, id_paciente=self.id_paciente, url_path = self.url_path,estado=self.estado, fecha_creacion=self.fecha_creacion))

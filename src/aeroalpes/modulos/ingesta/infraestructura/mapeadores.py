@@ -18,12 +18,14 @@ class MapeadorIngesta(Mapeador):
     def entidad_a_dto(self, entidad: Ingesta) -> IngestaDTO:
         
         ingesta_dto = IngestaDTO()
-        ingesta_dto.id = str(entidad.id)
+        ingesta_dto.id_proveedor = str(entidad.id_proveedor)
+        ingesta_dto.id_paciente = str(entidad.id_paciente)
+        ingesta_dto.url_path = str(entidad.url_path)
+        ingesta_dto.estado = str(entidad.estado)
 
         return ingesta_dto
 
     def dto_a_entidad(self, dto: IngestaDTO) -> Ingesta:
-        reserva = Ingesta(dto.id, dto.fecha_creacion, dto.fecha_actualizacion)
-        reserva.itinerarios = list()
+        ingesta = Ingesta(dto.id_proveedor, dto.id_paciente, dto.url_path, dto.estado)
 
-        return reserva
+        return ingesta

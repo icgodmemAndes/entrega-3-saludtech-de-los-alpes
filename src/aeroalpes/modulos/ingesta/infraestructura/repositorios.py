@@ -4,6 +4,7 @@ En este archivo usted encontrará las diferentes repositorios para
 persistir objetos dominio (agregaciones) en la capa de infraestructura del dominio de vuelos
 
 """
+from uuid import UUID
 
 from aeroalpes.config.db import db
 from aeroalpes.modulos.ingesta.dominio.entidades import Ingesta
@@ -24,4 +25,20 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
     def agregar(self, ingesta: Ingesta):
         ingesta_dto = self.fabrica_ingesta.crear_objeto(ingesta, MapeadorIngesta())
         db.session.add(ingesta_dto)
+
+    def obtener_por_id(self, id: UUID) -> Ingesta:
+        # TODO
+        raise NotImplementedError
+
+    def obtener_todos(self) -> list[Ingesta]:
+        # TODO
+        raise NotImplementedError
+
+    def actualizar(self, ingesta: Ingesta):
+        # TODO
+        raise NotImplementedError
+
+    def eliminar(self, ingesta_id: UUID):
+        # TODO
+        raise NotImplementedError
 
