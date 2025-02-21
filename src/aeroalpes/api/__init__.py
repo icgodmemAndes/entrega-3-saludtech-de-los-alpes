@@ -9,6 +9,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 def registrar_handlers():
     import aeroalpes.modulos.cliente.aplicacion
     import aeroalpes.modulos.vuelos.aplicacion
+    import aeroalpes.modulos.ingesta.aplicacion
 
 def importar_modelos_alchemy():
     import aeroalpes.modulos.cliente.infraestructura.dto
@@ -17,6 +18,7 @@ def importar_modelos_alchemy():
     import aeroalpes.modulos.precios_dinamicos.infraestructura.dto
     import aeroalpes.modulos.vehiculos.infraestructura.dto
     import aeroalpes.modulos.vuelos.infraestructura.dto
+    import aeroalpes.modulos.ingesta.infraestructura.dto
 
 def comenzar_consumidor():
     """
@@ -82,6 +84,7 @@ def create_app(configuracion={}):
     from . import precios_dinamicos
     from . import vehiculos
     from . import vuelos
+    from . import ingesta
 
     # Registro de Blueprints
     app.register_blueprint(cliente.bp)
@@ -90,6 +93,7 @@ def create_app(configuracion={}):
     app.register_blueprint(precios_dinamicos.bp)
     app.register_blueprint(vehiculos.bp)
     app.register_blueprint(vuelos.bp)
+    app.register_blueprint(ingesta.bp)
 
     @app.route("/spec")
     def spec():
