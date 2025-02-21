@@ -26,9 +26,14 @@ class CrearIngestaHandler(CrearIngestaBaseHandler):
             id_paciente= comando.id_paciente,
             url_path= comando.url_path)
 
+        print('******Crear ingest handler*****************')
+        print('******ingesta dto*****')
+        print(ingesta_dto)
         ingesta: Ingesta = self.fabrica_ingesta.crear_objeto(ingesta_dto, MapeadorIngesta())
+        print('******ingesta***********')
+        print(ingesta)
         ingesta.crear_ingesta(ingesta)
-
+        print(ingesta)
         repositorio = self.fabrica_repositorio.crear_objeto(RepositorioIngesta.__class__)
 
         UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, ingesta)

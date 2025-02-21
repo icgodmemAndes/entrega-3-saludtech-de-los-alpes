@@ -65,10 +65,14 @@ class UnidadTrabajo(ABC):
 
     def _publicar_eventos_dominio(self, batch):
         for evento in self._obtener_eventos(batches=[batch]):
+            print('******Evento publicar**********')
+            print(evento)
             dispatcher.send(signal=f'{type(evento).__name__}Dominio', evento=evento)
 
     def _publicar_eventos_post_commit(self):
         for evento in self._obtener_eventos():
+            print('***Publicar eventos post commit*********************')
+            print(evento)
             dispatcher.send(signal=f'{type(evento).__name__}Integracion', evento=evento)
 
 def is_flask():
