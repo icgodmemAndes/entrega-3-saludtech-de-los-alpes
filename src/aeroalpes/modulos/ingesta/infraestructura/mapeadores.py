@@ -8,7 +8,7 @@ encargados de la transformación entre formatos de dominio y DTOs
 from aeroalpes.seedwork.dominio.repositorios import Mapeador
 from aeroalpes.modulos.ingesta.dominio.objetos_valor import EstadoIngesta
 from aeroalpes.modulos.ingesta.dominio.entidades import Ingesta
-from .dto import Ingesta as IngestoDTO
+from .dto import Ingesta as IngestaDTO
 
 class MapeadorIngesta(Mapeador):
 
