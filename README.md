@@ -8,9 +8,9 @@ Este repositorio está basado en el repositorio de sidecars visto en el tutorial
 
 Este repositorio sigue en general la misma estructura del repositorio de origen. Sin embargo, hay un par de adiciones importante mencionar:
 
-- El directorio **src** ahora cuenta con un nuevo directorio llamado **notificaciones**, el cual representa un servicio de mensajería que recibe eventos de integración propagados del sistema de AeroAlpes, por medio de un broker de eventos.
+- El directorio **src** ahora cuenta con un nuevo directorio llamado **notificaciones**, el cual representa un servicio de mensajería que recibe eventos de integración propagados del sistema de SaludTech, por medio de un broker de eventos.
 - El directorio **src** ahora también cuenta cuenta con un nuevo directorio llamado **ui**, el cual representa nuestra interfaz gráfica la cual puede recibir por medio de un BFF desarrollado en Python usando websockets, las respuestas de nuestros comandos de forma asíncrona.
-- Nuestro proyecto de AeroAlpes ha cambiado de forma considerable. Los siguientes son los cambios relevantes en cada módulo:
+- Nuestro proyecto de STA ha cambiado de forma considerable. Los siguientes son los cambios relevantes en cada módulo:
     - **api**: En este módulo se modificó el API de `vuelos.py` el cual cuenta con dos nuevos endpoints: `/reserva-commando` y `/reserva-query`, los cuales por detrás de escenas usan un patrón CQRS como la base de su comunicación.
     - **modulos/../aplicacion**: Este módulo ahora considera los sub-módulos: `queries` y `comandos`. En dichos directorios pdrá ver como se desacopló las diferentes operaciones lectura y escritura. Vea en el módulo `vuelos` los archivos `obtener_reserva.py` y `crear_reserva.py` para ver como se logra dicho desacoplamiento.
     - **modulos/../aplicacion/handlers.py**: Estos son los handlers de aplicación que se encargan de oir y reaccionar a eventos. Si consulta el módulo de clientes podra ver que tenemos handlers para oir y reaccionar a los eventos de dominio para poder continuar con una transacción. En el modulo de vuelos encontramos handlers para eventos de integración los cuales pueden ser disparados desde la capa de infraestructura, la cual está consumiendo eventos y comandos del broker de eventos.
@@ -22,19 +22,19 @@ Este repositorio sigue en general la misma estructura del repositorio de origen.
     - **seedwork/infraestructura/queries.py**: Definición general de los queries, handlers e interface del despachador.
     - **seedwork/infraestructura/uow.py**: La Unidad de Trabajo (UoW) mantiene una lista de objetos afectados por una transacción de negocio y coordina los cambios de escritura. Este objeto nos va ser de gran importancia, pues cuando comenzamos a usar eventos de dominio e interactuar con otros módulos, debemos ser capaces de garantizar consistencia entre los diferentes objetos y partes de nuestro sistema.
 
-## AeroAlpes
+## STA
 ### Ejecutar Aplicación
 
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-flask --app src/aeroalpes/api run
+flask --app src/sta/api run
 ```
 
 Siempre puede ejecutarlo en modo DEBUG:
 
 ```bash
-flask --app src/aeroalpes/api --debug run
+flask --app src/sta/api --debug run
 ```
 
 ### Ejecutar pruebas
@@ -53,7 +53,7 @@ coverage report
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker build . -f aeroalpes.Dockerfile -t aeroalpes/flask
+docker build . -f sta.Dockerfile -t sta/flask
 ```
 
 ### Ejecutar contenedora (sin compose)
@@ -61,7 +61,7 @@ docker build . -f aeroalpes.Dockerfile -t aeroalpes/flask
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run -p 5000:5000 aeroalpes/flask
+docker run -p 5000:5000 sta/flask
 ```
 
 ## Sidecar/Adaptador
@@ -104,7 +104,7 @@ python -m grpc_tools.protoc -Iprotos --python_out=./pb2py --pyi_out=./pb2py --gr
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker build . -f adaptador.Dockerfile -t aeroalpes/adaptador
+docker build . -f adaptador.Dockerfile -t sta/adaptador
 ```
 
 ### Ejecutar contenedora (sin compose)
@@ -112,7 +112,7 @@ docker build . -f adaptador.Dockerfile -t aeroalpes/adaptador
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run -p 50051:50051 aeroalpes/adaptador
+docker run -p 50051:50051 sta/adaptador
 ```
 
 ## Microservicio Notificaciones
@@ -129,7 +129,7 @@ python src/notificaciones/main.py
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker build . -f notificacion.Dockerfile -t aeroalpes/notificacion
+docker build . -f notificacion.Dockerfile -t sta/notificacion
 ```
 
 ### Ejecutar contenedora (sin compose)
@@ -137,7 +137,7 @@ docker build . -f notificacion.Dockerfile -t aeroalpes/notificacion
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run aeroalpes/notificacion
+docker run sta/notificacion
 ```
 
 ## UI Websocket Server
@@ -154,7 +154,7 @@ python src/ui/main.py
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker build . -f ui.Dockerfile -t aeroalpes/ui
+docker build . -f ui.Dockerfile -t sta/ui
 ```
 
 ### Ejecutar contenedora (sin compose)
@@ -162,7 +162,7 @@ docker build . -f ui.Dockerfile -t aeroalpes/ui
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run aeroalpes/ui
+docker run sta/ui
 ```
 
 ## Docker-compose
@@ -229,5 +229,5 @@ fuser -k <puerto>/tcp
 
 ### Correr docker-compose usando profiles
 ```bash
-docker-compose --profile <pulsar|aeroalpes|ui|notificacion> up
+docker-compose --profile <pulsar|sta|ui|notificacion> up
 ```

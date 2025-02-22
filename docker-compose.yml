@@ -92,12 +92,12 @@ services:
     command: bash -c "bin/apply-config-from-env.py conf/broker.conf
       &&  exec bin/pulsar broker"
   
-  # Servicios de AeroAlpes
-  aeroalpes:
-    container_name: aeroalpes
-    hostname: aeroalpes
-    image: aeroalpes/flask 
-    profiles: ["aeroalpes", "monolito"]
+  # Servicios de SaludTech de los alpes
+  sta:
+    container_name: sta
+    hostname: sta
+    image: sta/flask
+    profiles: ["sta", "monolito"]
     networks:
       - sidecar
       - pulsar
@@ -106,21 +106,21 @@ services:
     depends_on:
       - broker
     environment:
-      - AEROALPES_ADDRESS=aeroalpes
+      - STA_ADDRESS=sta
       - PULSAR_ADDRESS=broker
     ports:
       - "5000:5000"
   adaptador:
-    image: "aeroalpes/adaptador"
-    profiles: ["aeroalpes", "monolito"]
+    image: "sta/adaptador"
+    profiles: ["sta", "monolito"]
     container_name: adaptador
     hostname: adaptador
     depends_on:
-      - aeroalpes
+      - sta
     networks:
       - sidecar
     environment:
-      - AEROALPES_ADDRESS=aeroalpes
+      - STA_ADDRESS=sta
       - PULSAR_ADDRESS=broker
     ports:
       - "50051:50051"
@@ -129,13 +129,13 @@ services:
   notificacion:
     container_name: notificacion
     hostname: notificacion
-    image: aeroalpes/notificacion 
-    profiles: ["aeroalpes", "notificacion"]
+    image: sta/notificacion
+    profiles: ["sta", "notificacion"]
     depends_on:
-      - aeroalpes
+      - sta
       - broker
     environment:
-      - AEROALPES_ADDRESS=aeroalpes
+      - STA_ADDRESS=sta
       - PULSAR_ADDRESS=broker
     networks:
       - pulsar
@@ -143,13 +143,13 @@ services:
   ui:
     container_name: ui
     hostname: ui
-    image: aeroalpes/ui 
-    profiles: ["aeroalpes", "ui"]
+    image: sta/ui
+    profiles: ["sta", "ui"]
     depends_on:
-      - aeroalpes
+      - sta
       - broker
     environment:
-      - AEROALPES_ADDRESS=aeroalpes
+      - STA_ADDRESS=sta
       - PULSAR_ADDRESS=broker
     networks:
       - pulsar
