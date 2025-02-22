@@ -7,7 +7,7 @@ objetos complejos del dominio de vuelos
 
 from .entidades import Ingesta
 from .reglas import URLValida
-from .excepciones import TipoObjetoNoExisteEnDominioVuelosExcepcion
+from .excepciones import TipoObjetoNoExisteEnDominioIngestaExcepcion
 from aeroalpes.seedwork.dominio.repositorios import Mapeador, Repositorio
 from aeroalpes.seedwork.dominio.fabricas import Fabrica
 from aeroalpes.seedwork.dominio.entidades import Entidad
@@ -32,5 +32,5 @@ class FabricaIngesta(Fabrica):
             fabrica_ingesta = _FabricaIngesta()
             return fabrica_ingesta.crear_objeto(obj, mapeador)
         else:
-            raise TipoObjetoNoExisteEnDominioVuelosExcepcion()
+            raise TipoObjetoNoExisteEnDominioIngestaExcepcion()
 
