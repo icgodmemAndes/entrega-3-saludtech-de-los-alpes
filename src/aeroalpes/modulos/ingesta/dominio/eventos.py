@@ -11,3 +11,13 @@ class IngestaCreada(EventoDominio):
     url_path: str = None
     fecha_creacion: datetime = None
     estado: str = None
+
+@dataclass
+class IngestaFinalizada(EventoDominio):
+    id_ingesta: uuid.UUID = None
+    fecha_actualizacion: datetime = None
+
+@dataclass
+class IngestaRechazada(EventoDominio):
+    id_ingesta: uuid.UUID = None
+    fecha_actualizacion: datetime = None

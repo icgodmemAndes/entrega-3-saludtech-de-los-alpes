@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, url_for, redirect, jsonify, session
+from flask import Flask, jsonify
 from flask_swagger import swagger
 
 # Identifica el directorio base
@@ -23,11 +23,14 @@ def comenzar_consumidor():
 
     import threading
     import aeroalpes.modulos.vuelos.infraestructura.consumidores as vuelos
+    import aeroalpes.modulos.ingesta.infraestructura.consumidores as ingesta
 
     # Suscripción a eventos
+    threading.Thread(target=ingesta.suscribirse_a_eventos).start()
     threading.Thread(target=vuelos.suscribirse_a_eventos).start()
 
     # Suscripción a comandos
+    threading.Thread(target=ingesta.suscribirse_a_comandos).start()
     threading.Thread(target=vuelos.suscribirse_a_comandos).start()
 
 def create_app(configuracion={}):
@@ -68,7 +71,7 @@ def create_app(configuracion={}):
     def spec():
         swag = swagger(app)
         swag['info']['version'] = "1.0"
-        swag['info']['title'] = "My API"
+        swag['info']['title'] = "Ingesta API"
         return jsonify(swag)
 
     @app.route("/health")
