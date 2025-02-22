@@ -24,7 +24,8 @@ class Despachador:
         payload = IngestaCreadaPayload(
             id_proveedor=str(evento.id_proveedor), 
             id_paciente=str(evento.id_paciente), 
-            url_path=str(evento.url_path), 
+            url_path=str(evento.url_path),
+            estado=str(evento.estado),
         )
         evento_integracion = EventoIngestaCreada(data=payload)
         self._publicar_mensaje(evento_integracion, topico, AvroSchema(EventoIngestaCreada))

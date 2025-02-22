@@ -11,6 +11,7 @@ from sta.seedwork.infraestructura.uow import UnidadTrabajoPuerto
 from sta.modulos.ingesta.aplicacion.mapeadores import MapeadorIngesta
 
 from sta.modulos.ingesta.infraestructura.repositorios import RepositorioIngesta
+from sta.modulos.ingesta.dominio.objetos_valor import EstadoIngesta
 
 @dataclass
 class CrearIngesta(Comando):
@@ -24,7 +25,9 @@ class CrearIngestaHandler(CrearIngestaBaseHandler):
         ingesta_dto = IngestaDTO(
             id_proveedor= comando.id_proveedor,
             id_paciente= comando.id_paciente,
-            url_path= comando.url_path)
+            url_path= comando.url_path,
+            estado= EstadoIngesta.CREADA,
+        )
 
         ingesta: Ingesta = self.fabrica_ingesta.crear_objeto(ingesta_dto, MapeadorIngesta())
         ingesta.crear_ingesta(ingesta)
