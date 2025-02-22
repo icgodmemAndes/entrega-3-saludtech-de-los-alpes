@@ -19,13 +19,9 @@ def crear_ingesta_asincrona():
 
         map_ingesta = MapeadorIngestaDTOJson()
         ingesta_dto = map_ingesta.externo_a_dto(ingesta_dict)
-        print('*********************ingesta_dto************************************')
-        print(ingesta_dto)
 
         comando = CrearIngesta(ingesta_dto.id_proveedor, ingesta_dto.id_paciente, ingesta_dto.url_path)
         
-        # TODO Reemplaze es todo código sincrono y use el broker de eventos para propagar este comando de forma asíncrona
-        # Revise la clase Despachador de la capa de infraestructura
         ejecutar_commando(comando)
         
         return Response('{}', status=202, mimetype='application/json')
