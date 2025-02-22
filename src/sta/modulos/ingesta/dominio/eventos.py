@@ -6,6 +6,7 @@ from datetime import datetime
 
 @dataclass
 class IngestaCreada(EventoDominio):
+    id: uuid.UUID = None
     id_proveedor: uuid.UUID = None
     id_paciente: uuid.UUID = None
     url_path: str = None

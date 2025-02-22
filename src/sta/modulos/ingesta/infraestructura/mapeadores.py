@@ -6,7 +6,6 @@ encargados de la transformación entre formatos de dominio y DTOs
 """
 
 from sta.seedwork.dominio.repositorios import Mapeador
-from sta.modulos.ingesta.dominio.objetos_valor import EstadoIngesta
 from sta.modulos.ingesta.dominio.entidades import Ingesta
 from .dto import Ingesta as IngestaDTO
 
@@ -22,10 +21,15 @@ class MapeadorIngesta(Mapeador):
             id_paciente=str(entidad.id_paciente),
             url_path=entidad.url_path,
             estado=entidad.estado.value,
+            fecha_creacion=entidad.fecha_creacion,
         )
         return ingesta_dto
 
     def dto_a_entidad(self, dto: IngestaDTO) -> Ingesta:
-        ingesta = Ingesta(dto.id_proveedor, dto.id_paciente, dto.url_path, dto.estado)
+        ingesta = Ingesta(dto.id, dto.fecha_creacion)
+        ingesta.id_proveedor = dto.id_proveedor
+        ingesta.id_paciente = dto.id_paciente
+        ingesta.url_path = dto.url_path
+        ingesta.estado = dto.estado
 
         return ingesta

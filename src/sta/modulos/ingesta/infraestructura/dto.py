@@ -21,3 +21,4 @@ class Ingesta(db.Model):
     id_paciente = db.Column(db.String, nullable=False)
     url_path = db.Column(db.String, nullable=False)
     estado = db.Column(db.String, nullable=False)
+    fecha_creacion = db.Column(db.DateTime, nullable=False)

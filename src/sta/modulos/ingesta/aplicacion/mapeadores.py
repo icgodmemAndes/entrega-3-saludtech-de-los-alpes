@@ -2,7 +2,6 @@ from .dto import IngestaDTO
 from sta.seedwork.aplicacion.dto import Mapeador as AppMap
 from sta.seedwork.dominio.repositorios import Mapeador as RepMap
 from sta.modulos.ingesta.dominio.entidades import Ingesta
-from sta.modulos.ingesta.dominio.objetos_valor import EstadoIngesta
 
 
 class MapeadorIngestaDTOJson(AppMap):
@@ -12,7 +11,7 @@ class MapeadorIngestaDTOJson(AppMap):
             externo.get('id_proveedor'),
             externo.get('id_paciente'),
             externo.get('url_path'),
-            EstadoIngesta.PENDIENTE,
+            externo.get('estado'),
         )
 
         return ingesta_dto
@@ -31,8 +30,9 @@ class MapeadorIngesta(RepMap):
         _id_paciente = str(entidad.id_paciente)
         _url_path = str(entidad.url_path)
         _estado = str(entidad.estado)
+        _fecha_creacion = str(entidad.fecha_creacion)
 
-        return IngestaDTO(_id_proveedor, _id_paciente, _url_path, _estado)
+        return IngestaDTO(_id_proveedor, _id_paciente, _url_path, _estado, _fecha_creacion)
 
     def dto_a_entidad(self, dto: IngestaDTO) -> Ingesta:
         ingesta = Ingesta()

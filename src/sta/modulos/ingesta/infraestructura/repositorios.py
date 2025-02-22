@@ -12,6 +12,7 @@ from sta.modulos.ingesta.dominio.entidades import Ingesta
 from sta.modulos.ingesta.dominio.fabricas import FabricaIngesta
 from .mapeadores import MapeadorIngesta
 from sta.modulos.ingesta.dominio.repositorios import RepositorioIngesta
+from .dto import Ingesta as IngestaDTO
 
 
 class RepositorioIngestaSQLite(RepositorioIngesta):
@@ -29,8 +30,8 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         db.session.add(ingesta_dto)
 
     def obtener_por_id(self, id: UUID) -> Ingesta:
-        # TODO
-        raise NotImplementedError
+        ingesta_dto = db.session.query(IngestaDTO).filter_by(id=str(id)).one()
+        return self.fabrica_ingesta.crear_objeto(ingesta_dto, MapeadorIngesta())
 
     def obtener_todos(self) -> list[Ingesta]:
         # TODO
