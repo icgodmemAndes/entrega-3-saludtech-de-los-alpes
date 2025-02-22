@@ -1,4 +1,3 @@
-from sta.modulos.ingesta.dominio.eventos import IngestaCreada
 from sta.seedwork.aplicacion.handlers import Handler
 from sta.modulos.ingesta.infraestructura.despachadores import Despachador
 
