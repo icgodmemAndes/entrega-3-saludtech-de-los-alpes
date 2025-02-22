@@ -5,9 +5,9 @@ from sta.modulos.ingesta.infraestructura.schema.v1.eventos import EventoIngestaC
 from sta.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoCrearIngesta, ComandoCrearIngestaPayload
 from sta.seedwork.infraestructura import utils
 
-import datetime
+from datetime import datetime
 
-epoch = datetime.datetime.utcfromtimestamp(0)
+epoch = datetime.utcfromtimestamp(0)
 
 def unix_time_millis(dt):
     return (dt - epoch).total_seconds() * 1000.0

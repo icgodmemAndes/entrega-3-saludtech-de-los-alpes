@@ -4,6 +4,7 @@ En este archivo usted encontrará las diferentes repositorios para
 persistir objetos dominio (agregaciones) en la capa de infraestructura del dominio de vuelos
 
 """
+from datetime import datetime
 from uuid import UUID
 
 from sta.config.db import db
@@ -23,6 +24,7 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         return self._fabrica_ingesta
 
     def agregar(self, ingesta: Ingesta):
+        ingesta.fecha_creacion = datetime.now()
         ingesta_dto = self.fabrica_ingesta.crear_objeto(ingesta, MapeadorIngesta())
         db.session.add(ingesta_dto)
 

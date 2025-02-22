@@ -16,7 +16,7 @@ import uuid
 class Entidad:
     id: uuid.UUID = field(hash=True)
     _id: uuid.UUID = field(init=False, repr=False, hash=True)
-    fecha_creacion: datetime =  field(default=datetime.now())
+    fecha_creacion: datetime = field(default=datetime.now())
     fecha_actualizacion: datetime = field(default=datetime.now())
 
     @classmethod
