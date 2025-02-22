@@ -16,13 +16,13 @@ class MapeadorIngesta(Mapeador):
         return Ingesta.__class__
 
     def entidad_a_dto(self, entidad: Ingesta) -> IngestaDTO:
-        
-        ingesta_dto = IngestaDTO()
-        ingesta_dto.id_proveedor = str(entidad.id_proveedor)
-        ingesta_dto.id_paciente = str(entidad.id_paciente)
-        ingesta_dto.url_path = str(entidad.url_path)
-        ingesta_dto.estado = str(entidad.estado)
-
+        ingesta_dto = IngestaDTO(            
+            id_proveedor=str(entidad.id_proveedor),
+            id_paciente=str(entidad.id_paciente),
+            url_path=entidad.url_path,
+            estado=entidad.estado.value,
+            id=str(entidad.id)
+        )
         return ingesta_dto
 
     def dto_a_entidad(self, dto: IngestaDTO) -> Ingesta:

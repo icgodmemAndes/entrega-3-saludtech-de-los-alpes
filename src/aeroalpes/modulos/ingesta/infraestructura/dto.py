@@ -21,10 +21,3 @@ class Ingesta(db.Model):
     id_paciente = db.Column(db.String, nullable=False)
     url_path = db.Column(db.String, nullable=False)
     estado = db.Column(db.String, nullable=False)
-
-    def __init__(self, id_proveedor, id_paciente, url_path, estado, id=None):
-        self.id = id
-        self.id_proveedor = id_proveedor
-        self.id_paciente = id_paciente
-        self.url_path = url_path
-        self.estado = estado
