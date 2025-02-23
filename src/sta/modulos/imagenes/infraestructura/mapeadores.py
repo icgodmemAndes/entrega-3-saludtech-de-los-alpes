@@ -19,7 +19,7 @@ class MapeadorImagen(Mapeador):
             id=str(entidad.id),
             id_ingesta=str(entidad.id_ingesta),
             url_path=entidad.url_path,
-            estado=entidad.estado.value,
+            estado=entidad.estado,
         )
         return imagen_dto
 

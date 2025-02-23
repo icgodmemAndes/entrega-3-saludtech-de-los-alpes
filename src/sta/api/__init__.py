@@ -9,6 +9,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 def registrar_handlers():
     import sta.modulos.ingesta.aplicacion
+    import sta.modulos.imagenes.aplicacion
 
 
 def importar_modelos_alchemy():
@@ -16,7 +17,7 @@ def importar_modelos_alchemy():
     import sta.modulos.imagenes.infraestructura.dto
 
 
-def comenzar_consumidor():
+def comenzar_consumidor(app):
     """
     Este es un código de ejemplo. Aunque esto sea funcional puede ser un poco peligroso tener 
     threads corriendo por si solos. Mi sugerencia es en estos casos usar un verdadero manejador
@@ -29,7 +30,7 @@ def comenzar_consumidor():
 
     # Suscripción a eventos
     # threading.Thread(target=ingestas.suscribirse_a_eventos).start()
-    threading.Thread(target=imagenes.suscribirse_a_eventos).start()
+    threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
 
     # Suscripción a comandos
     threading.Thread(target=ingestas.suscribirse_a_comandos).start()
@@ -59,13 +60,15 @@ def create_app(configuracion={}):
     with app.app_context():
         db.create_all()
         if not app.config.get('TESTING'):
-            comenzar_consumidor()
+            comenzar_consumidor(app)
 
     # Importa Blueprints
     from . import ingesta
+    from . import imagenes
 
     # Registro de Blueprints  
     app.register_blueprint(ingesta.bp)
+    app.register_blueprint(imagenes.bp)
 
     @app.route("/spec")
     def spec():

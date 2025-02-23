@@ -83,18 +83,22 @@ def is_flask():
         return False
 
 def registrar_unidad_de_trabajo(serialized_obj):
+    from flask import g
     from sta.config.uow import UnidadTrabajoSQLAlchemy
-    from flask import session
-    
 
-    session['uow'] = serialized_obj
+
+    g.uow = serialized_obj
 
 def flask_uow():
-    from flask import session
-    from sta.config.uow import UnidadTrabajoSQLAlchemy
-    if session.get('uow'):
-        return session['uow']
+    from flask import g
+
+
+    if hasattr(g, 'uow'):
+        return g.uow
     else:
+        from sta.config.uow import UnidadTrabajoSQLAlchemy
+        
+
         uow_serialized = pickle.dumps(UnidadTrabajoSQLAlchemy())
         registrar_unidad_de_trabajo(uow_serialized)
         return uow_serialized
