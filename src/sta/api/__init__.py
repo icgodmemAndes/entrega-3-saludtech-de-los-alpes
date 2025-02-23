@@ -75,11 +75,9 @@ def create_app(configuracion={}):
 
     # Importa Blueprints
     from . import ingesta
-    from . import imagenes
 
     # Registro de Blueprints  
     app.register_blueprint(ingesta.bp)
-    app.register_blueprint(imagenes.bp)
 
     @app.route("/spec")
     def spec():
