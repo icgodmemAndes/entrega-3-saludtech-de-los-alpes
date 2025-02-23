@@ -4,9 +4,9 @@ import tempfile
 import pytest
 import json
 
-from aeroalpes.api import create_app, importar_modelos_alchemy
-from aeroalpes.config.db import init_db
-from aeroalpes.config.db import db
+from sta.api import create_app, importar_modelos_alchemy
+from sta.config.db import init_db
+from sta.config.db import db
 
 @pytest.fixture
 def app():
@@ -20,7 +20,7 @@ def app():
     with app.app_context():
         init_db(app)
 
-        from aeroalpes.config.db import db
+        from sta.config.db import db
 
         importar_modelos_alchemy()
         db.create_all()

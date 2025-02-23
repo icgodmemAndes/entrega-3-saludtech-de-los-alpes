@@ -1,9 +1,9 @@
 from __future__ import print_function
 
 from google.protobuf.timestamp_pb2 import Timestamp
-from aeroalpes.pb2py import vuelos_pb2
-from aeroalpes.pb2py import vuelos_pb2_grpc
-from aeroalpes.utils import dict_a_proto_itinerarios
+from sta.pb2py import vuelos_pb2
+from sta.pb2py import vuelos_pb2_grpc
+from sta.utils import dict_a_proto_itinerarios
 
 import logging
 import grpc
