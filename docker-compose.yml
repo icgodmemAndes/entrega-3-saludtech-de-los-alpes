@@ -8,7 +8,7 @@ services:
 # Start zookeeper
   zookeeper:
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar"]
+    profiles: ["pulsar", "all"]
     container_name: zookeeper
     restart: on-failure
     networks:
@@ -30,7 +30,7 @@ services:
     container_name: pulsar-init
     hostname: pulsar-init
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar"]
+    profiles: ["pulsar", "all"]
     networks:
       - pulsar
     command: bin/pulsar initialize-cluster-metadata --cluster cluster-a --zookeeper zookeeper:2181 --configuration-store zookeeper:2181 --web-service-url http://broker:8080 --broker-service-url pulsar://broker:6650
@@ -41,7 +41,7 @@ services:
 # Start bookie
   bookie:
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar"]
+    profiles: ["pulsar", "all"]
     container_name: bookie
     restart: on-failure
     networks:
@@ -64,7 +64,7 @@ services:
 # Start broker
   broker:
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar"]
+    profiles: ["pulsar", "all"]
     container_name: broker
     hostname: broker
     restart: on-failure
@@ -95,7 +95,7 @@ services:
     container_name: sta
     hostname: sta
     image: sta/flask
-    profiles: ["sta", "monolito"]
+    profiles: ["sta", "all"]
     networks:
       - sidecar
       - pulsar
@@ -108,48 +108,3 @@ services:
       - PULSAR_ADDRESS=broker
     ports:
       - "5000:5000"
-  adaptador:
-    image: "sta/adaptador"
-    profiles: ["sta", "monolito"]
-    container_name: adaptador
-    hostname: adaptador
-    depends_on:
-      - sta
-    networks:
-      - sidecar
-    environment:
-      - STA_ADDRESS=sta
-      - PULSAR_ADDRESS=broker
-    ports:
-      - "50051:50051"
-  
-  # Servicios de Notificación
-  notificacion:
-    container_name: notificacion
-    hostname: notificacion
-    image: sta/notificacion
-    profiles: ["sta", "notificacion"]
-    depends_on:
-      - sta
-      - broker
-    environment:
-      - STA_ADDRESS=sta
-      - PULSAR_ADDRESS=broker
-    networks:
-      - pulsar
-  # Servicio UI
-  ui:
-    container_name: ui
-    hostname: ui
-    image: sta/ui
-    profiles: ["sta", "ui"]
-    depends_on:
-      - sta
-      - broker
-    environment:
-      - STA_ADDRESS=sta
-      - PULSAR_ADDRESS=broker
-    networks:
-      - pulsar
-    ports:
-      - "5678:5678"
