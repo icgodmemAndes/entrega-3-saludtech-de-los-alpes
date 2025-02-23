@@ -28,7 +28,7 @@ def comenzar_consumidor():
     import sta.modulos.imagenes.infraestructura.consumidores as imagenes
 
     # Suscripción a eventos
-    threading.Thread(target=ingestas.suscribirse_a_eventos).start()
+    # threading.Thread(target=ingestas.suscribirse_a_eventos).start()
     threading.Thread(target=imagenes.suscribirse_a_eventos).start()
 
     # Suscripción a comandos

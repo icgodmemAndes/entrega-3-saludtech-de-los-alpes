@@ -24,7 +24,7 @@ class MapeadorImagen(Mapeador):
         return imagen_dto
 
     def dto_a_entidad(self, dto: ImagenDTO) -> Imagen:
-        imagen = Imagen(dto.id)
+        imagen = Imagen()
         imagen.id_ingesta = dto.id_ingesta
         imagen.url_path = dto.url_path
         imagen.estado = dto.estado

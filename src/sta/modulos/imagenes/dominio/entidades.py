@@ -18,7 +18,7 @@ from sta.seedwork.dominio.entidades import AgregacionRaiz, Entidad
 class Imagen(AgregacionRaiz):
     id_ingesta: uuid.UUID = field(hash=True, default=None)
     url_path: str = field(default_factory=str)
-    estado: ov.EstadoImagen = field(default=ov.EstadoIngesta.RECHAZADA)
+    estado: ov.EstadoImagen = field(default=ov.EstadoImagen.RECHAZADA)
 
     def crear_imagen(self, imagen: Imagen):
         self.id_ingesta = imagen.id_ingesta

@@ -25,7 +25,7 @@ class RepositorioImagenSQLite(RepositorioImagen):
 
     def agregar(self, imagen: Imagen):
         imagen.fecha_creacion = datetime.now()
-        imagen_dto = self.fabrica_ingesta.crear_objeto(imagen, MapeadorImagen())
+        imagen_dto = self.fabrica_imagen.crear_objeto(imagen, MapeadorImagen())
         db.session.add(imagen_dto)
 
     def obtener_por_id(self, id: UUID) -> Imagen:
