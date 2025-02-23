@@ -105,36 +105,12 @@ services:
       - MYSQL_ROOT_PASSWORD=adminadmin
     profiles: ["resource"]
     networks:
-      - pulsar
+      - database
     ports:
       - '3306:3306'
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  
-  # Database
-  postgres:
-    image: postgres:14-alpine
-    profiles: ["sta", "all"]
-    restart: always
-    hostname: postgres
-    environment:
-      - POSTGRES_DB=sta_db
-      - POSTGRES_USER=sta_user
-      - POSTGRES_PASSWORD=sta_password
-    networks:
-      - database
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./data/postgres-data14:/var/lib/postgresql/data
-      - ./data/scripts/:/docker-entrypoint-initdb.d/
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sta_user -d sta_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
   
   # Servicios de SaludTech de los alpes
   sta:
@@ -150,14 +126,14 @@ services:
       SidecarDiscover: "false"
     depends_on:
       - broker
-      - postgres
+      - db
     environment:
       - STA_ADDRESS=sta
       - PULSAR_ADDRESS=broker
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=sta_user
-      - DB_PASS=sta_password
-      - DB_NAME=sta_db
+      - DB_HOSTNAME=postgres
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=adminadmin
+      - DB_NAME=ingestas
     ports:
       - "5000:5000"

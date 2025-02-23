@@ -5,6 +5,8 @@ from sta.seedwork.dominio.entidades import AgregacionRaiz
 from pydispatch import dispatcher
 
 import pickle
+import logging
+import traceback
 
 
 class Lock(Enum):
@@ -70,10 +72,15 @@ class UnidadTrabajo(ABC):
             dispatcher.send(signal=f'{type(evento).__name__}Dominio', evento=evento)
 
     def _publicar_eventos_post_commit(self):
-        for evento in self._obtener_eventos():
-            print('***Publicar eventos post commit*********************')
-            print(evento)
-            dispatcher.send(signal=f'{type(evento).__name__}Integracion', evento=evento)
+        try:
+            for evento in self._obtener_eventos():
+                print('***Publicar eventos post commit*********************')
+                print(evento)
+                dispatcher.send(signal=f'{type(evento).__name__}Integracion', evento=evento)
+        except:
+            logging.error('ERROR: Suscribiendose al tópico de eventos!')
+            traceback.print_exc()
+            
 
 def is_flask():
     try:
@@ -83,18 +90,19 @@ def is_flask():
         return False
 
 def registrar_unidad_de_trabajo(serialized_obj):
+    from flask import g
     from sta.config.uow import UnidadTrabajoSQLAlchemy
-    from flask import session
-    
 
-    session['uow'] = serialized_obj
+    g.uow = serialized_obj
 
 def flask_uow():
-    from flask import session
-    from sta.config.uow import UnidadTrabajoSQLAlchemy
-    if session.get('uow'):
-        return session['uow']
+    from flask import g
+
+    if hasattr(g, 'uow'):
+        return g.uow
     else:
+        from sta.config.uow import UnidadTrabajoSQLAlchemy
+
         uow_serialized = pickle.dumps(UnidadTrabajoSQLAlchemy())
         registrar_unidad_de_trabajo(uow_serialized)
         return uow_serialized
