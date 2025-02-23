@@ -1,6 +1,12 @@
 from sta.config.db import db
 from sta.seedwork.infraestructura.uow import UnidadTrabajo, Batch
 
+import logging
+import traceback
+
+class ExcepcionUoW(Exception):
+    ...
+
 class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
 
     def __init__(self):
@@ -17,7 +23,8 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
 
     @property
     def savepoints(self) -> list:
-        return list[db.session.get_nested_transaction()]
+        # TODO Lea savepoint
+        return []
 
     @property
     def batches(self) -> list[Batch]:
@@ -27,8 +34,8 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
         for batch in self.batches:
             lock = batch.lock
             batch.operacion(*batch.args, **batch.kwargs)
-
-        db.session.commit()
+                
+        db.session.commit() # Commits the transaction
 
         super().commit()
 
@@ -41,4 +48,6 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
         super().rollback()
     
     def savepoint(self):
-        db.session.begin_nested()
+        # TODO Con MySQL y Postgres se debe usar el with para tener la lógica del savepoint
+        # Piense como podría lograr esto ¿tal vez teniendo una lista de savepoints y momentos en el tiempo?
+        ...
