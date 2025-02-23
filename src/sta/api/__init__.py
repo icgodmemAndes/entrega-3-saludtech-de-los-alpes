@@ -1,5 +1,5 @@
 import os
-
+import logging
 from flask import Flask, render_template, request, url_for, redirect, jsonify, session
 from flask_swagger import swagger
 
@@ -9,12 +9,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 def registrar_handlers():
     import sta.modulos.ingesta.aplicacion
-    import sta.modulos.imagenes.aplicacion
+    # import sta.modulos.imagenes.aplicacion
 
 
 def importar_modelos_alchemy():
     import sta.modulos.ingesta.infraestructura.dto
-    import sta.modulos.imagenes.infraestructura.dto
+    # import sta.modulos.imagenes.infraestructura.dto
 
 
 def comenzar_consumidor(app):
@@ -26,23 +26,35 @@ def comenzar_consumidor(app):
 
     import threading
     import sta.modulos.ingesta.infraestructura.consumidores as ingestas
-    import sta.modulos.imagenes.infraestructura.consumidores as imagenes
+    # import sta.modulos.imagenes.infraestructura.consumidores as imagenes
 
     # Suscripción a eventos
-    # threading.Thread(target=ingestas.suscribirse_a_eventos).start()
-    threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
+    threading.Thread(target=ingestas.suscribirse_a_eventos).start()
+    # threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
 
     # Suscripción a comandos
     threading.Thread(target=ingestas.suscribirse_a_comandos).start()
+
+
+DB_USERNAME = os.getenv('DB_USERNAME', default="root")
+DB_PASSWORD = os.getenv('DB_PASSWORD', default="adminadmin")
+DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="localhost")
 
 
 def create_app(configuracion={}):
     # Init la aplicacion de Flask
     app = Flask(__name__, instance_relative_config=True)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'sqlite:///' + os.path.join(basedir, 'database.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}/ingestas'
+    #app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USER', 'sta_user')}:{os.getenv('DB_PASS', 'sta_password')}@{os.getenv('DB_HOST', '127.0.0.1')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'sta_db')}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_size': 10,
+        'pool_recycle': 3600,
+        'pool_timeout': 30,
+        'max_overflow': 2
+    }
 
     app.secret_key = '9d58f98f-3ae8-4149-a09f-3a8c2012e32c'
     app.config['SESSION_TYPE'] = 'filesystem'
@@ -57,6 +69,10 @@ def create_app(configuracion={}):
     importar_modelos_alchemy()
     registrar_handlers()
 
+    # Configurar el logger de SQLAlchemy
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+
     with app.app_context():
         db.create_all()
         if not app.config.get('TESTING'):
@@ -64,11 +80,11 @@ def create_app(configuracion={}):
 
     # Importa Blueprints
     from . import ingesta
-    from . import imagenes
+    # from . import imagenes
 
     # Registro de Blueprints  
     app.register_blueprint(ingesta.bp)
-    app.register_blueprint(imagenes.bp)
+    # app.register_blueprint(imagenes.bp)
 
     @app.route("/spec")
     def spec():

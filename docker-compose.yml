@@ -4,11 +4,13 @@ networks:
     driver: bridge
   sidecar:
     driver: bridge
+  database:
+    driver: bridge
 services:
 # Start zookeeper
   zookeeper:
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar", "all"]
+    profiles: ["pulsar", "resource", "all"]
     container_name: zookeeper
     restart: on-failure
     networks:
@@ -30,7 +32,7 @@ services:
     container_name: pulsar-init
     hostname: pulsar-init
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar", "all"]
+    profiles: ["pulsar", "resource", "all"]
     networks:
       - pulsar
     command: bin/pulsar initialize-cluster-metadata --cluster cluster-a --zookeeper zookeeper:2181 --configuration-store zookeeper:2181 --web-service-url http://broker:8080 --broker-service-url pulsar://broker:6650
@@ -41,7 +43,7 @@ services:
 # Start bookie
   bookie:
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar", "all"]
+    profiles: ["pulsar", "resource", "all"]
     container_name: bookie
     restart: on-failure
     networks:
@@ -64,7 +66,7 @@ services:
 # Start broker
   broker:
     image: apachepulsar/pulsar:latest
-    profiles: ["pulsar", "all"]
+    profiles: ["pulsar", "resource", "all"]
     container_name: broker
     hostname: broker
     restart: on-failure
@@ -89,6 +91,50 @@ services:
       - "8080:8080"
     command: bash -c "bin/apply-config-from-env.py conf/broker.conf
       &&  exec bin/pulsar broker"
+
+  # MySQL8
+  db:
+    image: mysql:8
+    hostname: mysqldb
+    container_name: mysqldb
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=ingestas
+      - MYSQL_ROOT_PASSWORD=adminadmin
+    profiles: ["resource"]
+    networks:
+      - pulsar
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  # Database
+  postgres:
+    image: postgres:14-alpine
+    profiles: ["sta", "all"]
+    restart: always
+    hostname: postgres
+    environment:
+      - POSTGRES_DB=sta_db
+      - POSTGRES_USER=sta_user
+      - POSTGRES_PASSWORD=sta_password
+    networks:
+      - database
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres-data14:/var/lib/postgresql/data
+      - ./data/scripts/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sta_user -d sta_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   
   # Servicios de SaludTech de los alpes
   sta:
@@ -99,12 +145,19 @@ services:
     networks:
       - sidecar
       - pulsar
+      - database
     labels:
       SidecarDiscover: "false"
     depends_on:
       - broker
+      - postgres
     environment:
       - STA_ADDRESS=sta
       - PULSAR_ADDRESS=broker
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=sta_user
+      - DB_PASS=sta_password
+      - DB_NAME=sta_db
     ports:
       - "5000:5000"

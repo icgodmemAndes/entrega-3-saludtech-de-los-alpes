@@ -5,8 +5,10 @@ encargados de la transformación entre formatos de dominio y DTOs
 
 """
 
+import random
 from sta.seedwork.dominio.repositorios import Mapeador
 from sta.modulos.imagenes.dominio.entidades import Imagen
+from sta.modulos.imagenes.dominio.objetos_valor import EstadoImagen
 from .dto import Imagen as ImagenDTO
 
 class MapeadorImagen(Mapeador):
@@ -19,7 +21,7 @@ class MapeadorImagen(Mapeador):
             id=str(entidad.id),
             id_ingesta=str(entidad.id_ingesta),
             url_path=entidad.url_path,
-            estado=entidad.estado,
+            estado=random.choice(list(EstadoImagen)),
         )
         return imagen_dto
 

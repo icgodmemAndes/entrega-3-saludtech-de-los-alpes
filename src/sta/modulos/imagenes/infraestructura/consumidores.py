@@ -28,14 +28,7 @@ def suscribirse_a_eventos(app):
             mensaje = consumidor.receive()
             print(f'Evento recibido por Imagenes: {mensaje.value().data}')
             
-            with app.app_context():
-                imagen: Imagen = fabrica_imagen.crear_objeto(mensaje.value().data, MapeadorImagen())
-                imagen.crear_imagen(imagen)
-                repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
-
-                UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, imagen)
-                UnidadTrabajoPuerto.savepoint()
-                UnidadTrabajoPuerto.commit()
+            
 
             consumidor.acknowledge(mensaje)
 

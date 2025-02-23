@@ -28,6 +28,7 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         ingesta.fecha_creacion = datetime.now()
         ingesta_dto = self.fabrica_ingesta.crear_objeto(ingesta, MapeadorIngesta())
         db.session.add(ingesta_dto)
+        print('AGREGAR completo')
 
     def obtener_por_id(self, id: UUID) -> Ingesta:
         ingesta_dto = db.session.query(IngestaDTO).filter_by(id=str(id)).one()

@@ -16,9 +16,9 @@ Base = db.declarative_base()
 
 class Ingesta(db.Model):
     __tablename__ = "ingestas"
-    id = db.Column(db.String, primary_key=True)
-    id_proveedor = db.Column(db.String, nullable=False)
-    id_paciente = db.Column(db.String, nullable=False)
-    url_path = db.Column(db.String, nullable=False)
-    estado = db.Column(db.String, nullable=False)
+    id = db.Column(db.String(40), primary_key=True)
+    id_proveedor = db.Column(db.String(40), nullable=False)
+    id_paciente = db.Column(db.String(40), nullable=False)
+    url_path = db.Column(db.String(200), nullable=False)
+    estado = db.Column(db.String(40), nullable=False)
     fecha_creacion = db.Column(db.DateTime, nullable=False)
