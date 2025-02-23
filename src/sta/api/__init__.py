@@ -6,11 +6,15 @@ from flask_swagger import swagger
 # Identifica el directorio base
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-def registrar_handlers(): 
+
+def registrar_handlers():
     import sta.modulos.ingesta.aplicacion
 
-def importar_modelos_alchemy():   
+
+def importar_modelos_alchemy():
     import sta.modulos.ingesta.infraestructura.dto
+    import sta.modulos.imagenes.infraestructura.dto
+
 
 def comenzar_consumidor():
     """
@@ -21,26 +25,29 @@ def comenzar_consumidor():
 
     import threading
     import sta.modulos.ingesta.infraestructura.consumidores as ingestas
+    import sta.modulos.imagenes.infraestructura.consumidores as imagenes
 
     # Suscripción a eventos
     threading.Thread(target=ingestas.suscribirse_a_eventos).start()
+    threading.Thread(target=imagenes.suscribirse_a_eventos).start()
 
     # Suscripción a comandos
     threading.Thread(target=ingestas.suscribirse_a_comandos).start()
 
+
 def create_app(configuracion={}):
     # Init la aplicacion de Flask
     app = Flask(__name__, instance_relative_config=True)
-    
-    app.config['SQLALCHEMY_DATABASE_URI'] =\
-            'sqlite:///' + os.path.join(basedir, 'database.db')
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = \
+        'sqlite:///' + os.path.join(basedir, 'database.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     app.secret_key = '9d58f98f-3ae8-4149-a09f-3a8c2012e32c'
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['TESTING'] = configuracion.get('TESTING')
 
-     # Inicializa la DB
+    # Inicializa la DB
     from sta.config.db import init_db
     init_db(app)
 
@@ -54,7 +61,7 @@ def create_app(configuracion={}):
         if not app.config.get('TESTING'):
             comenzar_consumidor()
 
-     # Importa Blueprints   
+    # Importa Blueprints
     from . import ingesta
 
     # Registro de Blueprints  

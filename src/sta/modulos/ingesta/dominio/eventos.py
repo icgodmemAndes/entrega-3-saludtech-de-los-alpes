@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import uuid
 from dataclasses import dataclass, field
 from sta.seedwork.dominio.eventos import (EventoDominio)
 from datetime import datetime
