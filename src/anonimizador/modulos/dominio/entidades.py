@@ -4,7 +4,7 @@ En este archivo usted encontrará las entidades del dominio de anonimizador
 
 """
 
-import datetime
+from datetime import datetime
 import uuid
 from anonimizador.seedwork.dominio.entidades import AgregacionRaiz
 from anonimizador.modulos.dominio.eventos import ImagenProcesada
