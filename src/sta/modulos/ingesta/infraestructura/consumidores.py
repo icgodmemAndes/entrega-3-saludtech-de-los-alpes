@@ -6,7 +6,7 @@ import logging
 import traceback
 
 from sta.modulos.ingesta.infraestructura.schema.v1.eventos import EventoIngestaCreada
-from sta.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoCrearIngesta
+from sta.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoCrearIngesta, ComandoEliminarIngesta
 from sta.seedwork.infraestructura import utils
 
 from sta.modulos.ingesta.aplicacion.comandos.crear_ingesta import CrearIngesta
@@ -41,6 +41,8 @@ def suscribirse_a_comandos(app):
         consumidor = cliente.subscribe('comando-crear-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
                                        subscription_name='sta-sub-comando-crear-ingesta',
                                        schema=AvroSchema(ComandoCrearIngesta))
+        
+        consumidorEliminarIngesta = cliente.subscribe('comando-eliminar-ingesta', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='sta-sub-comandos', schema=AvroSchema(ComandoEliminarIngesta))
         print('Consumiendo eventos de Ingesta desde Ingesta.....')
 
         while True:

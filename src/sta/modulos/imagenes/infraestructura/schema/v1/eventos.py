@@ -20,6 +20,12 @@ class ImagenProcesadaPayload(Record):
     id_ingesta = String()
     estado = String()
 
+class EliminarImagenPayload(Record):
+    id_imagen = String()
+
 
 class EventoImagenProcesada(EventoIntegracion):
     data = ImagenProcesadaPayload()
+
+class EliminarImagen(EventoIntegracion):
+    data = EliminarImagenPayload()

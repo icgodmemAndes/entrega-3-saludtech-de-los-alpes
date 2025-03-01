@@ -3,7 +3,7 @@ from pulsar.schema import *
 import logging
 import traceback
 
-from sta.modulos.imagenes.infraestructura.schema.v1.eventos import EventoIngestaCreada
+from sta.modulos.imagenes.infraestructura.schema.v1.eventos import EventoIngestaCreada, EventoEliminarImagen
 from sta.seedwork.infraestructura import utils
 
 from sta.modulos.imagenes.dominio.entidades import Imagen
