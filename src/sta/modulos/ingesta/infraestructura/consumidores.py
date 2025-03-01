@@ -1,4 +1,4 @@
-import pulsar,_pulsar  
+import pulsar, _pulsar
 from pulsar.schema import *
 import uuid
 import time
@@ -9,17 +9,22 @@ from sta.modulos.ingesta.infraestructura.schema.v1.eventos import EventoIngestaC
 from sta.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoCrearIngesta
 from sta.seedwork.infraestructura import utils
 
+from sta.modulos.ingesta.aplicacion.comandos.crear_ingesta import CrearIngesta
+from sta.seedwork.aplicacion.comandos import ejecutar_commando
+
+
 def suscribirse_a_eventos():
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('eventos-ingesta', consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos', schema=AvroSchema(EventoIngestaCreada))
+        consumidor = cliente.subscribe('eventos-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
+                                       subscription_name='sta-sub-eventos', schema=AvroSchema(EventoIngestaCreada))
 
         while True:
             mensaje = consumidor.receive()
             print(f'Evento recibido: {mensaje.value().data}')
 
-            consumidor.acknowledge(mensaje)     
+            consumidor.acknowledge(mensaje)
 
         cliente.close()
     except:
@@ -28,18 +33,37 @@ def suscribirse_a_eventos():
         if cliente:
             cliente.close()
 
-def suscribirse_a_comandos():
+
+def suscribirse_a_comandos(app):
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('comando-ingesta', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='sta-sub-comandos', schema=AvroSchema(ComandoCrearIngesta))
+        consumidor = cliente.subscribe('comando-crear-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
+                                       subscription_name='sta-sub-comando-crear-ingesta',
+                                       schema=AvroSchema(ComandoCrearIngesta))
+        print('Consumiendo eventos de Ingesta desde Ingesta.....')
 
         while True:
             mensaje = consumidor.receive()
-            print(f'Comando recibido: {mensaje.value().data}')
+            valor = mensaje.value()
 
-            consumidor.acknowledge(mensaje)     
-            
+            print(f'Comando ingesta crear, recibido: {mensaje.value()}')
+
+            try:
+                with app.app_context():
+                    comando = CrearIngesta(
+                        id_proveedor=uuid.UUID(valor.data.id_proveedor),
+                        id_paciente=uuid.UUID(valor.data.id_paciente),
+                        url_path=valor.data.url_path
+                    )
+
+                    ejecutar_commando(comando)
+            except:
+                logging.error('ERROR: Procesando comando de creación de ingesta!')
+                traceback.print_exc()
+
+            consumidor.acknowledge(mensaje)
+
         cliente.close()
     except:
         logging.error('ERROR: Suscribiendose al tópico de comandos!')

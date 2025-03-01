@@ -7,6 +7,7 @@ from flask import Response
 from sta.modulos.ingesta.aplicacion.mapeadores import MapeadorIngestaDTOJson
 from sta.modulos.ingesta.aplicacion.comandos.crear_ingesta import CrearIngesta
 from sta.modulos.ingesta.aplicacion.queries.obtener_ingesta import ObtenerIngesta
+from sta.modulos.ingesta.aplicacion.queries.obtener_todas_ingestas import ObtenerTodasIngestas
 
 from sta.seedwork.aplicacion.comandos import ejecutar_commando
 from sta.seedwork.aplicacion.queries import ejecutar_query
@@ -40,3 +41,11 @@ def dar_reserva_usando_query(id=None):
         return map_reserva.dto_a_externo(query_resultado.resultado)
     else:
         return [{'message': 'GET!'}]
+
+
+@bp.route('/todas', methods=('GET',))
+def obtener_todas_ingestas():
+    query_resultado = ejecutar_query(ObtenerTodasIngestas())
+    map_reserva = MapeadorIngestaDTOJson()
+
+    return [map_reserva.dto_a_externo(ingesta) for ingesta in query_resultado.resultado]

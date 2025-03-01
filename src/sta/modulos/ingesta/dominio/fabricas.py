@@ -16,6 +16,15 @@ from dataclasses import dataclass
 @dataclass
 class _FabricaIngesta(Fabrica):
     def crear_objeto(self, obj: any, mapeador: Mapeador) -> any:
+        if isinstance(obj, list):
+            procesados = list()
+            for o in obj:
+                procesados.append(self._procesar_objeto(o, mapeador))
+            return procesados
+        else:
+            return self._procesar_objeto(obj, mapeador)
+
+    def _procesar_objeto(self, obj: any, mapeador: Mapeador) -> any:
         if isinstance(obj, Entidad):
             return mapeador.entidad_a_dto(obj)
         else:

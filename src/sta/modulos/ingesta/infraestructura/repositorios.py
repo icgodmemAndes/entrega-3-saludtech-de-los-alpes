@@ -35,8 +35,13 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         return self.fabrica_ingesta.crear_objeto(ingesta_dto, MapeadorIngesta())
 
     def obtener_todos(self) -> list[Ingesta]:
-        # TODO
-        raise NotImplementedError
+        ingestas_dto = db.session.query(IngestaDTO).all()
+        ingestas = list()
+
+        for ingesta_dto in ingestas_dto:
+            ingestas.append(self.fabrica_ingesta.crear_objeto(ingesta_dto, MapeadorIngesta()))
+
+        return ingestas
 
     def actualizar(self, ingesta: Ingesta):
         # TODO
@@ -45,4 +50,3 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
     def eliminar(self, ingesta_id: UUID):
         # TODO
         raise NotImplementedError
-
