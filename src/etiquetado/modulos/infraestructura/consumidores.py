@@ -35,7 +35,7 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
                     print(mensaje)
                     print('***************Trata de guardar****************')
                     try:
-                        imagen: Imagen = fabrica_imagen.crear_objeto(mensaje.value().data, MapeadorImagen())
+                        imagen: EnriquecerImagen = fabrica_imagen.crear_objeto(mensaje.value().data, MapeadorImagen())
                         print('***************Mapeo hecho****************')
                         #imagen.tagear_imagen(imagen)
                         print('***************Trata de guardar****************')
