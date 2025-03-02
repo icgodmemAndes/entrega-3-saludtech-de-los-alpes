@@ -11,11 +11,9 @@ from .mapeadores import MapeadorImagen
 
 class RepositorioImagenAnonimizadaMySQL(RepositorioImagen):
 
-
     def __init__(self):
-        self._session = session
         self._fabrica_imagen: FabricaImagen = FabricaImagen()
-
+   
     @property
     def fabrica_imagen(self):
         return self._fabrica_imagen
@@ -27,8 +25,8 @@ class RepositorioImagenAnonimizadaMySQL(RepositorioImagen):
 
         imagen_dto = self.fabrica_imagen.crear_objeto(ingesta, MapeadorImagen())        
 
-        self._session.add(imagen_dto)
-        self._session.commit()
+        session.add(imagen_dto)
+        session.commit()
         print(f"#added agregar() {ingesta.__dict__}")
 
     def obtener_por_id(self, id: UUID) -> Ingesta:

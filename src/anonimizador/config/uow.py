@@ -66,7 +66,11 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
         self.session.commit()
 
         # Publish post-commit events, then clear the batches
-        super().commit()
+        """Commits the transaction and publishes events post-commit."""
+        print("#commit clase base")
+        self.batches.clear()
+        #self._limpiar_batches()
+        #super().commit()
 
     def rollback(self, savepoint=None):
         """

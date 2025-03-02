@@ -11,7 +11,7 @@ from .fabricas import FabricaRepositorio
 from anonimizador.modulos.dominio.fabricas import FabricaImagen
 
 from anonimizador.seedwork.infraestructura.uow import UnidadTrabajoPuerto
-from anonimizador.modulos.infraestructura.repositorios import RepositorioImagenAnonimizadaMySQL
+from anonimizador.modulos.dominio.repositorios import RepositorioImagen
 from anonimizador.modulos.infraestructura.mapeadores import MapeadorImagen
 from anonimizador.modulos.infraestructura.despachadores import Despachador
 from anonimizador.modulos.dominio.objetos_valor import EstadoIngesta
@@ -56,7 +56,7 @@ async def suscribirse_a_topico(
                         ingesta: Ingesta = fabrica_imagen.crear_objeto(payload, MapeadorImagen())                        
                         ingesta.crear_imagen(ingesta)
                         
-                        repositorio = fabrica_repositorio.crear_objeto(RepositorioImagenAnonimizadaMySQL.__class__)
+                        repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
                         print(f"A guardar: {ingesta.__dict__}")
 
                         

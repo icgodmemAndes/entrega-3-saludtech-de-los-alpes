@@ -67,12 +67,9 @@ class UnidadTrabajo(ABC):
         """Return the list of current savepoints."""
         raise NotImplementedError
 
-   
+    @abstractmethod
     def commit(self):
-        """Commits the transaction and publishes events post-commit."""
-        print("#commit clase base")
-        self._publicar_eventos_dominio()
-        self._limpiar_batches()
+       raise NotImplementedError
 
     @abstractmethod
     def rollback(self, savepoint=None):
@@ -110,7 +107,7 @@ def unidad_de_trabajo() -> UnidadTrabajo:
         # By default, create a new SQLAlchemy-based UoW if you want:
         from anonimizador.config.uow import UnidadTrabajoSQLAlchemy
         _current_uow = UnidadTrabajoSQLAlchemy()
-        print("##creo sql alchemy")
+        print("##creo uow sql alchemy")
     return _current_uow
 
 def guardar_unidad_trabajo(uow: UnidadTrabajo):
@@ -127,8 +124,7 @@ class UnidadTrabajoPuerto:
     def commit():
         uow = unidad_de_trabajo()
         print(f'USING TYPE: {type(uow).__name__}')
-        uow.commit()
-        print('despues del commit')
+        uow.commit()        
         guardar_unidad_trabajo(uow)
 
     @staticmethod
@@ -149,8 +145,7 @@ class UnidadTrabajoPuerto:
         return uow.savepoints
 
     @staticmethod
-    def registrar_batch(operacion, *args, lock=Lock.PESIMISTA, **kwargs):
-        print("#commit trabajo puerto")
+    def registrar_batch(operacion, *args, lock=Lock.PESIMISTA, **kwargs):        
         uow = unidad_de_trabajo()
         uow.registrar_batch(operacion, *args, lock=lock, **kwargs)
         guardar_unidad_trabajo(uow)        
