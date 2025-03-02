@@ -11,7 +11,3 @@ class IngestaDTO(DTO):
     url_path: str
     estado: str
     fecha_creacion: str | None = None
-
-@dataclass(frozen=True)
-class EliminarIngestaDTO(DTO):
-    id_ingesta: uuid.UUID
