@@ -85,9 +85,9 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
                         UnidadTrabajoPuerto.commit()
                         print(f'Ingesta guardada {ingesta.__dict__}')
                         
-                    except Exception as e:
-                        #traceback.print_exc()
+                    except Exception as e:                        
                         print(f'Se presento un error procesando la anonimizacion escuchando el topico {topico}. {e}')
+                        traceback.print_exc()
 
                     datos = mensaje.value()
                     print(f'Evento recibido: {datos}')
