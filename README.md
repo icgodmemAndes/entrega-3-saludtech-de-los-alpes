@@ -19,7 +19,7 @@ Este repositorio sigue en general la misma estructura del repositorio de origen.
     - **seedwork/infraestructura/uow.py**: La Unidad de Trabajo (UoW) mantiene una lista de objetos afectados por una transacción de negocio y coordina los cambios de escritura. Este objeto nos va ser de gran importancia, pues cuando comenzamos a usar eventos de dominio e interactuar con otros módulos, debemos ser capaces de garantizar consistencia entre los diferentes objetos y partes de nuestro sistema.
 
 ## STA
-### Ejecutar Aplicación
+### Ejecutar Aplicación STA
 
 Desde el directorio principal ejecute el siguiente comando.
 
@@ -33,7 +33,7 @@ Siempre puede ejecutarlo en modo DEBUG:
 flask --app src/sta/api --debug run
 ```
 
-### Crear imagen Docker
+### Crear imagen para STA Docker
 
 Desde el directorio principal ejecute el siguiente comando.
 
@@ -41,12 +41,36 @@ Desde el directorio principal ejecute el siguiente comando.
 docker build . -f sta.Dockerfile -t sta/flask
 ```
 
-### Ejecutar contenedora (sin compose)
+### Ejecutar STA contenedora (sin compose)
 
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run -p 5000:5000 sta/flask
+docker run -p 5000:5000 -e BROKER_HOST=127.0.0.1 -e DB_HOSTNAME=127.0.0.1 -e DB_USERNAME="root" -e DB_PASSWORD="admin" -e DB_NAME="ingestas" sta/flask
+```
+
+## BFF: Web
+
+Desde el directorio `src` ejecute el siguiente comando
+
+```bash
+uvicorn bff_web.main:app --host localhost --port 8003 --reload
+```
+
+### Crear imagen para BFF Docker
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker build . -f bff.Dockerfile -t sta/bff
+```
+
+### Ejecutar BFF contenedora (sin compose)
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker run -p 8003:8003 -e BROKER_HOST=127.0.0.1 -e SALUDTECH_ALPES_ADDRESS="localhost" sta/bff
 ```
 
 ## Docker-compose
@@ -114,4 +138,67 @@ fuser -k <puerto>/tcp
 ### Correr docker-compose usando profiles
 ```bash
 docker-compose --profile <pulsar|resource|all> up
+```
+
+## Despliegue en Nube
+
+### Pulsar en EC2
+
+```bash
+sudo docker run -it -d -p 6650:6650 -p 8080:8080 --mount source=pulsardata,target=/pulsar/data --mount source=pulsarconf,target=/pulsar/conf apachepulsar/pulsar:4.0.3 bin/pulsar standalone
+```
+
+### Construir imagenes
+
+los comandos acontinuación deben ejecutarse desde la carpeta raíz del proyecto.
+
+##### Pre-Comandos
+```bash
+gcloud auth configure-docker us-central1-docker.pkg.dev && \
+gcloud config set project nomoniliticasmiso2025
+```
+
+#### STA para Deploy
+```bash
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.0 -f sta.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.0
+```
+
+#### BFF para Deploy
+```bash
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.0 -f bff.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.0
+```
+
+### Desplegar en GCP
+
+Los siguientes comandos deben ejecutarse desde la carpeta `deployment`.<br>
+Antes de ejecutar los comandos, asegúrese de tener configurado el `kubectl` para el cluster de GCP.
+
+##### Comandos previos para configurar el cluster
+
+Estos comandos se deben correr directos en la consola de GCP.
+
+```bash
+gcloud compute networks create vpn-no-monoliticas --project=nomoniliticasmiso2025 --subnet-mode=custom --mtu=1460 --bgp-routing-mode=regional && \
+gcloud compute networks subnets create red-k8s-nomoniliticasmiso2025 --range=192.168.32.0/19 --network=vpn-no-monoliticas --region=us-central1 --project=nomoniliticasmiso2025 && \
+gcloud compute addresses create red-dbs-nomoniliticasmiso2025 --global --purpose=VPC_PEERING --addresses=192.168.0.0 --prefix-length=24 --network=vpn-no-monoliticas --project=nomoniliticasmiso2025 && \
+gcloud services vpc-peerings connect --service=servicenetworking.googleapis.com --ranges=red-dbs-nomoniliticasmiso2025 --network=vpn-no-monoliticas --project=nomoniliticasmiso2025 && \
+gcloud compute firewall-rules create allow-db-ingress --direction=INGRESS --priority=1000 --network=vpn-no-monoliticas --action=ALLOW --rules=tcp:3306 --source-ranges=192.168.1.0/24 --target-tags=basesdedatos --project=nomoniliticasmiso2025
+```
+
+Los siguientes comandos se vuelven a correr en la consola local; Pero antes debes contar con un cluster ya creado en GCP.
+
+```bash
+gcloud container clusters get-credentials no-monoliticas-cluster --region us-central1 --project nomoniliticasmiso2025
+```
+
+Por último el deploy de los servicios usando los siguientes comandos en la consola local. <br>
+Estos comandos se deben correr desde la carpeta `deployment`.
+
+```bash
+kubectl apply -f secrets.yaml && \
+kubectl apply -f k8s-base-layer-deployment.yaml && \
+kubectl apply -f k8s-ingress-deloyment.yaml && \
+cd ..
 ```

@@ -10,4 +10,4 @@ COPY . .
 
 WORKDIR "/src"
 
-CMD [ "uvicorn", "bff_web.main:app", "--host", "localhost", "--port", "8003", "--reload"]
+CMD [ "uvicorn", "bff_web.main:app", "--host", "0.0.0.0", "--port", "8003"]
