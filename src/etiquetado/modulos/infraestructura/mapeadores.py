@@ -7,7 +7,7 @@ encargados de la transformación entre formatos de dominio y DTOs
 
 from etiquetado.seedwork.dominio.repositorios import Mapeador
 from etiquetado.modulos.dominio.entidades import Imagen
-from etiquetado.modulos.dominio.objetos_valor import EstadoImagen
+from etiquetado.modulos.dominio.objetos_valor import EstadoEtiquetado
 from .dto import Imagen as ImagenDTO
 
 class MapeadorImagen(Mapeador):
@@ -21,7 +21,7 @@ class MapeadorImagen(Mapeador):
             id_proveedor=str(entidad.id_ingesta),
             id_paciente=str(entidad.id_paciente),
             url_path=entidad.url_path,
-            estado=EstadoImagen.ANONIMIZADA,
+            estado=EstadoEtiquetado.ANONIMIZADA,
         )
         return imagen_dto
 
