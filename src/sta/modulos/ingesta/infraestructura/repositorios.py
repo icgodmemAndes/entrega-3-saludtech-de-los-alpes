@@ -56,7 +56,4 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         
         ingesta.fecha_eliminacion = datetime.now()
         ingesta.estado = EstadoIngesta.ELIMINADA.value
-
-        db.session.update(ingesta)
-        db.session.commit()
-        print('ELIMINAR completo')
+        print(f'ELIMINAR completo id_ingesta: {ingesta_id}')

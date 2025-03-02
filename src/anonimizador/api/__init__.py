@@ -8,57 +8,46 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 def registrar_handlers():
-    import sta.modulos.ingesta.aplicacion
-    import sta.modulos.imagenes.aplicacion
+    import anonimizador.modulos.anonimizado.aplicacion
 
 
 def importar_modelos_alchemy():
-    import sta.modulos.ingesta.infraestructura.dto
-    import sta.modulos.imagenes.infraestructura.dto
+    import anonimizador.modulos.anonimizado.infraestructura.dto
 
 
 def comenzar_consumidor(app):
-    """
-    Este es un código de ejemplo. Aunque esto sea funcional puede ser un poco peligroso tener 
-    threads corriendo por si solos. Mi sugerencia es en estos casos usar un verdadero manejador
-    de procesos y threads como Celery.
-    """
-
     import threading
-    import sta.modulos.ingesta.infraestructura.consumidores as ingestas
-    import sta.modulos.imagenes.infraestructura.consumidores as imagenes
+    import anonimizador.modulos.anonimizado.infraestructura.consumidores as anonimizados
 
     # Suscripción a eventos
-    threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
+    threading.Thread(target=anonimizados.suscribirse_a_eventos, args=(app,)).start()
 
     # Suscripción a comandos
-    threading.Thread(target=ingestas.suscribirse_a_comando_crear_ingesta, args=(app,)).start()
-    threading.Thread(target=ingestas.suscribirse_a_comando_eliminar_ingesta, args=(app,)).start()
+    # ...
 
 
 DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="127.0.0.1")
 DB_PORT = os.getenv('DB_PORT', default="3306")
 DB_USERNAME = os.getenv('DB_USERNAME', default="root")
 DB_PASSWORD = os.getenv('DB_PASSWORD', default="adminadmin")
-DB_NAME = os.getenv('DB_NAME_STA', default="pruebas")
+DB_NAME = os.getenv('DB_NAME_ANONIMIZADOR', default="pruebas")
 
 
 def create_app(configuracion={}):
     # Init la aplicacion de Flask
     app = Flask(__name__, instance_relative_config=True)
 
+    app.config['TESTING'] = configuracion.get('TESTING')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    app.secret_key = '9d58f98f-3ae8-4149-a09f-3a8c2012e32c'
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.config['TESTING'] = configuracion.get('TESTING')
+    app.secret_key = '9d58f98f-3ae8-4149-a19f-3a8c2012e32c'
 
     # Inicializa la DB
-    from sta.config.db import init_db
+    from anonimizador.config.db import init_db
     init_db(app)
 
-    from sta.config.db import db
+    from anonimizador.config.db import db
 
     importar_modelos_alchemy()
     registrar_handlers()
@@ -72,20 +61,14 @@ def create_app(configuracion={}):
         if not app.config.get('TESTING'):
             comenzar_consumidor(app)
 
-    # Importa Blueprints
-    from . import ingesta
-
-    # Registro de Blueprints  
-    app.register_blueprint(ingesta.bp)
-
-    @app.route("/ingesta/spec")
+    @app.route("/anonimizador/spec")
     def spec():
         swag = swagger(app)
         swag['info']['version'] = "1.0"
         swag['info']['title'] = "My API"
         return jsonify(swag)
 
-    @app.route("/ingesta/health")
+    @app.route("/anonimizador/health")
     def health():
         return {"status": "up"}
 

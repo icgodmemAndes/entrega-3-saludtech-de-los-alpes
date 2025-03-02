@@ -23,7 +23,7 @@ def suscribirse_a_eventos(app):
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
         consumidor = cliente.subscribe('eventos-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
                                     subscription_name='sta-sub-eventos', schema=AvroSchema(EventoIngestaCreada))
-        print('Consumiendo eventos de Ingesta desde imagenes.....')
+        print('Consumiendo eventos de eventos-ingesta desde Imagenes.....')
 
         while True:
             mensaje = consumidor.receive()

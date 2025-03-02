@@ -18,14 +18,14 @@ class EliminarIngestaHandler(EliminarIngestaBaseHandler):
     def handle(self, comando: EliminarIngesta):
         repositorio = self.fabrica_repositorio.crear_objeto(RepositorioIngesta.__class__)
         ingesta: Ingesta = repositorio.obtener_por_id(comando.id_ingesta)
-        ingesta.eliminar_ingesta(comando.id_ingesta)
+        ingesta.eliminar_ingesta()
 
-        UnidadTrabajoPuerto.registrar_batch(repositorio.eliminar, ingesta.id)
+        UnidadTrabajoPuerto.registrar_batch(repositorio.eliminar, comando.id_ingesta)
         UnidadTrabajoPuerto.savepoint()
         UnidadTrabajoPuerto.commit()
 
 
 @comando.register(EliminarIngesta)
-def ejecutar_comando_crear_ingesta(comando: EliminarIngesta):
+def ejecutar_comando_eliminar_ingesta(comando: EliminarIngesta):
     handler = EliminarIngestaHandler()
     handler.handle(comando)
