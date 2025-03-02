@@ -13,6 +13,7 @@ from sta.modulos.ingesta.dominio.fabricas import FabricaIngesta
 from .mapeadores import MapeadorIngesta
 from sta.modulos.ingesta.dominio.repositorios import RepositorioIngesta
 from .dto import Ingesta as IngestaDTO
+from sta.modulos.ingesta.dominio.objetos_valor import EstadoIngesta
 
 
 class RepositorioIngestaSQLite(RepositorioIngesta):
@@ -54,5 +55,8 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
             raise Exception('Ingesta no encontrada')
         
         ingesta.fecha_eliminacion = datetime.now()
+        ingesta.estado = EstadoIngesta.ELIMINADA.value
+
+        db.session.update(ingesta)
         db.session.commit()
         print('ELIMINAR completo')
