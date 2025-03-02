@@ -13,7 +13,7 @@ import time
 import traceback
 import uvicorn
 
-from src.etiquetado.modulos.infraestructura.v1 import EstadoEtiquetado
+from etiquetado.modulos.infraestructura.v1 import EstadoEtiquetado
 
 app = FastAPI(**app_configs)
 tasks = list()
