@@ -33,19 +33,18 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
                 while True:
                     mensaje = await consumidor.receive()
                     print(mensaje)
+                    print('***************Trata de guardar****************')
+                    try:
+                        imagen: Imagen = fabrica_imagen.crear_objeto(mensaje.value().data, MapeadorImagen())
+                        imagen.crear_imagen(imagen)
+                        repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
 
-                    if isinstance(schema, EnriquecerImagen):
-                        try:
-                            imagen: Imagen = fabrica_imagen.crear_objeto(mensaje.value().data, MapeadorImagen())
-                            imagen.crear_imagen(imagen)
-                            repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
+                        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, imagen)
+                        UnidadTrabajoPuerto.savepoint()
+                        UnidadTrabajoPuerto.commit()
 
-                            UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, imagen)
-                            UnidadTrabajoPuerto.savepoint()
-                            UnidadTrabajoPuerto.commit()
-
-                        except Exception as e:
-                            print(f'Se presento un error procesando el eventos-ingesta sobre las Imagenes. {e}')
+                    except Exception as e:
+                        print(f'Se presento un error procesando el eventos-ingesta sobre las Imagenes. {e}')
 
                     datos = mensaje.value()
                     print(f'Evento recibido: {datos}')

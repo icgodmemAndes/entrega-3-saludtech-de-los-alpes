@@ -74,7 +74,7 @@ async def prueba_enriquecer() -> dict[str, str]:
         fase = "Pre-tratamiento",
         grupo_edad = "Adulto",
         sexo = "Masculino",
-        etnicidad = "Latino",
+        etnicidad = "Latino"
     )
 
     comando = ComandoEnriquecer(
