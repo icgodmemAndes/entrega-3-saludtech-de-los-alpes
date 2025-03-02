@@ -35,13 +35,13 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
     def batches(self) -> list[Batch]:
         return self._batches
 
-    def commit(self):
+    async def commit(self):
         try:
             for batch in self._batches:
                 batch.operacion(*batch.args, **batch.kwargs)
             async with AsyncSession(self._engine) as session:
                 async with session.begin():
-                    session.commit()
+                    await session.commit()
 
             self._publicar_eventos_post_commit()
             self._limpiar_batches()
@@ -49,7 +49,7 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
             self.rollback()
             raise ExcepcionUoW(f"Error en commit: {str(e)}")
 
-    def rollback(self, savepoint=None):
+    async def rollback(self, savepoint=None):
         try:
             # No utilizamos el savepoint SQL de la BD pues no nos permite manipular los batches
             # Simplemente vamos removiendo todos los batches posteriores al savepoint seleccionado
