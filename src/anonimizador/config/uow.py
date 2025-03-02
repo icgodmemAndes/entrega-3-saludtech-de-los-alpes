@@ -1,60 +1,92 @@
 import logging
 import traceback
-from anonimizador.config.db import db
+
 from anonimizador.seedwork.infraestructura.uow import UnidadTrabajo, Batch
 from pydispatch import dispatcher
+
+# Instead of using get_db(), we import SessionLocal:
+from anonimizador.config.db import Session
 
 class ExcepcionUoW(Exception):
     ...
 
 class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
+    """Concrete implementation of UnidadTrabajo using pure SQLAlchemy."""
 
     def __init__(self):
-        self._batches: list[Batch] = list()
+        # Create a new SQLAlchemy session when this UoW is instantiated.
+        self.session = Session
+        self._batches: list[Batch] = []
+        print(f'Inicializa base de datos con {sizeof(self.batches)} batches')
 
     def __enter__(self) -> UnidadTrabajo:
-        return super().__enter__()
+        """
+        Called when entering a 'with' block:
+            with UnidadTrabajoSQLAlchemy() as uow:
+                ...
+        """
+        return self
 
-    def __exit__(self, *args, **kwargs):
-        self.rollback()
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        """
+        Called at the end of a 'with' block, whether an exception was raised or not.
+        We'll rollback on exception, otherwise commit. Then close the session.
+        """
+        if exc_type is not None:
+            # Something went wrong, so roll back the transaction.
+            self.rollback()
+        else:
+            # Otherwise, commit if everything is fine.
+            self.commit()
+
+        # Always close the session when exiting the context.
+        self.session.close()
 
     def _limpiar_batches(self):
-        self._batches = list()
-
-    @property
-    def savepoints(self) -> list:
-        # TODO Lea savepoint
-        return []
+        """Reset the list of pending batches."""
+        self._batches = []
 
     @property
     def batches(self) -> list[Batch]:
-        return self._batches             
+        return self._batches
 
-    def commit(self):
+    @property
+    def savepoints(self) -> list:
+        # If you want to implement actual savepoints, do so here.
+        return []
+
+    def commit(self, *args, **kwargs):     
+        print('######### commit sql alchemy implementation')
         for batch in self.batches:
-            batch.lock
+            # Use batch.lock here if needed for concurrency control.
             batch.operacion(*batch.args, **batch.kwargs)
-                
-        db.session.commit() # Commits the transaction
 
+        # Commit via this UoW's session
+        print('######### commiting db changes')
+        self.session.commit()
+
+        # Publish post-commit events, then clear the batches
         super().commit()
 
     def rollback(self, savepoint=None):
-        if savepoint:
+        """
+        Roll back to a given savepoint (if any) or perform a full rollback.
+        Then invoke the parent method to potentially handle compensation events.
+        """
+        if savepoint is not None:
+            # If you have logic for real DB savepoints, apply it here.
             savepoint.rollback()
         else:
-            db.session.rollback()
-        
+            self.session.rollback()
+
+        # Let the parent UoW handle compensation events and cleaning
         super().rollback()
-    
+
     def savepoint(self):
-        # TODO Con MySQL y Postgres se debe usar el with para tener la lógica del savepoint
-        # Piense como podría lograr esto ¿tal vez teniendo una lista de savepoints y momentos en el tiempo?
-        ...
+        """Optional: Create a new DB savepoint if your workflow requires it."""
+        pass
 
 
-
-class UnidadTrabajoPulsar(UnidadTrabajo):
 
     def __init__(self):
         self._batches: list[Batch] = list()

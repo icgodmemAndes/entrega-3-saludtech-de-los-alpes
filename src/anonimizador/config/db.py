@@ -1,29 +1,28 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
 import os
+from sqlalchemy import create_engine
+from sqlalchemy.engine import URL
+from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
 
-db = SQLAlchemy()
+DB_HOSTNAME = os.getenv('DB_HOSTNAME', "127.0.0.1")
+DB_PORT = os.getenv('DB_PORT', "3306")
+DB_USERNAME = os.getenv('DB_USERNAME', "root")
+DB_PASSWORD = os.getenv('DB_PASSWORD', "adminadmin")
+DB_NAME_ANONIMIZACION = os.getenv('DB_NAME_ANONIMIZACION', "ingestas")
 
-DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="127.0.0.1")
-DB_PORT = os.getenv('DB_PORT', default="3306")
-DB_USERNAME = os.getenv('DB_USERNAME', default="root")
-DB_PASSWORD = os.getenv('DB_PASSWORD', default="adminadmin")
-DB_NAME = os.getenv('DB_NAME', default="anonimizacion")
 
-class DatabaseConfigException(Exception):
-    def __init__(self, message='Configuration file is Null or malformed'):
-        self.message = message
-        super().__init__(self.message)
+url = URL.create(
+    drivername="mysql+pymysql",
+    host=DB_HOSTNAME,
+    port=DB_PORT,
+    username=DB_USERNAME,
+    password=DB_PASSWORD,
+    database=DB_NAME_ANONIMIZACION
+)
+engine = create_engine(url)
+Session = scoped_session(sessionmaker(bind=engine))
 
-def database_connection(config, basedir=os.path.abspath(os.path.dirname(__file__))) -> str:
-    if not isinstance(config, dict):
-        raise DatabaseConfigException
-    
-    if config.get('TESTING', False) == True:
-        return f'sqlite:///{os.path.join(basedir, "database.db")}'
-    else:
-        return f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_NAME}'
+Base = declarative_base()
+session = Session()
 
-def init_db(app: Flask):
-    global db 
-    db.init_app(app)
+
+
