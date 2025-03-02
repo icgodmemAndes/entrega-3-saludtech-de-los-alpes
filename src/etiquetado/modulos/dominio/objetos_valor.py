@@ -46,3 +46,5 @@ class EstadoEtiquetado(str, Enum):
     PENDIENTE = "Pendiente"
     RECHAZADO = "Rechazada"
     FINALIZADA = "Finalizada"
+    RAW = "RAW"
+    ANONIMIZADA = "ANONIMIZADA"

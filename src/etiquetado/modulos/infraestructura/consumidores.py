@@ -6,6 +6,20 @@ import asyncio
 from pulsar.schema import *
 from etiquetado.seedwork.infraestructura import utils
 
+from etiquetado.modulos.infraestructura.v1.comandos import EnriquecerImagen
+
+from .fabricas import FabricaRepositorio
+from etiquetado.modulos.dominio.fabricas import FabricaImagen
+
+from etiquetado.seedwork.infraestructura.uow import UnidadTrabajoPuerto
+from etiquetado.modulos.dominio.repositorios import RepositorioImagen
+from etiquetado.modulos.infraestructura.mapeadores import MapeadorImagen
+
+from etiquetado.modulos.dominio.entidades import Imagen
+
+fabrica_imagen = FabricaImagen()
+fabrica_repositorio = FabricaRepositorio()
+
 
 async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, tipo_consumidor:_pulsar.ConsumerType=_pulsar.ConsumerType.Shared):
     try:
@@ -19,6 +33,20 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
                 while True:
                     mensaje = await consumidor.receive()
                     print(mensaje)
+
+                    if isinstance(schema, EnriquecerImagen):
+                        try:
+                            imagen: Imagen = fabrica_imagen.crear_objeto(mensaje.value().data, MapeadorImagen())
+                            imagen.crear_imagen(imagen)
+                            repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
+
+                            UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, imagen)
+                            UnidadTrabajoPuerto.savepoint()
+                            UnidadTrabajoPuerto.commit()
+
+                        except Exception as e:
+                            print(f'Se presento un error procesando el eventos-ingesta sobre las Imagenes. {e}')
+
                     datos = mensaje.value()
                     print(f'Evento recibido: {datos}')
                     await consumidor.acknowledge(mensaje)    

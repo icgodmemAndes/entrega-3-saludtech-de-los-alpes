@@ -1,5 +1,5 @@
 
-class magenTageada(Record):
+class ImagenTageada(Record):
     id_proveedor: String()
     id_paciente: String()
     url_path: String()

@@ -25,6 +25,8 @@ async def app_startup():
     task2 = asyncio.ensure_future(suscribirse_a_topico("comando-enriquecer", "sub-com-enriquecer", ComandoEnriquecer))
     task3 = asyncio.ensure_future(suscribirse_a_topico("comando-distribuir-datos", "sub-com-distribuir-datos", ComandoDistribuirDatos))
     task4 = asyncio.ensure_future(suscribirse_a_topico("comando-tagear-imagen", "sub-com-tagear-imagen", ComandoTagearImagen))
+    # Suscripción a comandos
+
     tasks.append(task1)
     tasks.append(task2)
     tasks.append(task3)
