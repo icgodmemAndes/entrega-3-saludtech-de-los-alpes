@@ -4,7 +4,7 @@ En este archivo usted encontrará los objetos valor del dominio de cliente
 
 """
 
-from src.etiquetado.seedwork.dominio.objetos_valor import ObjetoValor
+from etiquetado.seedwork.dominio.objetos_valor import ObjetoValor
 from dataclasses import dataclass
 from enum import Enum
 
