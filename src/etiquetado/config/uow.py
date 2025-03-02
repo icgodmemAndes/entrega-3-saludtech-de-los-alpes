@@ -14,7 +14,7 @@ class ExcepcionUoW(Exception):
 class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
 
     def __init__(self):
-        self._batches = []
+        self._batches: list[Batch] = list()
         self._savepoints = []
         self._engine = None
 
@@ -25,7 +25,7 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
     def __exit__(self, *args):
         self.rollback()
         #self._session.close()
-        
+
     def _obtener_eventos_rollback(self, batches=None):
         batches = self.batches if batches is None else batches
         eventos = list()
