@@ -171,19 +171,16 @@ class UnidadTrabajoPuerto:
     def commit():
         uow = unidad_de_trabajo()
         uow.commit()
-        guardar_unidad_trabajo(uow)
 
     @staticmethod
     def rollback(savepoint=None):
         uow = unidad_de_trabajo()
         uow.rollback(savepoint=savepoint)
-        guardar_unidad_trabajo(uow)
 
     @staticmethod
     def savepoint():
         uow = unidad_de_trabajo()
-        uow.savepoint()
-        guardar_unidad_trabajo(uow)
+        return uow.savepoint()
 
     @staticmethod
     def dar_savepoints():
@@ -193,8 +190,7 @@ class UnidadTrabajoPuerto:
     @staticmethod
     def registrar_batch(operacion, *args, lock=Lock.PESIMISTA, **kwargs):
         uow = unidad_de_trabajo()
-        uow.registrar_batch(operacion, *args, lock=lock, **kwargs)
-        guardar_unidad_trabajo(uow)
+        return uow.registrar_batch(operacion, *args, lock=lock, **kwargs)
 
 class UnidadTrabajoPuertoAsync:
     """
