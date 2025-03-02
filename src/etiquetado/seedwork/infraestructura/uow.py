@@ -200,7 +200,7 @@ class UnidadTrabajoPuertoAsync:
     @staticmethod
     async def savepoint():
         uow = await unidad_de_trabajo_async()
-        return await uow.savepoint()
+        return uow.savepoint()
 
     @staticmethod
     async def dar_savepoints():
