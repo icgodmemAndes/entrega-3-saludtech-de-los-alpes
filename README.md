@@ -145,8 +145,19 @@ docker-compose --profile <pulsar|resource|all> up
 ### Pulsar en EC2
 
 ```bash
-sudo docker run -it -d -p 6650:6650 -p 8080:8080 --mount source=pulsardata,target=/pulsar/data --mount source=pulsarconf,target=/pulsar/conf apachepulsar/pulsar:4.0.3 bin/pulsar standalone
+sudo docker run -it \
+-p 6650:6650 \
+-p 8080:8080 \
+--mount source=pulsardata,target=/pulsar/data \
+--mount source=pulsarconf,target=/pulsar/conf \
+-e PULSAR_STANDALONE_USE_ZOOKEEPER=1 \
+apachepulsar/pulsar:4.0.3 \
+bin/pulsar standalone
 ```
+```bash
+curl http://34.16.96.125:8080/admin/v2/clusters
+```
+
 
 ### Construir imagenes
 
@@ -160,14 +171,14 @@ gcloud config set project nomoniliticasmiso2025
 
 #### STA para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.0 -f sta.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.0
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.2 -f sta.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.2
 ```
 
 #### BFF para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.0 -f bff.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.0
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.2 -f bff.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.2
 ```
 
 ### Desplegar en GCP

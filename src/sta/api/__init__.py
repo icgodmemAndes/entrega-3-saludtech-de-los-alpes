@@ -80,14 +80,14 @@ def create_app(configuracion={}):
     # Registro de Blueprints  
     app.register_blueprint(ingesta.bp)
 
-    @app.route("/spec")
+    @app.route("/ingesta/spec")
     def spec():
         swag = swagger(app)
         swag['info']['version'] = "1.0"
         swag['info']['title'] = "My API"
         return jsonify(swag)
 
-    @app.route("/health")
+    @app.route("/ingesta/health")
     def health():
         return {"status": "up"}
 

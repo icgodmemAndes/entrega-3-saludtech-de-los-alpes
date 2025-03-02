@@ -42,7 +42,7 @@ def shutdown_event():
         task.cancel()
 
 
-@app.get('/stream')
+@app.get('/bff/stream')
 async def stream_mensajes(request: Request):
     def nuevo_evento():
         global eventos
@@ -61,5 +61,9 @@ async def stream_mensajes(request: Request):
 
     return EventSourceResponse(leer_eventos())
 
+
+@app.get('/bff/version')
+async def version():
+    return {"version": settings.APP_VERSION}
 
 app.include_router(v1, prefix='/bff/v1')

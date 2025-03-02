@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
         - name: sta-service
-          image: us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.0
+          image: us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.2
           resources:
             requests:
               memory: "64Mi"
               cpu: "150m"
             limits:
               memory: "128Mi"
-              cpu: "305m"
+              cpu: "300m"
           ports:
             - containerPort: 5000
           env:
@@ -82,7 +82,78 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 5000
-      nodePort: 31010
+      nodePort: 31019
 ---
 
 
+###################################
+# bff-service
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bff-service
+  labels:
+    app: bff-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bff-service
+  template:
+    metadata:
+      labels:
+        app: bff-service
+    spec:
+      containers:
+        - name: bff-service
+          image: us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.2
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "305m"
+          ports:
+            - containerPort: 8003
+          env:
+            - name: "BROKER_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: BROKER_HOST
+            - name: "SALUDTECH_ALPES_ADDRESS"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SALUDTECH_ALPES_ADDRESS
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: bff-service-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 8003
+    type: HTTP
+    requestPath: /bff/version
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bff-service-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "bff-service-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: bff-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8003
+      nodePort: 31020
+---
