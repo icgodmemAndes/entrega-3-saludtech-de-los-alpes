@@ -1,7 +1,7 @@
 from enum import Enum
 
 from etiquetado.seedwork.infraestructura.uow import UnidadTrabajo, Batch, Lock
-from etiquetado.config.db import get_db_session
+from etiquetado.config.db_updated import get_db_session
 
 class ExcepcionUoW(Exception):
     pass
@@ -68,26 +68,3 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
                 self._limpiar_batches()
         except Exception as e:
             raise ExcepcionUoW(f"Error en rollback: {str(e)}")
-
-    # Async support for FastAPI
-    async def commit_async(self):
-        """Async version of commit for FastAPI"""
-        from starlette.concurrency import run_in_threadpool
-        await run_in_threadpool(self.commit)
-
-    async def rollback_async(self, savepoint=None):
-        """Async version of rollback for FastAPI"""
-        from starlette.concurrency import run_in_threadpool
-        await run_in_threadpool(lambda: self.rollback(savepoint))
-
-    async def savepoint_async(self):
-        """Async version of savepoint for FastAPI"""
-        from starlette.concurrency import run_in_threadpool
-        return await run_in_threadpool(self.savepoint)
-
-    async def registrar_batch_async(self, operacion, *args, lock=Lock.PESIMISTA, **kwargs):
-        """Async version of registrar_batch for FastAPI"""
-        from starlette.concurrency import run_in_threadpool
-        batch = Batch(operacion, lock, *args, **kwargs)
-        self._batches.append(batch)
-        # No events for now - simplify for async
