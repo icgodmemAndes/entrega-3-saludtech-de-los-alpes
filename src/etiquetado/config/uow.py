@@ -3,6 +3,11 @@ from enum import Enum
 from etiquetado.seedwork.infraestructura.uow import UnidadTrabajo, Batch, Lock
 from etiquetado.config.db import get_db_engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+
+from etiquetado.seedwork.dominio.entidades import AgregacionRaiz
+from pydispatch import dispatcher
+
+
 class ExcepcionUoW(Exception):
     pass
 
@@ -20,6 +25,26 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
     def __exit__(self, *args):
         self.rollback()
         #self._session.close()
+        
+    def _obtener_eventos_rollback(self, batches=None):
+        batches = self.batches if batches is None else batches
+        eventos = list()
+        for batch in batches:
+            for arg in batch.args:
+                if isinstance(arg, AgregacionRaiz):
+                    eventos += arg.eventos_compensacion
+                    break
+        return eventos
+
+    def _obtener_eventos(self, batches=None):
+        batches = self.batches if batches is None else batches
+        eventos = list()
+        for batch in batches:
+            for arg in batch.args:
+                if isinstance(arg, AgregacionRaiz):
+                    eventos += arg.eventos
+                    break
+        return eventos
 
     def _limpiar_batches(self):
         self._batches = []
