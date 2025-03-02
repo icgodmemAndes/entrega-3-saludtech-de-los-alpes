@@ -52,7 +52,7 @@ class Dato(AgregacionRaiz):
     confianza: float = field(default_factory=float)
 
 @dataclass
-class ImagenTageada(Entidad, AgregacionRaiz):
+class ImagenTageada(AgregacionRaiz):
     id_proveedor: uuid.UUID = field(hash=True, default=None)
     id_paciente: uuid.UUID = field(hash=True, default=None)
     url_path: str = field(default_factory=str)
