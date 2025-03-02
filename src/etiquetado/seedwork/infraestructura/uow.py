@@ -14,12 +14,14 @@ class Lock(Enum):
     OPTIMISTA = 1
     PESIMISTA = 2
 
+
 class Batch:
     def __init__(self, operacion, lock: Lock, *args, **kwargs):
         self.operacion = operacion
         self.args = args
         self.lock = lock
         self.kwargs = kwargs
+
 
 class UnidadTrabajo(ABC):
 
@@ -59,7 +61,7 @@ class UnidadTrabajo(ABC):
 
     @abstractmethod
     def savepoints(self) -> list:
-        raise NotImplementedError                    
+        raise NotImplementedError
 
     def commit(self):
         self._publicar_eventos_post_commit()
@@ -68,12 +70,12 @@ class UnidadTrabajo(ABC):
     @abstractmethod
     def rollback(self, savepoint=None):
         self._limpiar_batches()
-    
+
     @abstractmethod
     def savepoint(self):
         raise NotImplementedError
 
-    def registrar_batch(self, operacion, *args, lock=Lock.PESIMISTA, repositorio_eventos_func=None,**kwargs):
+    def registrar_batch(self, operacion, *args, lock=Lock.PESIMISTA, repositorio_eventos_func=None, **kwargs):
         batch = Batch(operacion, lock, *args, **kwargs)
         self.batches.append(batch)
         self._publicar_eventos_dominio(batch, repositorio_eventos_func)
@@ -91,14 +93,7 @@ class UnidadTrabajo(ABC):
         except:
             logging.error('ERROR: Suscribiendose al tópico de eventos!')
             traceback.print_exc()
-            
 
-def is_flask():
-    try:
-        from flask import session
-        return True
-    except Exception as e:
-        return False
 
 def is_fastapi():
     try:
@@ -107,24 +102,6 @@ def is_fastapi():
     except Exception as e:
         return False
 
-def registrar_unidad_de_trabajo(serialized_obj):
-    from etiquetado.config.uow import UnidadTrabajoSQLAlchemy
-    from flask import session
-    
-    session['uow'] = serialized_obj
-
-def flask_uow():
-    from flask import session
-    from etiquetado.config.uow import UnidadTrabajoSQLAlchemy, UnidadTrabajoPulsar
-    if session.get('uow'):
-        return session['uow']
-
-    uow_serialized = pickle.dumps(UnidadTrabajoSQLAlchemy())
-    if session.get('uow_metodo') == 'pulsar':
-        uow_serialized = pickle.dumps(UnidadTrabajoPulsar())
-
-    registrar_unidad_de_trabajo(uow_serialized)
-    return uow_serialized
 
 async def fastapi_uow():
     # Get the request state to store/retrieve UoW
@@ -139,18 +116,15 @@ async def fastapi_uow():
             return request.state.uow
         
         # Create a new UnidadTrabajoPulsar and store it in request state
+        from etiquetado.config.uow import UnidadTrabajoPulsar
         uow = UnidadTrabajoPulsar()
         request.state.uow = uow
         return uow
     except Exception as e:
         # Fallback if not in request context or other error
+        from etiquetado.config.uow import UnidadTrabajoPulsar
         return UnidadTrabajoPulsar()
 
-def unidad_de_trabajo() -> UnidadTrabajo:
-    if is_flask():
-        return pickle.loads(flask_uow())
-    else:
-        raise Exception('No hay unidad de trabajo')
 
 async def unidad_de_trabajo_async() -> UnidadTrabajo:
     if is_fastapi():
@@ -158,43 +132,31 @@ async def unidad_de_trabajo_async() -> UnidadTrabajo:
     else:
         raise Exception('No hay unidad de trabajo asíncrona configurada')
 
-def guardar_unidad_trabajo(uow: UnidadTrabajo):
-    if is_flask():
-        registrar_unidad_de_trabajo(pickle.dumps(uow))
-    else:
-        raise Exception('No hay unidad de trabajo')
-
 
 class UnidadTrabajoPuerto:
-
+    """
+    Implementación sincrónica del puerto de unidad de trabajo
+    """
     @staticmethod
     def commit():
-        uow = unidad_de_trabajo()
-        uow.commit()
-        guardar_unidad_trabajo(uow)
+        raise NotImplementedError("Use UnidadTrabajoPuertoAsync for FastAPI applications")
 
     @staticmethod
     def rollback(savepoint=None):
-        uow = unidad_de_trabajo()
-        uow.rollback(savepoint=savepoint)
-        guardar_unidad_trabajo(uow)
+        raise NotImplementedError("Use UnidadTrabajoPuertoAsync for FastAPI applications")
 
     @staticmethod
     def savepoint():
-        uow = unidad_de_trabajo()
-        uow.savepoint()
-        guardar_unidad_trabajo(uow)
+        raise NotImplementedError("Use UnidadTrabajoPuertoAsync for FastAPI applications")
 
     @staticmethod
     def dar_savepoints():
-        uow = unidad_de_trabajo()
-        return uow.savepoints()
-    
+        raise NotImplementedError("Use UnidadTrabajoPuertoAsync for FastAPI applications")
+
     @staticmethod
     def registrar_batch(operacion, *args, lock=Lock.PESIMISTA, **kwargs):
-        uow = unidad_de_trabajo()
-        uow.registrar_batch(operacion, *args, lock=lock, **kwargs)
-        guardar_unidad_trabajo(uow)
+        raise NotImplementedError("Use UnidadTrabajoPuertoAsync for FastAPI applications")
+
 
 class UnidadTrabajoPuertoAsync:
     """
@@ -224,6 +186,7 @@ class UnidadTrabajoPuertoAsync:
     async def registrar_batch(operacion, *args, lock=Lock.PESIMISTA, **kwargs):
         uow = await unidad_de_trabajo_async()
         return await uow.registrar_batch_async(operacion, *args, lock=lock, **kwargs)
+
 
 class UnidadTrabajoPulsar(UnidadTrabajo):
     """
@@ -340,69 +303,13 @@ class UnidadTrabajoPulsar(UnidadTrabajo):
     
     async def _publicar_eventos_post_commit_async(self):
         """
-        Publica eventos de integración después del commit de forma asincrónica
+        Publica eventos post-commit de forma asincrónica
         """
         try:
             eventos = self._obtener_eventos()
             for evento in eventos:
-                # Publicar eventos usando dispatcher
+                # Publicar eventos de integración
                 dispatcher.send(signal=f'{type(evento).__name__}Integracion', evento=evento)
-                
-                # Si se ha configurado el cliente de Pulsar
-                if self._pulsar_client:
-                    # Implementar aquí la lógica para publicar en Pulsar
-                    # Ejemplo pseudocódigo:
-                    # producer = await self._pulsar_client.create_producer(
-                    #    f'eventos-{type(evento).__name__}')
-                    # await producer.send(pickle.dumps(evento))
-                    pass
-                    
         except Exception as e:
-            logging.error('ERROR: Publicando eventos en Pulsar!')
+            logging.error('ERROR: Suscribiendose al tópico de eventos!')
             traceback.print_exc()
-
-
-class UnidadTrabajoPulsar(UnidadTrabajo):
-    def __init__(self):
-        self.client = pulsar.Client('pulsar://localhost:6650')  # Change if needed
-        self.producer = self.client.create_producer('persistencia_eventos')
-        self.batches_list = []
-        self.savepoints_list = []
-
-    async def _publicar_eventos_pulsar(self, eventos):
-        for evento in eventos:
-            try:
-                self.producer.send_async(str(evento).encode('utf-8'), callback=None)
-            except Exception as e:
-                print(f"Error sending event to Pulsar: {e}")
-
-    async def commit(self):
-        eventos = self._obtener_eventos()
-        await self._publicar_eventos_pulsar(eventos)
-        self._limpiar_batches()
-
-    async def rollback(self, savepoint=None):
-        if savepoint and savepoint in self.savepoints_list:
-            index = self.savepoints_list.index(savepoint)
-            self.batches_list = self.batches_list[:index]
-            self.savepoints_list = self.savepoints_list[:index]
-        else:
-            self._limpiar_batches()
-
-    async def savepoint(self):
-        savepoint = f"sp_{len(self.savepoints_list)}"
-        self.savepoints_list.append(savepoint)
-        return savepoint
-
-    def savepoints(self) -> list:
-        return self.savepoints_list
-
-    def _limpiar_batches(self):
-        self.batches_list = []
-
-    def batches(self) -> list:
-        return self.batches_list
-
-    def registrar_batch(self, operacion, *args, lock=Lock.PESIMISTA, **kwargs):
-        batch = Batch(operacion, lock, *args, **kwargs)
-        self.batches_list.append(batch)
