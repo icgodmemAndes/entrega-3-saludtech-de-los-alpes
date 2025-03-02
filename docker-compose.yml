@@ -103,7 +103,7 @@ services:
     environment:
       - MYSQL_DATABASE=ingestas
       - MYSQL_ROOT_PASSWORD=adminadmin
-    profiles: ["resource"]
+    profiles: ["resource", "all"]
     networks:
       - database
     ports:

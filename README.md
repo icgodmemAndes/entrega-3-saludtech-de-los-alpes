@@ -49,6 +49,14 @@ Desde el directorio principal ejecute el siguiente comando.
 docker run -p 5000:5000 sta/flask
 ```
 
+## BFF: Web
+
+Desde el directorio `src` ejecute el siguiente comando
+
+```bash
+uvicorn bff_web.main:app --host localhost --port 8003 --reload
+```
+
 ## Docker-compose
 
 Para desplegar toda la arquitectura en un solo comando, usamos `docker-compose`. Para ello, desde el directorio principal, ejecute el siguiente comando:
