@@ -26,11 +26,16 @@ class Imagen(AgregacionRaiz):
     id_paciente: uuid.UUID = field(hash=True, default=None)
     url_path: str = field(default_factory=str)
     estado: EstadoEtiquetado = field(default=EstadoEtiquetado.CREADA)
-    modalidad: Modalidad = field(default_factory=Modalidad)
-    region: RegionAnatomica = field(default_factory=RegionAnatomica)
-    patologia: Patologia = field(default_factory=Patologia)
-    metadatos: MetadatosImagen = field(default_factory=MetadatosImagen)
-    demografia: Demografia  = field(default_factory=Demografia)
+    modalidad: str = field(default_factory=str)
+    region_anatomica: str = field(default_factory=str)
+    patologia: str = field(default_factory=str)
+    resolucion: str = field(default_factory=str)
+    contraste: str = field(default_factory=str)
+    tipo: str = field(default_factory=str)
+    fase: str = field(default_factory=str)
+    grupo_edad: str = field(default_factory=str)
+    sexo: str = field(default_factory=str)
+    etnicidad: str = field(default_factory=str)
 
 @dataclass
 class EnriquecerImagen(AgregacionRaiz):

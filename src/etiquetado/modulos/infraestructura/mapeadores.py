@@ -23,19 +23,16 @@ class MapeadorImagen(Mapeador):
             id_paciente=str(entidad.id_paciente),
             url_path=entidad.url_path,
             estado=EstadoEtiquetado.ANONIMIZADA,
-            modalidad = Modalidad(nombre=entidad.modalidad),
-            region= RegionAnatomica (nombre=entidad.region_anatomica),
-            patologia= Patologia(nombre=entidad.patologia),
-            metadatos= MetadatosImagen(
-                resolucion= entidad.resolucion,
-                contraste= entidad.contraste,
-                tipo = entidad.tipo,
-                fase = entidad.fase
-            ),
-            demografia= Demografia(
-                grupo_edad=entidad.grupo_edad,
-                sexo=entidad.sexo,
-                etnicidad=entidad.etnicidad)
+            modalidad = entidad.modalidad,
+            region= entidad.region_anatomica,
+            patologia= entidad.patologia,
+            resolucion= entidad.resolucion,
+            contraste= entidad.contraste,
+            tipo = entidad.tipo,
+            fase = entidad.fase,
+            grupo_edad=entidad.grupo_edad,
+            sexo=entidad.sexo,
+            etnicidad=entidad.etnicidad
         )
         return imagen_dto
 
@@ -45,18 +42,15 @@ class MapeadorImagen(Mapeador):
         imagen.id_paciente = dto.id_paciente
         imagen.url_path = dto.url_path
         imagen.estado = dto.estado
-        imagen.modalidad = Modalidad(nombre=dto.modalidad),
-        imagen.region = RegionAnatomica(nombre=dto.region_anatomica),
-        imagen.patologia = Patologia(nombre=dto.patologia),
-        imagen.metadatos = MetadatosImagen(
-            resolucion=dto.resolucion,
-            contraste=dto.contraste,
-            tipo=dto.tipo,
-            fase=dto.fase
-        ),
-        imagen.demografia = Demografia(
-            grupo_edad=dto.grupo_edad,
-            sexo=dto.sexo,
-            etnicidad=dto.etnicidad)
+        imagen.modalidad =dto.modalidad,
+        imagen.region_anatomica = dto.region_anatomica,
+        imagen.patologia = dto.patologia,
+        imagen.resolucion=dto.resolucion,
+        imagen.contraste=dto.contraste,
+        imagen.tipo=dto.tipo,
+        imagen.fase=dto.fase,
+        imagen.grupo_edad=dto.grupo_edad,
+        imagen.sexo=dto.sexo,
+        imagen.etnicidad=dto.etnicidad
 
         return imagen
