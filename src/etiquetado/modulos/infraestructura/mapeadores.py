@@ -6,16 +6,18 @@ encargados de la transformación entre formatos de dominio y DTOs
 """
 
 from etiquetado.seedwork.dominio.repositorios import Mapeador
-from etiquetado.modulos.dominio.entidades import Imagen
+from etiquetado.modulos.dominio.entidades import Imagen, EnriquecerImagen
 from etiquetado.modulos.dominio.objetos_valor import EstadoEtiquetado,Modalidad,RegionAnatomica,Patologia,MetadatosImagen,Demografia
 from .dto import Imagen as ImagenDTO
+from ..dominio.entidades import EnriquecerImagen
+
 
 class MapeadorImagen(Mapeador):
 
     def obtener_tipo(self) -> type:
         return Imagen.__class__
 
-    def entidad_a_dto(self, entidad: Imagen) -> ImagenDTO:
+    def entidad_a_dto(self, entidad: EnriquecerImagen) -> ImagenDTO:
         imagen_dto = ImagenDTO(
             id_proveedor=str(entidad.id_ingesta),
             id_paciente=str(entidad.id_paciente),
