@@ -28,7 +28,7 @@ class _FabricaImagen(Fabrica):
 @dataclass
 class FabricaImagen(Fabrica):
     def crear_objeto(self, obj: any, mapeador: Mapeador) -> any:
-        if mapeador.obtener_tipo() == EnriquecerImagen.__class__:
+        if mapeador.obtener_tipo() == Imagen.__class__:
             fabrica_imagen = _FabricaImagen()
             return fabrica_imagen.crear_objeto(obj, mapeador)
         else:

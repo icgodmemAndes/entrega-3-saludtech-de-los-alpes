@@ -17,7 +17,7 @@ class MapeadorImagen(Mapeador):
     def obtener_tipo(self) -> type:
         return Imagen.__class__
 
-    def entidad_a_dto(self, entidad: EnriquecerImagen) -> ImagenDTO:
+    def entidad_a_dto(self, entidad: Imagen) -> ImagenDTO:
         imagen_dto = ImagenDTO(
             id_proveedor=str(entidad.id_ingesta),
             id_paciente=str(entidad.id_paciente),
