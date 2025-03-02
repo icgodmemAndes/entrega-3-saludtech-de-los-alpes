@@ -9,7 +9,9 @@ from anonimizador.modulos.infraestructura.v1.eventos import EventoAnonimizacion,
 from anonimizador.modulos.infraestructura.v1.comandos import ComandoLimpiarIngesta, LimpiarIngesta
 from anonimizador.modulos.infraestructura.despachadores import Despachador
 from anonimizador.seedwork.infraestructura import utils
+from anonimizador.modulos.infraestructura.v1.comandos import IngestaCreadaPayload
 
+from datetime import datetime
 
 app = FastAPI(**app_configs)
 tasks: List[asyncio.Task] = []
@@ -17,7 +19,7 @@ despachador = Despachador()
 
 # Definir los tópicos y suscripciones a los que se va a conectar el servicio
 TOPIC_SUBSCRIPTIONS = [
-    ("eventos-ingesta", "sta-sub-eventos", IngestaCreada),
+    ("eventos-ingesta", "sta-ingesta", IngestaCreada)
 ]
 
 @app.on_event("startup")
@@ -32,16 +34,21 @@ def shutdown_event():
     for task in tasks:
         task.cancel()
 
-def publish_message(payload: Any, message_class: Type, topic: str) -> Dict[str, str]:
-    """Helper function to publish messages with common patterns"""
-    message = message_class(
-        time=utils.time_millis(),
-        ingestion=utils.time_millis(),
-        datacontenttype=payload.__class__.__name__,
-        **{message_class.get_payload_field(): payload}
+
+@app.get("/ingesta-creada", include_in_schema=False)
+async def prueba_ingesta_creada() -> Dict[str, str]:
+    payload = IngestaCreadaPayload(        
+        id_ingesta="5beb6c06-3174-4cff-af35-51d337b607d2",
+        id_proveedor = "1",
+        id_paciente = "1",
+        url_path="aHR0cHM6Ly91cmwuY29t",
+        estado="creada",
+        fecha_creacion = str(datetime.now())
     )
-    despachador.publicar_mensaje(message, topic)
-    return {"status": "ok"}
+
+    print(f'Se va publicar mensaje de prueba IngestaCreada...')
+    return despachador.publicar_mensaje(payload, "eventos-ingesta")
+
 
 @app.get("/prueba-imagen-anonimizada", include_in_schema=False)
 async def prueba_imagen_anonimizada() -> Dict[str, str]:
@@ -50,12 +57,12 @@ async def prueba_imagen_anonimizada() -> Dict[str, str]:
         id_ingesta="5beb6c06-3174-4cff-af35-51d337b607d2",
         url_path="aHR0cHM6Ly91cmwuY29t"
     )
-    return publish_message(payload, EventoAnonimizacion, "evento-anonimizacion")
+    return despachador.publicar_mensaje(payload, "eventos-ingesta")
 
 @app.get("/limpiar-imagen-raw", include_in_schema=False)
 async def limpiar_imagen_raw() -> Dict[str, str]:
     payload = LimpiarIngesta(id_ingesta="5beb6c06-3174-4cff-af35-51d337b607d2")
-    return publish_message(payload, ComandoLimpiarIngesta, "comando-eliminar-ingesta")
+    return despachador.publicar_mensaje(payload, "eventos-ingesta")
 
 @app.get("/health", include_in_schema=False)
 async def health() -> Dict[str, str]:

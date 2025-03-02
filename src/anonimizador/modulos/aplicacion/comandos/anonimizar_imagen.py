@@ -1,6 +1,6 @@
 from anonimizador.seedwork.aplicacion.comandos import Comando, ComandoHandler
 from anonimizador.seedwork.aplicacion.comandos import ejecutar_commando as comando
-from anonimizador.modulos.dominio.entidades import  Imagen
+from anonimizador.modulos.dominio.entidades import  Ingesta
 from dataclasses import dataclass
 import base64
 
@@ -11,7 +11,7 @@ class ComandoAnonimizarImagen(Comando):
 
 class AnonimizarImagenHandler(ComandoHandler):
 
-    def a_entidad(self, comando: ComandoAnonimizarImagen) -> Imagen:
+    def a_entidad(self, comando: ComandoAnonimizarImagen) -> Ingesta:
         encoded_url_path = base64.b64encode(comando.url_path.encode()).decode()
         
         params = dict(
@@ -19,7 +19,7 @@ class AnonimizarImagenHandler(ComandoHandler):
             url_path=encoded_url_path,        
         )
 
-        anonimizador = Imagen(**params)
+        anonimizador = Ingesta(**params)
         return anonimizador
         
 

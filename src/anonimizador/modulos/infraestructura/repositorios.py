@@ -3,7 +3,7 @@ from uuid import UUID
 from datetime import datetime
 
 from anonimizador.config.db import db
-from anonimizador.modulos.dominio.entidades import Imagen
+from anonimizador.modulos.dominio.entidades import Ingesta
 from anonimizador.modulos.dominio.fabricas import FabricaImagen  # type: ignore
 from .mapeadores import MapeadorImagen
 from anonimizador.modulos.dominio.repositorios import RepositorioImagen
@@ -19,25 +19,25 @@ class RepositorioImagenAnonimizadaMySQL(RepositorioImagen):
     def fabrica_imagen(self):
         return self._fabrica_imagen
 
-    def agregar(self, imagen: Imagen):
+    def agregar(self, imagen: Ingesta):
         imagen.fecha_creacion = datetime.now()
         #Se ofusca la url de la imagen
         imagen.url_path = self.ofuscar_url(imagen.url_path)
         imagen_dto = self.fabrica_imagen.crear_objeto(imagen, MapeadorImagen())
         db.session.add(imagen_dto)
 
-    def obtener_por_id(self, id: UUID) -> Imagen:
+    def obtener_por_id(self, id: UUID) -> Ingesta:
         # id is not accessed
         raise NotImplementedError
 
-    def obtener_todos(self) -> list[Imagen]:
+    def obtener_todos(self) -> list[Ingesta]:
         # TODO
         raise NotImplementedError
-    def actualizar(self, imagen: Imagen):
+    def actualizar(self, imagen: Ingesta):
         # imagen is not accesse
         raise NotImplementedError
 
-    def eliminar(self, imagen: Imagen):
+    def eliminar(self, imagen: Ingesta):
         # imagen is not accessed
         raise NotImplementedError
     

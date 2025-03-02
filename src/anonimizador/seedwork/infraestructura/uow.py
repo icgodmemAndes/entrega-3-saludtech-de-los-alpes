@@ -1,30 +1,24 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List, Any, Generator, Optional, TypeVar
 
-from anonimizador.seedwork.dominio.entidades import AgregacionRaiz
+from sta.seedwork.dominio.entidades import AgregacionRaiz
 from pydispatch import dispatcher
 
 import pickle
 import logging
 import traceback
-from functools import lru_cache
 
 
 class Lock(Enum):
     OPTIMISTA = 1
     PESIMISTA = 2
 
-
 class Batch:
-    __slots__ = ('operacion', 'args', 'lock', 'kwargs')
-    
     def __init__(self, operacion, lock: Lock, *args, **kwargs):
         self.operacion = operacion
         self.args = args
         self.lock = lock
         self.kwargs = kwargs
-
 
 class UnidadTrabajo(ABC):
 
@@ -34,25 +28,13 @@ class UnidadTrabajo(ABC):
     def __exit__(self, *args):
         self.rollback()
 
-    def _obtener_eventos_rollback(self, batches=None):
-        batches = self.batches if batches is None else batches
-        eventos = []
-        for batch in batches:
-            for arg in batch.args:
-                if isinstance(arg, AgregacionRaiz):
-                    eventos.extend(arg.eventos_compensacion)
-                    break
-        return eventos
-
     def _obtener_eventos(self, batches=None):
         batches = self.batches if batches is None else batches
-        eventos = list()
         for batch in batches:
             for arg in batch.args:
                 if isinstance(arg, AgregacionRaiz):
-                    eventos += arg.eventos
-                    break
-        return eventos
+                    return arg.eventos
+        return list()
 
     @abstractmethod
     def _limpiar_batches(self):
@@ -78,20 +60,22 @@ class UnidadTrabajo(ABC):
     def savepoint(self):
         raise NotImplementedError
 
-    def registrar_batch(self, operacion, *args, lock=Lock.PESIMISTA, repositorio_eventos_func=None,**kwargs):
+    def registrar_batch(self, operacion, *args, lock=Lock.PESIMISTA, **kwargs):
         batch = Batch(operacion, lock, *args, **kwargs)
         self.batches.append(batch)
-        self._publicar_eventos_dominio(batch, repositorio_eventos_func)
+        self._publicar_eventos_dominio(batch)
 
-    def _publicar_eventos_dominio(self, batch, repositorio_eventos_func):
+    def _publicar_eventos_dominio(self, batch):
         for evento in self._obtener_eventos(batches=[batch]):
-            if repositorio_eventos_func:
-                repositorio_eventos_func(evento)
+            print('******Evento publicar**********')
+            print(evento)
             dispatcher.send(signal=f'{type(evento).__name__}Dominio', evento=evento)
 
     def _publicar_eventos_post_commit(self):
         try:
             for evento in self._obtener_eventos():
+                print('***Publicar eventos post commit*********************')
+                print(evento)
                 dispatcher.send(signal=f'{type(evento).__name__}Integracion', evento=evento)
         except:
             logging.error('ERROR: Suscribiendose al tópico de eventos!')
@@ -106,24 +90,22 @@ def is_flask():
         return False
 
 def registrar_unidad_de_trabajo(serialized_obj):
-    from anonimizador.config.uow import UnidadTrabajoSQLAlchemy
-    from flask import session
-    
+    from flask import g
+    from sta.config.uow import UnidadTrabajoSQLAlchemy
 
-    session['uow'] = serialized_obj
+    g.uow = serialized_obj
 
 def flask_uow():
-    from flask import session
-    from anonimizador.config.uow import UnidadTrabajoSQLAlchemy, UnidadTrabajoPulsar
-    if session.get('uow'):
-        return session['uow']
+    from flask import g
 
-    uow_serialized = pickle.dumps(UnidadTrabajoSQLAlchemy())
-    if session.get('uow_metodo') == 'pulsar':
-        uow_serialized = pickle.dumps(UnidadTrabajoPulsar())
-    
-    registrar_unidad_de_trabajo(uow_serialized)
-    return uow_serialized
+    if hasattr(g, 'uow'):
+        return g.uow
+    else:
+        from sta.config.uow import UnidadTrabajoSQLAlchemy
+
+        uow_serialized = pickle.dumps(UnidadTrabajoSQLAlchemy())
+        registrar_unidad_de_trabajo(uow_serialized)
+        return uow_serialized
 
 def unidad_de_trabajo() -> UnidadTrabajo:
     if is_flask():

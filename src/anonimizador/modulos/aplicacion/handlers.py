@@ -5,6 +5,8 @@ class HandlerAnonimizacionDominio(Handler):
     @staticmethod
     def handle_imagen_anonimizada(evento):
         print('================ IMAGEN ANONIMIZADA ===========')
+
+        
         
 
     
