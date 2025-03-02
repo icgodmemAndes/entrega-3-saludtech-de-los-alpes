@@ -7,6 +7,19 @@ Base = declarative_base()
 engine = None
 SessionLocal = None
 
+# Create a db object that can be imported
+class Database:
+    def __init__(self):
+        self.session = None
+    
+    def get_session(self):
+        if self.session is None:
+            self.session = get_db_session()
+        return self.session
+
+# Instantiate the db object for importing
+db = Database()
+
 DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="127.0.0.1")
 DB_PORT = os.getenv('DB_PORT', default="3306")
 DB_USERNAME = os.getenv('DB_USERNAME', default="root")
