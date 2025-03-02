@@ -1,8 +1,13 @@
+from enum import Enum
+
 from etiquetado.config.db import db
 from etiquetado.seedwork.infraestructura.uow import UnidadTrabajo, Batch
 
 import logging
 import traceback
+class Lock(Enum):
+    OPTIMISTA = 1
+    PESIMISTA = 2
 
 class ExcepcionUoW(Exception):
     ...
