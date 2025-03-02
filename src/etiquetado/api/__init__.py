@@ -9,12 +9,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 def registrar_handlers():
     import etiquetado.modulos.etiquetado.aplicacion
-    import etiquetado.modulos.imagenes.aplicacion
 
 
 def importar_modelos_alchemy():
     import etiquetado.modulos.etiquetado.infraestructura.dto
-    import etiquetado.modulos.imagenes.infraestructura.dto
 
 
 def comenzar_consumidor(app):
@@ -26,11 +24,10 @@ def comenzar_consumidor(app):
 
     import threading
     import etiquetado.modulos.etiquetado.infraestructura.consumidores as etiquetados
-    import etiquetado.modulos.imagenes.infraestructura.consumidores as imagenes
 
     # Suscripción a eventos
     #threading.Thread(target=etiquetados.suscribirse_a_eventos).start()
-    threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
+    #threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
 
     # Suscripción a comandos
     threading.Thread(target=etiquetados.suscribirse_a_comando_crear_etiquetado, args=(app,)).start()

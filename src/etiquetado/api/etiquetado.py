@@ -27,9 +27,9 @@ def crear_etiquetado_asincrona():
 
         ejecutar_commando(comando)
 
-        return Response('{}', etiquetadotus=202, mimetype='application/json')
+        return Response('{}', status=202, mimetype='application/json')
     except ExcepcionDominio as e:
-        return Response(json.dumps(dict(error=str(e))), etiquetadotus=400, mimetype='application/json')
+        return Response(json.dumps(dict(error=str(e))), status=400, mimetype='application/json')
 
 
 @bp.route('/consulta-por-id/<id>', methods=('GET',))
