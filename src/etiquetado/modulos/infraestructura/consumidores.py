@@ -11,7 +11,7 @@ from etiquetado.modulos.infraestructura.v1.comandos import EnriquecerImagen
 from .fabricas import FabricaRepositorio
 from etiquetado.modulos.dominio.fabricas import FabricaImagen
 
-from etiquetado.seedwork.infraestructura.uow import UnidadTrabajoPuerto
+from etiquetado.seedwork.infraestructura.uow import UnidadTrabajoPuertoAsync
 from etiquetado.modulos.dominio.repositorios import RepositorioImagen
 from etiquetado.modulos.infraestructura.mapeadores import MapeadorImagen
 
@@ -41,9 +41,9 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
                         print('***************Trata de guardar****************')
                         repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
                         print('***************Envia a uow****************')
-                        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, imagen)
-                        UnidadTrabajoPuerto.savepoint()
-                        UnidadTrabajoPuerto.commit()
+                        UnidadTrabajoPuertoAsync.registrar_batch(repositorio.agregar, imagen)
+                        UnidadTrabajoPuertoAsync.savepoint()
+                        UnidadTrabajoPuertoAsync.commit()
 
                     except Exception as e:
                         print(f'Se presento un error procesando el eventos-ingesta sobre las Imagenes. {e}')
