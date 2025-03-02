@@ -1,8 +1,8 @@
 from enum import Enum
 
 from etiquetado.seedwork.infraestructura.uow import UnidadTrabajo, Batch, Lock
-from etiquetado.config.db import get_db_session
-
+from etiquetado.config.db import get_db_engine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 class ExcepcionUoW(Exception):
     pass
 
@@ -11,15 +11,15 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
     def __init__(self):
         self._batches = []
         self._savepoints = []
-        self._session = None
+        self._engine = None
 
     def __enter__(self) -> UnidadTrabajo:
-        self._session = get_db_session()
+        self._engine = get_db_engine()
         return super().__enter__()
 
     def __exit__(self, *args):
         self.rollback()
-        self._session.close()
+        #self._session.close()
 
     def _limpiar_batches(self):
         self._batches = []
@@ -39,7 +39,9 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
         try:
             for batch in self._batches:
                 batch.operacion(*batch.args, **batch.kwargs)
-            self._session.commit()
+            async with AsyncSession(self._engine) as session:
+                async with session.begin():
+                    session.commit()
 
             self._publicar_eventos_post_commit()
             self._limpiar_batches()
@@ -53,7 +55,9 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
             # Simplemente vamos removiendo todos los batches posteriores al savepoint seleccionado
 
             if savepoint:
-                self._session.rollback()
+                async with AsyncSession(self._engine) as session:
+                    async with session.begin():
+                        self.session.rollback()
 
                 index = 0
                 for i, sp in enumerate(self._savepoints):
@@ -64,7 +68,9 @@ class UnidadTrabajoSQLAlchemy(UnidadTrabajo):
                 self._batches = self._batches[:index]
                 self._savepoints = self._savepoints[:index]
             else:
-                self._session.rollback()
+                async with AsyncSession(self._engine) as session:
+                    async with session.begin():
+                        self.session.rollback()
                 self._limpiar_batches()
         except Exception as e:
             raise ExcepcionUoW(f"Error en rollback: {str(e)}")

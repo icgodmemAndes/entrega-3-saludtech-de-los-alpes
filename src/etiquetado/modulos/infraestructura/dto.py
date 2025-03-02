@@ -17,6 +17,7 @@ import uuid
 class Imagen(Base):
     __tablename__ = "imagenes"
     id = Column(String(40), primary_key=True)
-    id_ingesta = Column(String(40), nullable=False)
+    id_proveedor = Column(String(40), nullable=False)
+    id_paciente = Column(String(40), nullable=False)
     url_path = Column(String(200), nullable=False)
     estado = Column(String(40), nullable=False)
