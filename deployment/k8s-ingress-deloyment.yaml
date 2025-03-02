@@ -1,0 +1,20 @@
+###################################
+# INGRESS
+###################################
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-ingress-no-monolith-k8s
+  labels:
+    name: gateway-ingress-no-monolith-k8s
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /ingesta
+            pathType: Prefix
+            backend:
+              service:
+                name: sta-service
+                port:
+                  number: 80

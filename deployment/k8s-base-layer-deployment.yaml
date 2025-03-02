@@ -1,0 +1,88 @@
+###################################
+# sta-service
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sta-service
+  labels:
+    app: sta-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sta-service
+  template:
+    metadata:
+      labels:
+        app: sta-service
+    spec:
+      containers:
+        - name: sta-service
+          image: us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.0
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "305m"
+          ports:
+            - containerPort: 5000
+          env:
+            - name: "BROKER_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: BROKER_HOST
+            - name: "DB_HOSTNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOSTNAME
+            - name: "DB_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USERNAME
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: sta-service-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 5000
+    type: HTTP
+    requestPath: /ingesta/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sta-service-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "sta-service-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: sta-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+      nodePort: 31010
+---
+
+
