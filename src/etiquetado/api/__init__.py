@@ -41,7 +41,7 @@ DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="127.0.0.1")
 DB_PORT = os.getenv('DB_PORT', default="3306")
 DB_USERNAME = os.getenv('DB_USERNAME', default="root")
 DB_PASSWORD = os.getenv('DB_PASSWORD', default="adminadmin")
-DB_NAME = os.getenv('DB_NAME', default="etiquetados")
+DB_NAME = os.getenv('DB_NAME', default="ingestas")
 
 
 def create_app(configuracion={}):
