@@ -80,9 +80,9 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
 
                      
                         print('antes de guardar')
-                        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, ingesta)
-                        UnidadTrabajoPuerto.savepoint()
-                        UnidadTrabajoPuerto.commit()
+                        await UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, ingesta)
+                        await UnidadTrabajoPuerto.savepoint()
+                        await UnidadTrabajoPuerto.commit()
                         print(f'Ingesta guardada {ingesta.__dict__}')
                         
                     except Exception as e:                        
