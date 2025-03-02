@@ -41,9 +41,9 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
                         print('***************Trata de guardar****************')
                         repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
                         print('***************Envia a uow****************')
-                        UnidadTrabajoPuertoAsync.registrar_batch(repositorio.agregar, imagen)
-                        UnidadTrabajoPuertoAsync.savepoint()
-                        UnidadTrabajoPuertoAsync.commit()
+                        await UnidadTrabajoPuertoAsync.registrar_batch(repositorio.agregar, imagen)
+                        await UnidadTrabajoPuertoAsync.savepoint()
+                        await UnidadTrabajoPuertoAsync.commit()
 
                     except Exception as e:
                         print(f'Se presento un error procesando el eventos-ingesta sobre las Imagenes. {e}')
