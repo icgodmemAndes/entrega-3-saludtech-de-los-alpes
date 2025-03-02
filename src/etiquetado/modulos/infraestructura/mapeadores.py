@@ -6,7 +6,7 @@ encargados de la transformación entre formatos de dominio y DTOs
 """
 
 from etiquetado.seedwork.dominio.repositorios import Mapeador
-from etiquetado.modulos.ingesta.dominio.entidades import Imagen
+from etiquetado.modulos.dominio.entidades import Imagen
 from etiquetado.modulos.dominio.objetos_valor import EstadoImagen
 from .dto import Imagen as ImagenDTO
 
