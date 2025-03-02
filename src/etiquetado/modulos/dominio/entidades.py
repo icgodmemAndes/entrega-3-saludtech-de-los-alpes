@@ -32,14 +32,22 @@ class Imagen(AgregacionRaiz):
     metadatos: MetadatosImagen = field(default_factory=MetadatosImagen)
     demografia: Demografia  = field(default_factory=Demografia)
 
-    #def tagear_imagen(self, imagen):
-    #    self.id_ingesta = imagen.id_ingesta
-    #    self.url_path = imagen.url_path
-    #    self.estado = imagen.estado
-
-    #    self.agregar_comando(
-    #        ImagenProcesada(id_imagen=imagen.id, id_ingesta=self.id_ingesta, url_path=self.url_path,
-    #                        estado=self.estado))
+@dataclass
+class EnriquecerImagen(AgregacionRaiz):
+    id_proveedor: uuid.UUID = field(hash=True, default=None)
+    id_paciente: uuid.UUID = field(hash=True, default=None)
+    url_path: str = field(default_factory=str)
+    estado: EstadoEtiquetado = field(default=EstadoEtiquetado.CREADA)
+    modalidad: str = field(default_factory=str)
+    region_anatomica: str = field(default_factory=str)
+    patologia: str = field(default_factory=str)
+    resolucion: str = field(default_factory=str)
+    contraste: str = field(default_factory=str)
+    tipo: str = field(default_factory=str)
+    fase: str = field(default_factory=str)
+    grupo_edad: str = field(default_factory=str)
+    sexo: str = field(default_factory=str)
+    etnicidad: str = field(default_factory=str)
 
 @dataclass
 class Dato(AgregacionRaiz):
