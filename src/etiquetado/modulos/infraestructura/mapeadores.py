@@ -22,7 +22,7 @@ class MapeadorImagen(Mapeador):
             id_proveedor=str(entidad.id_ingesta),
             id_paciente=str(entidad.id_paciente),
             url_path=entidad.url_path,
-            estado=EstadoEtiquetado.ANONIMIZADA,
+            estado=EstadoEtiquetado.ANONIMIZADA.value,
             modalidad = entidad.modalidad,
             region= entidad.region_anatomica,
             patologia= entidad.patologia,

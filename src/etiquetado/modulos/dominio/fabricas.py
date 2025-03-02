@@ -17,12 +17,13 @@ from dataclasses import dataclass
 class _FabricaImagen(Fabrica):
     def crear_objeto(self, obj: any, mapeador: Mapeador) -> any:
         if isinstance(obj, Entidad):
+            print('******Mapea entidad a dto***********')
             return mapeador.entidad_a_dto(obj)
         else:
             imagen: Imagen = mapeador.dto_a_entidad(obj)
-            ('******print mapea***********')
+            print('******Mapea dto a Entidad***********')
             self.validar_regla(URLValida(imagen.url_path))
-            ('******print valida regla***********')
+            print('******print valida regla***********')
             return imagen
 
 @dataclass
