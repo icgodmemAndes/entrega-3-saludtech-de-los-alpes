@@ -1,8 +1,8 @@
 import pulsar
 from pulsar.schema import *
 
-from etiquetado.modulos.infraestructura.schema.v1.eventos import ImagenTageada, EventoImagenTageada
-from etiquetado.modulos.infraestructura.schema.v1.comandos import ComandoEnriquecer, EnriquecerImagen, TagearImagen, ComandoTagearImagen
+from etiquetado.modulos.infraestructura.v1.eventos import ImagenTageada, EventoImagenTageada
+from etiquetado.modulos.infraestructura.v1.comandos import ComandoEnriquecer, EnriquecerImagen, TagearImagen, ComandoTagearImagen
 
 from etiquetado.seedwork.infraestructura import utils
 
