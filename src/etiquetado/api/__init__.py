@@ -46,7 +46,7 @@ DB_NAME = os.getenv('DB_NAME', default="etiquetados")
 
 def create_app(configuracion={}):
     # Init la aplicacion de Flask
-    app = Flask(__name__, inetiquetadonce_relative_config=True)
+    app = Flask(__name__, instance_relative_config=True)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_NAME}'
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
