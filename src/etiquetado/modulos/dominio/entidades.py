@@ -4,7 +4,7 @@ En este archivo usted encontrará las entidades del dominio de cliente
 
 """
 import uuid
-from src.etiquetado.seedwork.dominio.entidades import Entidad, AgregacionRaiz
+from etiquetado.seedwork.dominio.entidades import Entidad, AgregacionRaiz
 from dataclasses import dataclass, field
 
 from .objetos_valor import Modalidad, RegionAnatomica, Patologia, MetadatosImagen, Demografia, EstadoEtiquetado
