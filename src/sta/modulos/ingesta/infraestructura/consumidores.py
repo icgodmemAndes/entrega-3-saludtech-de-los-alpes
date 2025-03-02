@@ -10,6 +10,7 @@ from sta.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoCrearI
 from sta.seedwork.infraestructura import utils
 
 from sta.modulos.ingesta.aplicacion.comandos.crear_ingesta import CrearIngesta
+from sta.modulos.ingesta.aplicacion.comandos.eliminar_ingesta import EliminarIngesta
 from sta.seedwork.aplicacion.comandos import ejecutar_commando
 
 
@@ -34,37 +35,62 @@ def suscribirse_a_eventos():
             cliente.close()
 
 
+def procesar_comando_crear_ingesta(app, mensaje):
+    valor = mensaje.value()
+    print(f'Comando ingesta crear, recibido: {mensaje.value()}')
+
+    try:
+        with app.app_context():
+            comando = CrearIngesta(
+                id_proveedor=uuid.UUID(valor.data.id_proveedor),
+                id_paciente=uuid.UUID(valor.data.id_paciente),
+                url_path=valor.data.url_path
+            )
+            ejecutar_commando(comando)
+    except:
+        logging.error('ERROR: Procesando comando de creación de ingesta!')
+        traceback.print_exc()
+
+
+def procesar_comando_eliminar_ingesta(app, mensaje):
+    valor = mensaje.value()
+    print(f'Comando ingesta eliminar, recibido: {mensaje.value()}')
+
+    try:
+        with app.app_context():
+            comando = EliminarIngesta(
+                id_ingesta=uuid.UUID(valor.data.id_ingesta)
+            )
+            ejecutar_commando(comando)
+    except:
+        logging.error('ERROR: Procesando comando de eliminación de ingesta!')
+        traceback.print_exc()
+
+
 def suscribirse_a_comandos(app):
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('comando-crear-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
-                                       subscription_name='sta-sub-comando-crear-ingesta',
-                                       schema=AvroSchema(ComandoCrearIngesta))
+        consumidorCrear = cliente.subscribe('comando-crear-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
+                                            subscription_name='sta-sub-comando-crear-ingesta',
+                                            schema=AvroSchema(ComandoCrearIngesta))
         
-        consumidorEliminarIngesta = cliente.subscribe('comando-eliminar-ingesta', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='sta-sub-comandos', schema=AvroSchema(ComandoEliminarIngesta))
-        print('Consumiendo eventos de Ingesta desde Ingesta.....')
+        consumidorEliminar = cliente.subscribe('comando-eliminar-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
+                                               subscription_name='sta-sub-comando-eliminar-ingesta',
+                                               schema=AvroSchema(ComandoEliminarIngesta))
+        print('Consumiendo comandos de Ingesta desde Ingesta.....')
 
         while True:
-            mensaje = consumidor.receive()
-            valor = mensaje.value()
+            mensajeCrear = consumidorCrear.receive(timeout_millis=1000)
+            mensajeEliminar = consumidorEliminar.receive(timeout_millis=1000)
 
-            print(f'Comando ingesta crear, recibido: {mensaje.value()}')
+            if mensajeCrear:
+                procesar_comando_crear_ingesta(app, mensajeCrear)
+                consumidorCrear.acknowledge(mensajeCrear)
 
-            try:
-                with app.app_context():
-                    comando = CrearIngesta(
-                        id_proveedor=uuid.UUID(valor.data.id_proveedor),
-                        id_paciente=uuid.UUID(valor.data.id_paciente),
-                        url_path=valor.data.url_path
-                    )
-
-                    ejecutar_commando(comando)
-            except:
-                logging.error('ERROR: Procesando comando de creación de ingesta!')
-                traceback.print_exc()
-
-            consumidor.acknowledge(mensaje)
+            if mensajeEliminar:
+                procesar_comando_eliminar_ingesta(app, mensajeEliminar)
+                consumidorEliminar.acknowledge(mensajeEliminar)
 
         cliente.close()
     except:

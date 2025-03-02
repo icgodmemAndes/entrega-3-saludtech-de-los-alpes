@@ -14,3 +14,4 @@ class EstadoIngesta(str, Enum):
     PENDIENTE = "Pendiente"
     RECHAZADO = "Rechazada"
     FINALIZADA = "Finalizada"
+    ELIMINADA = "Eliminada"

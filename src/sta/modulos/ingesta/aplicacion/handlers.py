@@ -7,3 +7,8 @@ class HandlerIngestaIntegracion(Handler):
     def handle_ingesta_creada(evento):
         despachador = Despachador()
         despachador.publicar_evento(evento, 'eventos-ingesta')
+    
+    @staticmethod
+    def handle_ingesta_eliminada(evento):
+        despachador = Despachador()
+        despachador.publicar_evento(evento, 'eventos-ingesta')

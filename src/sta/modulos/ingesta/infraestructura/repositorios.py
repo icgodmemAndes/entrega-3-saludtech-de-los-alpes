@@ -48,5 +48,11 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         raise NotImplementedError
 
     def eliminar(self, ingesta_id: UUID):
-        # TODO
-        raise NotImplementedError
+        ingesta = db.session.query(IngestaDTO).filter_by(id=str(ingesta_id)).one()
+
+        if ingesta is None:
+            raise Exception('Ingesta no encontrada')
+        
+        ingesta.fecha_eliminacion = datetime.now()
+        db.session.commit()
+        print('ELIMINAR completo')

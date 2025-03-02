@@ -14,3 +14,9 @@ class IngestaCreada(EventoDominio):
     url_path: str = None
     fecha_creacion: datetime = None
     estado: str = None
+
+@dataclass
+class IngestaEliminada(EventoDominio):
+    id: uuid.UUID = None
+    fecha_eliminacion: datetime = None
+    estado: str = None

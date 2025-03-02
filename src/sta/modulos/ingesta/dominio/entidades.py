@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 import sta.modulos.ingesta.dominio.objetos_valor as ov
-from sta.modulos.ingesta.dominio.eventos import IngestaCreada
+from sta.modulos.ingesta.dominio.eventos import IngestaCreada, IngestaEliminada
 from sta.seedwork.dominio.entidades import AgregacionRaiz, Entidad
 
 
@@ -42,3 +42,13 @@ class Ingesta(AgregacionRaiz):
         self.agregar_evento(
             IngestaCreada(id=ingesta.id, id_proveedor=self.id_proveedor, id_paciente=self.id_paciente,
                           url_path=self.url_path, estado=self.estado, fecha_creacion=datetime.now()))
+    
+    def eliminar_ingesta(self, id_ingesta: uuid.UUID):
+        self.id = id_ingesta
+        self.fecha_eliminacion = datetime.now()
+        self.estado = ov.EstadoIngesta.ELIMINADA
+        self.agregar_evento(
+            IngestaEliminada(id=self.id, estado=self.estado, fecha_eliminacion=self.fecha_eliminacion)
+            )
+
+        return self.id

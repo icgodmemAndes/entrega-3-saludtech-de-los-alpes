@@ -18,6 +18,7 @@ class Entidad:
     _id: uuid.UUID = field(init=False, repr=False, hash=True)
     fecha_creacion: datetime = field(default=datetime.now())
     fecha_actualizacion: datetime = field(default=datetime.now())
+    fecha_eliminacion: datetime = field(default=None)
 
     @classmethod
     def siguiente_id(self) -> uuid.UUID:
