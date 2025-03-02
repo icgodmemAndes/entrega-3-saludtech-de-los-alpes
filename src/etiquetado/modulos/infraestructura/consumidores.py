@@ -47,7 +47,7 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
 
                     except Exception as e:
                         print(f'Se presento un error procesando el eventos-ingesta sobre las Imagenes. {e}')
-
+                        traceback.print_exc()
                     datos = mensaje.value()
                     print(f'Evento recibido: {datos}')
                     await consumidor.acknowledge(mensaje)    
