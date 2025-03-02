@@ -22,7 +22,8 @@ class _FabricaImagen(Fabrica):
         else:
             imagen: Imagen = mapeador.dto_a_entidad(obj)
             print('******Mapea dto a Entidad***********')
-            self.validar_regla(URLValida(imagen.url_path))
+            print(imagen.url_path)
+            #self.validar_regla(URLValida(imagen.url_path))
             print('******print valida regla***********')
             return imagen
 
