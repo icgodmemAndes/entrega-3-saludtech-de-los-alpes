@@ -8,7 +8,7 @@ objetos complejos en la capa de infraestructura del dominio de vuelos
 from dataclasses import dataclass, field
 from etiquetado.seedwork.dominio.fabricas import Fabrica
 from etiquetado.seedwork.dominio.repositorios import Repositorio
-from etiquetado.modulos.ingesta.dominio.repositorios import RepositorioImagen
+from etiquetado.modulos.dominio.repositorios import RepositorioImagen
 
 from .repositorios import RepositorioImagenMySQL
 from .excepciones import ExcepcionFabrica
