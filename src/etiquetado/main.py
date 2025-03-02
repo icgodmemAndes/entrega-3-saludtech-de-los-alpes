@@ -21,11 +21,11 @@ tasks = list()
 @app.on_event("startup")
 async def app_startup():
     global tasks
-    from etiquetado.config.uow import UnidadTrabajoPulsar
-    import pickle
+    #from etiquetado.config.uow import UnidadTrabajoPulsar
+    #import pickle
 
-    app.state.uow_metodo = 'pulsar'
-    app.state.uow = pickle.dumps(UnidadTrabajoPulsar())
+    #app.state.uow_metodo = 'pulsar'
+    #app.state.uow = pickle.dumps(UnidadTrabajoPulsar())
     task1 = asyncio.ensure_future(suscribirse_a_topico("evento-imagen-tageada", "sub-imagen-tageada", EventoImagenTageada))
     task2 = asyncio.ensure_future(suscribirse_a_topico("comando-enriquecer", "sub-com-enriquecer", ComandoEnriquecer))
     task3 = asyncio.ensure_future(suscribirse_a_topico("comando-distribuir-datos", "sub-com-distribuir-datos", ComandoDistribuirDatos))
