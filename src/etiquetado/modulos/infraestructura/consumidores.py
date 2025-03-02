@@ -36,9 +36,11 @@ async def suscribirse_a_topico(topico: str, suscripcion: str, schema: Record, ti
                     print('***************Trata de guardar****************')
                     try:
                         imagen: Imagen = fabrica_imagen.crear_objeto(mensaje.value().data, MapeadorImagen())
-                        imagen.crear_imagen(imagen)
+                        print('***************Mapeo hecho****************')
+                        #imagen.tagear_imagen(imagen)
+                        print('***************Trata de guardar****************')
                         repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
-
+                        print('***************Envia a uow****************')
                         UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, imagen)
                         UnidadTrabajoPuerto.savepoint()
                         UnidadTrabajoPuerto.commit()

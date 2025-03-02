@@ -7,7 +7,7 @@ encargados de la transformación entre formatos de dominio y DTOs
 
 from etiquetado.seedwork.dominio.repositorios import Mapeador
 from etiquetado.modulos.dominio.entidades import Imagen
-from etiquetado.modulos.dominio.objetos_valor import EstadoEtiquetado
+from etiquetado.modulos.dominio.objetos_valor import EstadoEtiquetado,Modalidad,RegionAnatomica,Patologia,MetadatosImagen,Demografia
 from .dto import Imagen as ImagenDTO
 
 class MapeadorImagen(Mapeador):
@@ -17,11 +17,23 @@ class MapeadorImagen(Mapeador):
 
     def entidad_a_dto(self, entidad: Imagen) -> ImagenDTO:
         imagen_dto = ImagenDTO(
-            id=str(entidad.id),
             id_proveedor=str(entidad.id_ingesta),
             id_paciente=str(entidad.id_paciente),
             url_path=entidad.url_path,
             estado=EstadoEtiquetado.ANONIMIZADA,
+            modalidad = Modalidad(nombre=entidad.modalidad),
+            region= RegionAnatomica (nombre=entidad.region_anatomica),
+            patologia= Patologia(nombre=entidad.patologia),
+            metadatos= MetadatosImagen(
+                resolucion= entidad.resolucion,
+                contraste= entidad.contraste,
+                tipo = entidad.tipo,
+                fase = entidad.fase
+            ),
+            demografia= Demografia(
+                grupo_edad=entidad.grupo_edad,
+                sexo=entidad.sexo,
+                etnicidad=entidad.etnicidad)
         )
         return imagen_dto
 
@@ -31,5 +43,18 @@ class MapeadorImagen(Mapeador):
         imagen.id_paciente = dto.id_paciente
         imagen.url_path = dto.url_path
         imagen.estado = dto.estado
+        imagen.modalidad = Modalidad(nombre=dto.modalidad),
+        imagen.region = RegionAnatomica(nombre=dto.region_anatomica),
+        imagen.patologia = Patologia(nombre=dto.patologia),
+        imagen.metadatos = MetadatosImagen(
+            resolucion=dto.resolucion,
+            contraste=dto.contraste,
+            tipo=dto.tipo,
+            fase=dto.fase
+        ),
+        imagen.demografia = Demografia(
+            grupo_edad=dto.grupo_edad,
+            sexo=dto.sexo,
+            etnicidad=dto.etnicidad)
 
         return imagen
