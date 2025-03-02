@@ -2,10 +2,10 @@ from pulsar.schema import *
 from etiquetado.seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
 
 class EtiquetadoCreadaPayload(Record):
-    id_etiquetado = String()
-    id_proveedor = String()
-    id_paciente = String()
-    url_path = String()
+    id_anonimizado = String()
+    modalidad = String()
+    region_anatomica = String()
+    patologia = String()
     estado = String()
     fecha_creacion = String()
 

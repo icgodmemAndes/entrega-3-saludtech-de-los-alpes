@@ -23,9 +23,10 @@ class Despachador:
         # TODO Debe existir un forma de crear el Payload en Avro con base al tipo del evento
         payload = EtiquetadoCreadaPayload(
             id_etiquetado=str(evento.id),
-            id_proveedor=str(evento.id_proveedor), 
-            id_paciente=str(evento.id_paciente), 
-            url_path=str(evento.url_path),
+            id_anonimizado=str(evento.id_anonimizado), 
+            modalidad=str(evento.modalidad), 
+            region_anatomica=str(evento.region_anatomica),
+            patologia=str(evento.patologia),
             estado=str(evento.estado),
             fecha_creacion=str(evento.fecha_creacion),
         )
@@ -35,9 +36,10 @@ class Despachador:
     def publicar_comando(self, comando, topico):
         # TODO Debe existir un forma de crear el Payload en Avro con base al tipo del comando
         payload = ComandoCrearEtiquetadoPayload(
-            id_proveedor=str(comando.id_proveedor), 
-            id_paciente=str(comando.id_paciente), 
-            url_path=str(comando.url_path)
+            id_anonimizado=str(comando.id_anonimizado), 
+            modalidad=str(comando.modalidad), 
+            region_anatomica=str(comando.region_anatomica),
+            patologia=str(comando.patologia)
         )
         comando_integracion = ComandoCrearEtiquetado(data=payload)
         self._publicar_mensaje(comando_integracion, topico, AvroSchema(ComandoCrearEtiquetado))

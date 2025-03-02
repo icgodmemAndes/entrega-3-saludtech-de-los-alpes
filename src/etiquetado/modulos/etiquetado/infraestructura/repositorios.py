@@ -55,7 +55,7 @@ class RepositorioEtiquetadoSQLite(RepositorioEtiquetado):
             raise Exception('Etiquetado no encontrada')
         
         etiquetado.fecha_eliminacion = datetime.now()
-        etiquetado.estado = EstadoEtiquetado.ELIMINADA.value
+        #etiquetado.estado = EstadoEtiquetado.ELIMINADA.value
 
         db.session.update(etiquetado)
         db.session.commit()

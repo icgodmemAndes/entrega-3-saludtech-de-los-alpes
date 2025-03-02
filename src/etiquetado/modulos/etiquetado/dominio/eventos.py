@@ -9,9 +9,10 @@ from datetime import datetime
 @dataclass
 class EtiquetadoCreada(EventoDominio):
     id: uuid.UUID = None
-    id_proveedor: uuid.UUID = None
-    id_paciente: uuid.UUID = None
-    url_path: str = None
+    id_anonimizado: uuid.UUID = None
+    modalidad: uuid.UUID = None
+    region_anatomica: str = None
+    patologia: str = None
     fecha_creacion: datetime = None
     estado: str = None
 

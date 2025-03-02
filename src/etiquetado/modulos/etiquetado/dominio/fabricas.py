@@ -30,7 +30,7 @@ class _FabricaEtiquetado(Fabrica):
         else:
             etiquetado: Etiquetado = mapeador.dto_a_entidad(obj)
 
-            self.validar_regla(URLValida(etiquetado.url_path))
+            #self.validar_regla(URLValida(etiquetado.url_path))
 
             return etiquetado
 

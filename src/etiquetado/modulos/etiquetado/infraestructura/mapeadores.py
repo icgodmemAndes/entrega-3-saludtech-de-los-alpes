@@ -17,19 +17,20 @@ class MapeadorEtiquetado(Mapeador):
     def entidad_a_dto(self, entidad: Etiquetado) -> EtiquetadoDTO:
         etiquetado_dto = EtiquetadoDTO(
             id=str(entidad.id),
-            id_proveedor=str(entidad.id_proveedor),
-            id_paciente=str(entidad.id_paciente),
-            url_path=entidad.url_path,
-            estado=entidad.estado.value,
+            id_anonimizado=str(entidad.id_anonimizado),
+            modalidad=str(entidad.modalidad),
+            region_anatomica=entidad.region_anatomica,
+            patologia=entidad.patologia,
+            #estado=entidad.estado.value,
             fecha_creacion=entidad.fecha_creacion,
         )
         return etiquetado_dto
 
     def dto_a_entidad(self, dto: EtiquetadoDTO) -> Etiquetado:
         etiquetado = Etiquetado(dto.id, dto.fecha_creacion)
-        etiquetado.id_proveedor = dto.id_proveedor
-        etiquetado.id_paciente = dto.id_paciente
-        etiquetado.url_path = dto.url_path
-        etiquetado.estado = dto.estado
+        etiquetado.id_anonimizado = dto.id_anonimizado
+        etiquetado.modalidad = dto.modalidad
+        etiquetado.region_anatomica = dto.region_anatomica
+        etiquetado.patologia = dto.patologia
 
         return etiquetado

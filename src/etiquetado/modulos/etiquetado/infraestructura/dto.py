@@ -17,8 +17,9 @@ Base = db.declarative_base()
 class Etiquetado(db.Model):
     __tablename__ = "etiquetados"
     id = db.Column(db.String(40), primary_key=True)
-    id_proveedor = db.Column(db.String(40), nullable=False)
-    id_paciente = db.Column(db.String(40), nullable=False)
-    url_path = db.Column(db.String(200), nullable=False)
-    estado = db.Column(db.String(40), nullable=False)
+    id_anonimizado = db.Column(db.String(40), nullable=False)
+    modalidad = db.Column(db.String(40), nullable=False)
+    region_anatomica = db.Column(db.String(200), nullable=False)
+    patologia = db.Column(db.String(200), nullable=False)
+    #estado = db.Column(db.String(40), nullable=False)
     fecha_creacion = db.Column(db.DateTime, nullable=False)

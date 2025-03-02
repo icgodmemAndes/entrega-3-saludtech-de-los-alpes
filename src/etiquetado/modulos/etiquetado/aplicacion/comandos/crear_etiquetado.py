@@ -16,19 +16,19 @@ from etiquetado.modulos.etiquetado.dominio.objetos_valor import EstadoEtiquetado
 
 @dataclass
 class CrearEtiquetado(Comando):
-    id_proveedor: uuid.UUID
-    id_paciente: uuid.UUID
-    url_path: str
-
+    id_anonimizado: uuid.UUID
+    modalidad: uuid.UUID
+    region_anatomica: str
+    patologia: str
 
 class CrearEtiquetadoHandler(CrearEtiquetadoBaseHandler):
 
     def handle(self, comando: CrearEtiquetado):
         etiquetado_dto = EtiquetadoDTO(
-            id_proveedor=comando.id_proveedor,
-            id_paciente=comando.id_paciente,
-            url_path=comando.url_path,
-            estado=EstadoEtiquetado.CREADA,
+            id_anonimizado=comando.id_anonimizado,
+            modalidad=comando.modalidad,
+            region_anatomica=comando.region_anatomica,
+            patologia=comando.patologia,
         )
 
         etiquetado: Etiquetado = self.fabrica_etiquetado.crear_objeto(etiquetado_dto, MapeadorEtiquetado())

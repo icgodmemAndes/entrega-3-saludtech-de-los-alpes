@@ -53,9 +53,10 @@ def suscribirse_a_comando_crear_etiquetado(app):
             try:
                 with app.app_context():
                     comando = CrearEtiquetado(
-                        id_proveedor=uuid.UUID(valor.data.id_proveedor),
-                        id_paciente=uuid.UUID(valor.data.id_paciente),
-                        url_path=valor.data.url_path
+                        id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
+                        modalidad=uuid.UUID(valor.data.modalidad),
+                        region_anatomica=valor.data.region_anatomica,
+                        patologia=valor.data.patologia
                     )
 
                     ejecutar_commando(comando)

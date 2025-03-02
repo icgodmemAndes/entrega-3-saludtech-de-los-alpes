@@ -5,9 +5,10 @@ from etiquetado.seedwork.infraestructura.utils import time_millis
 import uuid
 
 class ComandoCrearEtiquetadoPayload(ComandoIntegracion):
-    id_proveedor = String()
-    id_paciente = String()
-    url_path = String()
+    id_anonimizado = String()
+    modalidad = String()
+    region_anatomica = String()
+    patologia = String()
 
 class ComandoEliminarEtiquetadoPayLoad(ComandoIntegracion):
     id_etiquetado = String()

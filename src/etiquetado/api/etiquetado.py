@@ -23,7 +23,7 @@ def crear_etiquetado_asincrona():
         map_etiquetado = MapeadorEtiquetadoDTOJson()
         etiquetado_dto = map_etiquetado.externo_a_dto(etiquetado_dict)
 
-        comando = CrearEtiquetado(etiquetado_dto.id_proveedor, etiquetado_dto.id_paciente, etiquetado_dto.url_path)
+        comando = CrearEtiquetado(etiquetado_dto.id_anonimizado, etiquetado_dto.modalidad, etiquetado_dto.region_anatomica, etiquetado_dto.patologia)
 
         ejecutar_commando(comando)
 

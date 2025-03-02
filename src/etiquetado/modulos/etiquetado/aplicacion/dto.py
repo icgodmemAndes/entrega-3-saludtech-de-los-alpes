@@ -6,8 +6,8 @@ from etiquetado.seedwork.aplicacion.dto import DTO
 
 @dataclass(frozen=True)
 class EtiquetadoDTO(DTO):
-    id_proveedor: uuid.UUID
-    id_paciente: uuid.UUID
-    url_path: str
-    estado: str
+    id_anonimizado: uuid.UUID
+    modalidad: str
+    region_anatomica: str
+    patologia: str
     fecha_creacion: str | None = None
