@@ -26,7 +26,7 @@ spec:
               cpu: "150m"
             limits:
               memory: "128Mi"
-              cpu: "300m"
+              cpu: "310m"
           ports:
             - containerPort: 5000
           env:
@@ -244,4 +244,92 @@ spec:
       port: 80
       targetPort: 5001
       nodePort: 31021
+---
+
+
+###################################
+# etiquetado-service
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etiquetado-service
+  labels:
+    app: etiquetado-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etiquetado-service
+  template:
+    metadata:
+      labels:
+        app: etiquetado-service
+    spec:
+      containers:
+        - name: etiquetado-service
+          image: us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/etiquetado-service:1.0.3
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 5002
+          env:
+            - name: "BROKER_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: BROKER_HOST
+            - name: "DB_HOSTNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOSTNAME
+            - name: "DB_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USERNAME
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_NAME_ETIQUETADOR"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME_ETIQUETADOR
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: etiquetado-service-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 5002
+    type: HTTP
+    requestPath: /etiquetado/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: etiquetado-service-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "etiquetado-service-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: etiquetado-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5002
+      nodePort: 31022
 ---
