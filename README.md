@@ -38,7 +38,7 @@ flask --app src/sta/api --debug run
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker build . -f sta.Dockerfile -t sta/flask
+docker build . -f sta.Dockerfile -t tech/sta
 ```
 
 ### Ejecutar STA contenedora (sin compose)
@@ -46,7 +46,37 @@ docker build . -f sta.Dockerfile -t sta/flask
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run -p 5000:5000 -e BROKER_HOST=127.0.0.1 -e DB_HOSTNAME=127.0.0.1 -e DB_USERNAME="root" -e DB_PASSWORD="admin" -e DB_NAME="ingestas" sta/flask
+docker run -p 5000:5000 -e BROKER_HOST=127.0.0.1 -e DB_HOSTNAME=127.0.0.1 -e DB_USERNAME="root" -e DB_PASSWORD="admin" -e DB_NAME_STA="ingestas" tech/sta
+```
+
+### Ejecutar Aplicación Anonimizador
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+flask --app src/anonimizador/api run --port=5001
+```
+
+Siempre puede ejecutarlo en modo DEBUG:
+
+```bash
+flask --app src/anonimizador/api --debug run --port=5001
+```
+
+### Crear imagen para Anonimizador Docker
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker build . -f anonimizador.Dockerfile -t tech/anonimizador
+```
+
+### Ejecutar Anonimizador contenedora (sin compose)
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker run -p 5000:5000 -e BROKER_HOST=127.0.0.1 -e DB_HOSTNAME=127.0.0.1 -e DB_USERNAME="root" -e DB_PASSWORD="admin" -e DB_NAME_ANONIMIZADOR="anonimizados" tech/anonimizador
 ```
 
 ## BFF: Web
@@ -62,7 +92,7 @@ uvicorn bff_web.main:app --host localhost --port 8003 --reload
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker build . -f bff.Dockerfile -t sta/bff
+docker build . -f bff.Dockerfile -t tech/bff
 ```
 
 ### Ejecutar BFF contenedora (sin compose)
@@ -70,7 +100,7 @@ docker build . -f bff.Dockerfile -t sta/bff
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run -p 8003:8003 -e BROKER_HOST=127.0.0.1 -e SALUDTECH_ALPES_ADDRESS="localhost" sta/bff
+docker run -p 8003:8003 -e BROKER_HOST=127.0.0.1 -e SALUDTECH_ALPES_ADDRESS="localhost" tech/bff
 ```
 
 ## Docker-compose
@@ -171,14 +201,20 @@ gcloud config set project nomoniliticasmiso2025
 
 #### STA para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.2 -f sta.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.2
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.3 -f sta.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.3
 ```
 
 #### BFF para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.2 -f bff.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.2
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.3 -f bff.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.3
+```
+
+### Anonimizador para Deploy
+```bash
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.0.3 -f anonimizador.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.0.3
 ```
 
 ### Desplegar en GCP

@@ -10,11 +10,12 @@ tasks:
       gp sync-done bundle
   - name: Instalar dependencias
     init: gp sync-await bundle
-    command: pip install -r requirements.txt && pip install -r bff_requirements.txt
-  - name: Crear imagenes Docker
+    command: pip install -r requirements.txt && pip install -r bff_requirements.txt && pip install -r anonimizador_requirements.txt
+  - name: Crear anonimizado Docker
     init: > 
-      docker build . -f sta.Dockerfile -t sta/flask &&
-      docker build . -f bff.Dockerfile -t sta/bff &&
+      docker build . -f sta.Dockerfile -t tech/sta &&
+      docker build . -f bff.Dockerfile -t tech/bff &&
+      docker build . -f anonimizador.Dockerfile -t tech/anonimizador &&
       gp sync-done images
   - name: Crear folder para datos y asigna permisos
     init: > 

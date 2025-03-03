@@ -101,7 +101,7 @@ services:
       - SYS_NICE
     restart: always
     environment:
-      - MYSQL_DATABASE=ingestas
+      - MYSQL_DATABASE=pruebas
       - MYSQL_ROOT_PASSWORD=adminadmin
     profiles: ["resource", "all"]
     networks:

@@ -7,8 +7,6 @@ la infraestructura del dominio de vuelos
 
 from sta.config.db import db
 
-import uuid
-
 Base = db.declarative_base()
 
 
