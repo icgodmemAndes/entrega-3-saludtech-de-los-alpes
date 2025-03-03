@@ -1,7 +1,7 @@
-from .dto import EtiquetadoDTO
+from .dto import EtiquetadoDTO,TagearDTO
 from etiquetado.seedwork.aplicacion.dto import Mapeador as AppMap
 from etiquetado.seedwork.dominio.repositorios import Mapeador as RepMap
-from etiquetado.modulos.etiquetado.dominio.entidades import Etiquetado
+from etiquetado.modulos.etiquetado.dominio.entidades import Etiquetado,Tagear
 
 
 class MapeadorEtiquetadoDTOJson(AppMap):
@@ -42,3 +42,35 @@ class MapeadorEtiquetado(RepMap):
         etiquetado.estado = dto.estado
 
         return etiquetado
+
+
+class MapeadorTagearDTOJson(AppMap):
+
+    def externo_a_dto(self, externo: dict) -> EtiquetadoDTO:
+        tagear_dto = TagearDTO(
+            externo.get('id_anonimizado'),
+        )
+
+        return tagear_dto
+
+    def dto_a_externo(self, dto: TagearDTO) -> dict:
+        return dto.__dict__
+
+
+class MapeadorTagear(RepMap):
+
+    def obtener_tipo(self) -> type:
+        return Tagear.__class__
+
+    def entidad_a_dto(self, entidad: Tagear) -> TagearDTO:
+        _id_anonimizado = str(entidad.id_anonimizado)
+        _fecha_creacion = str(entidad.fecha_creacion)
+
+        return EtiquetadoDTO(_id_anonimizado, _fecha_creacion)
+
+    def dto_a_entidad(self, dto: TagearDTO) -> Tagear:
+        tagear = Tagear()
+        tagear.id_anonimizado = dto.id_anonimizado
+
+
+        return tagear

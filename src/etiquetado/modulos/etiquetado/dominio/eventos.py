@@ -20,3 +20,8 @@ class EtiquetadoEliminada(EventoDominio):
     id: uuid.UUID = None
     fecha_eliminacion: datetime = None
     estado: str = None
+
+@dataclass
+class Tagear(EventoDominio):
+    id: uuid.UUID = None
+    id_anonimizada: uuid.UUID = None

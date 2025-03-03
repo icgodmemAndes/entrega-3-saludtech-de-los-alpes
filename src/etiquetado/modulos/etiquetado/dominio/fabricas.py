@@ -5,9 +5,9 @@ objetos complejos del dominio de vuelos
 
 """
 
-from .entidades import Etiquetado
+from .entidades import Etiquetado,Tagear
 from .reglas import URLValida
-from .excepciones import TipoObjetoNoExisteEnDominioEtiquetadoExcepcion
+from .excepciones import TipoObjetoNoExisteEnDominioEtiquetadoExcepcion,TipoObjetoNoExisteEnDominioTagearExcepcion
 from etiquetado.seedwork.dominio.repositorios import Mapeador, Repositorio
 from etiquetado.seedwork.dominio.fabricas import Fabrica
 from etiquetado.seedwork.dominio.entidades import Entidad
@@ -43,3 +43,33 @@ class FabricaEtiquetado(Fabrica):
         else:
             raise TipoObjetoNoExisteEnDominioEtiquetadoExcepcion()
 
+
+@dataclass
+class _FabricaTagear(Fabrica):
+    def crear_objeto(self, obj: any, mapeador: Mapeador) -> any:
+        if isinstance(obj, list):
+            procesados = list()
+            for o in obj:
+                procesados.append(self._procesar_objeto(o, mapeador))
+            return procesados
+        else:
+            return self._procesar_objeto(obj, mapeador)
+
+    def _procesar_objeto(self, obj: any, mapeador: Mapeador) -> any:
+        if isinstance(obj, Entidad):
+            return mapeador.entidad_a_dto(obj)
+        else:
+            tagear: Tagear = mapeador.dto_a_entidad(obj)
+
+            #self.validar_regla(URLValida(tagear.url_path))
+
+            return tagear
+
+@dataclass
+class FabricaTagear(Fabrica):
+    def crear_objeto(self, obj: any, mapeador: Mapeador) -> any:
+        if mapeador.obtener_tipo() == Tagear.__class__:
+            fabrica_tagear = _FabricaTagear()
+            return fabrica_tagear.crear_objeto(obj, mapeador)
+        else:
+            raise TipoObjetoNoExisteEnDominioTagearExcepcion()

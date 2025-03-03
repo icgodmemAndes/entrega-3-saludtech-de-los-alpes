@@ -12,3 +12,9 @@ class HandlerEtiquetadoIntegracion(Handler):
     def handle_etiquetado_eliminada(evento):
         despachador = Despachador()
         despachador.publicar_evento(evento, 'eventos-etiquetado')
+
+
+    @staticmethod
+    def handle_tagear(evento):
+        despachador = Despachador()
+        despachador.publicar_evento(evento, 'comando-tagear')

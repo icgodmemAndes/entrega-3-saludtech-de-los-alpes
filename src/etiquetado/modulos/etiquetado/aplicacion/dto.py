@@ -11,3 +11,8 @@ class EtiquetadoDTO(DTO):
     url_path: str
     estado: str
     fecha_creacion: str | None = None
+
+@dataclass(frozen=True)
+class TagearDTO(DTO):
+    id_anonimizado: uuid.UUID
+    fecha_creacion: str | None = None

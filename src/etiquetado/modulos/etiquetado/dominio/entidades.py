@@ -28,21 +28,22 @@ class Paciente(Entidad):
 
 @dataclass
 class Etiquetado(AgregacionRaiz):
-    id_proveedor: uuid.UUID = field(hash=True, default=None)
-    id_paciente: uuid.UUID = field(hash=True, default=None)
-    url_path: str = field(default_factory=str)
-    estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.CREADA)
+    id_anonimizado: uuid.UUID = field(hash=True, default=None)
+    modalidad: uuid.UUID = field(hash=True, default=None)
+    region_anatomica: str = field(default_factory=str)
+    patologia: str = field(default_factory=str)
+    #estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.CREADA)
 
     def crear_etiquetado(self, etiquetado: Etiquetado):
-        self.id_proveedor = etiquetado.id_proveedor
-        self.id_paciente = etiquetado.id_paciente
-        self.url_path = etiquetado.url_path
-        self.estado = etiquetado.estado
+        self.id_anonimizado = etiquetado.id_anonimizado
+        self.modalidad = etiquetado.modalidad
+        self.region_anatomica = etiquetado.region_anatomica
+        self.patologia = etiquetado.patologia
+        #self.estado = etiquetado.estado
 
         self.agregar_evento(
-            EtiquetadoCreada(id=etiquetado.id, id_proveedor=self.id_proveedor, id_paciente=self.id_paciente,
-                          url_path=self.url_path, estado=self.estado, fecha_creacion=datetime.now()))
-    
+            Tagear(id=self.id, id_anonimizado=self.id_anonimizado, fecha_creacion=datetime.now()))
+
     def eliminar_etiquetado(self, id_etiquetado: uuid.UUID):
         self.id = id_etiquetado
         self.fecha_eliminacion = datetime.now()
@@ -52,3 +53,15 @@ class Etiquetado(AgregacionRaiz):
             )
 
         return self.id
+
+
+@dataclass
+class Tagear(AgregacionRaiz):
+    id_anonimizado: uuid.UUID = field(hash=True, default=None)
+    #estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.CREADA)
+
+    def crear_tagear(self, tagear: Tagear):
+        self.id_anonimizado = tagear.id_anonimizado
+
+        self.agregar_evento(
+            Tagear(id=tagear.id, id_anonimizado=self.id_anonimizado, fecha_creacion=datetime.now()))

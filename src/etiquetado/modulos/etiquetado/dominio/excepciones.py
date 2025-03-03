@@ -12,3 +12,10 @@ class TipoObjetoNoExisteEnDominioEtiquetadoExcepcion(ExcepcionFabrica):
         self.__mensaje = mensaje
     def __str__(self):
         return str(self.__mensaje)
+
+class TipoObjetoNoExisteEnDominioTagearExcepcion(ExcepcionFabrica):
+    def __init__(self, mensaje='No existe una fábrica para el tipo solicitado en el módulo de tagear'):
+        self.__mensaje = mensaje
+
+    def __str__(self):
+        return str(self.__mensaje)
