@@ -13,7 +13,6 @@ from etiquetado.modulos.etiquetado.dominio.fabricas import FabricaEtiquetado
 from .mapeadores import MapeadorEtiquetado
 from etiquetado.modulos.etiquetado.dominio.repositorios import RepositorioEtiquetado
 from .dto import Etiquetado as EtiquetadoDTO
-from etiquetado.modulos.etiquetado.dominio.objetos_valor import EstadoEtiquetado
 
 
 class RepositorioEtiquetadoSQLite(RepositorioEtiquetado):
@@ -29,7 +28,7 @@ class RepositorioEtiquetadoSQLite(RepositorioEtiquetado):
         etiquetado.fecha_creacion = datetime.now()
         etiquetado_dto = self.fabrica_etiquetado.crear_objeto(etiquetado, MapeadorEtiquetado())
         db.session.add(etiquetado_dto)
-        print('AGREGAR completo')
+        print('AGREGAR etiquetado completo')
 
     def obtener_por_id(self, id: UUID) -> Etiquetado:
         etiquetado_dto = db.session.query(EtiquetadoDTO).filter_by(id=str(id)).one()
@@ -55,8 +54,7 @@ class RepositorioEtiquetadoSQLite(RepositorioEtiquetado):
             raise Exception('Etiquetado no encontrada')
         
         etiquetado.fecha_eliminacion = datetime.now()
-        #etiquetado.estado = EstadoEtiquetado.ELIMINADA.value
 
         db.session.update(etiquetado)
         db.session.commit()
-        print('ELIMINAR completo')
+        print('ELIMINAR etiquetado completo')

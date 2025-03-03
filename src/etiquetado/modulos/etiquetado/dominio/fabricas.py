@@ -6,7 +6,6 @@ objetos complejos del dominio de vuelos
 """
 
 from .entidades import Etiquetado
-from .reglas import URLValida
 from .excepciones import TipoObjetoNoExisteEnDominioEtiquetadoExcepcion
 from etiquetado.seedwork.dominio.repositorios import Mapeador, Repositorio
 from etiquetado.seedwork.dominio.fabricas import Fabrica
@@ -29,8 +28,6 @@ class _FabricaEtiquetado(Fabrica):
             return mapeador.entidad_a_dto(obj)
         else:
             etiquetado: Etiquetado = mapeador.dto_a_entidad(obj)
-
-            #self.validar_regla(URLValida(etiquetado.url_path))
 
             return etiquetado
 

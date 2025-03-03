@@ -11,7 +11,6 @@ from etiquetado.seedwork.infraestructura.uow import UnidadTrabajoPuerto
 from etiquetado.modulos.etiquetado.aplicacion.mapeadores import MapeadorEtiquetado
 
 from etiquetado.modulos.etiquetado.infraestructura.repositorios import RepositorioEtiquetado
-from etiquetado.modulos.etiquetado.dominio.objetos_valor import EstadoEtiquetado
 
 
 @dataclass

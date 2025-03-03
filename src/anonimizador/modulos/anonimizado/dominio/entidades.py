@@ -17,5 +17,5 @@ class Anonimizado(AgregacionRaiz):
         self.url_path = anonimizado.url_path
 
         self.agregar_evento(
-            AnonimizadoProcesada(id_ingesta=self.id_ingesta, url_path=self.url_path)
+            AnonimizadoProcesada(id=anonimizado.id, id_ingesta=self.id_ingesta, url_path=self.url_path)
         )

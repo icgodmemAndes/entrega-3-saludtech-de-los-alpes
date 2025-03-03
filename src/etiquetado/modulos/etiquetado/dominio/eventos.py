@@ -14,10 +14,3 @@ class EtiquetadoCreada(EventoDominio):
     region_anatomica: str = None
     patologia: str = None
     fecha_creacion: datetime = None
-    estado: str = None
-
-@dataclass
-class EtiquetadoEliminada(EventoDominio):
-    id: uuid.UUID = None
-    fecha_eliminacion: datetime = None
-    estado: str = None

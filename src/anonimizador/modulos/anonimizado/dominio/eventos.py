@@ -7,5 +7,6 @@ from anonimizador.seedwork.dominio.eventos import (EventoDominio)
 
 @dataclass
 class AnonimizadoProcesada(EventoDominio):
+    id: uuid.UUID = None
     id_ingesta: uuid.UUID = None
     url_path: str = None

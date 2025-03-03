@@ -30,7 +30,6 @@ class MapeadorEtiquetado(RepMap):
         _modalidad = str(entidad.modalidad)
         _region_anatomica = str(entidad.region_anatomica)
         _patologia = str(entidad.patologia)
-        #_estado = str(entidad.estado)
         _fecha_creacion = str(entidad.fecha_creacion)
 
         return EtiquetadoDTO(_id_anonimizado, _modalidad, _region_anatomica,_patologia , _fecha_creacion)
@@ -41,6 +40,5 @@ class MapeadorEtiquetado(RepMap):
         etiquetado.modalidad = dto.modalidad
         etiquetado.region_anatomica = dto.region_anatomica
         etiquetado.patologia = dto.patologia
-        #etiquetado.estado = dto.estado
 
         return etiquetado

@@ -21,7 +21,6 @@ class MapeadorEtiquetado(Mapeador):
             modalidad=str(entidad.modalidad),
             region_anatomica=entidad.region_anatomica,
             patologia=entidad.patologia,
-            #estado=entidad.estado.value,
             fecha_creacion=entidad.fecha_creacion,
         )
         return etiquetado_dto

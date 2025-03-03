@@ -21,5 +21,4 @@ class Etiquetado(db.Model):
     modalidad = db.Column(db.String(40), nullable=False)
     region_anatomica = db.Column(db.String(200), nullable=False)
     patologia = db.Column(db.String(200), nullable=False)
-    #estado = db.Column(db.String(40), nullable=False)
     fecha_creacion = db.Column(db.DateTime, nullable=False)

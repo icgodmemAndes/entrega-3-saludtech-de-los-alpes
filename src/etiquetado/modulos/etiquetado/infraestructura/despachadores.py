@@ -27,7 +27,6 @@ class Despachador:
             modalidad=str(evento.modalidad), 
             region_anatomica=str(evento.region_anatomica),
             patologia=str(evento.patologia),
-            estado=str(evento.estado),
             fecha_creacion=str(evento.fecha_creacion),
         )
         evento_integracion = EventoEtiquetadoCreada(data=payload)

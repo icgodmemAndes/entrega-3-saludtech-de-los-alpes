@@ -76,7 +76,37 @@ docker build . -f anonimizador.Dockerfile -t tech/anonimizador
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker run -p 5000:5000 -e BROKER_HOST=127.0.0.1 -e DB_HOSTNAME=127.0.0.1 -e DB_USERNAME="root" -e DB_PASSWORD="admin" -e DB_NAME_ANONIMIZADOR="anonimizados" tech/anonimizador
+docker run -p 5001:5001 -e BROKER_HOST=127.0.0.1 -e DB_HOSTNAME=127.0.0.1 -e DB_USERNAME="root" -e DB_PASSWORD="admin" -e DB_NAME_ANONIMIZADOR="anonimizados" tech/anonimizador
+```
+
+### Ejecutar Aplicación Etiquetado
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+flask --app src/etiquetado/api run --port=5002
+```
+
+Siempre puede ejecutarlo en modo DEBUG:
+
+```bash
+flask --app src/etiquetado/api --debug run --port=5002
+```
+
+### Crear imagen para Etiquetado Docker
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker build . -f etiquetado.Dockerfile -t tech/etiquetado
+```
+
+### Ejecutar Etiquetado contenedora (sin compose)
+
+Desde el directorio principal ejecute el siguiente comando.
+
+```bash
+docker run -p 5002:5002 -e BROKER_HOST=127.0.0.1 -e DB_HOSTNAME=127.0.0.1 -e DB_USERNAME="root" -e DB_PASSWORD="admin" -e DB_NAME_ETIQUETADOR="etiquetados" tech/etiquetado
 ```
 
 ## BFF: Web
@@ -215,6 +245,12 @@ docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-
 ```bash
 docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.0.3 -f anonimizador.Dockerfile . && \
 docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.0.3
+```
+
+### Etiquetado para Deploy
+```bash
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/etiquetado-service:1.0.3 -f etiquetado.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/etiquetado-service:1.0.3
 ```
 
 ### Desplegar en GCP

@@ -26,19 +26,17 @@ def comenzar_consumidor(app):
     import etiquetado.modulos.etiquetado.infraestructura.consumidores as etiquetados
 
     # Suscripción a eventos
-    #threading.Thread(target=etiquetados.suscribirse_a_eventos).start()
-    #threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
+    threading.Thread(target=etiquetados.suscribirse_a_eventos).start()
 
     # Suscripción a comandos
     threading.Thread(target=etiquetados.suscribirse_a_comando_crear_etiquetado, args=(app,)).start()
-    threading.Thread(target=etiquetados.suscribirse_a_comando_eliminar_etiquetado, args=(app,)).start()
 
 
 DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="127.0.0.1")
 DB_PORT = os.getenv('DB_PORT', default="3306")
 DB_USERNAME = os.getenv('DB_USERNAME', default="root")
 DB_PASSWORD = os.getenv('DB_PASSWORD', default="adminadmin")
-DB_NAME = os.getenv('DB_NAME_ETIQUETADOR', default="ingestas")
+DB_NAME = os.getenv('DB_NAME_ETIQUETADOR', default="pruebas")
 
 
 def create_app(configuracion={}):
@@ -46,7 +44,6 @@ def create_app(configuracion={}):
     app = Flask(__name__, instance_relative_config=True)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_NAME}'
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     app.secret_key = '9d58f98f-3ae8-4149-a09f-3a8c2012e32c'

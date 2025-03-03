@@ -4,14 +4,13 @@ from etiquetado.seedwork.infraestructura.schema.v1.comandos import (ComandoInteg
 from etiquetado.seedwork.infraestructura.utils import time_millis
 import uuid
 
+
 class ComandoCrearEtiquetadoPayload(ComandoIntegracion):
     id_anonimizado = String()
     modalidad = String()
     region_anatomica = String()
     patologia = String()
 
-class ComandoEliminarEtiquetadoPayLoad(ComandoIntegracion):
-    id_etiquetado = String()
 
 class ComandoCrearEtiquetado(ComandoIntegracion):
     id = String(default=str(uuid.uuid4()))
@@ -22,6 +21,3 @@ class ComandoCrearEtiquetado(ComandoIntegracion):
     datacontenttype = String()
     service_name = String()
     data = ComandoCrearEtiquetadoPayload()
-
-class ComandoEliminarEtiquetado(ComandoIntegracion):
-    data = ComandoEliminarEtiquetadoPayLoad()

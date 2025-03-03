@@ -35,7 +35,7 @@ class Despachador:
             id_anonimizado=str(comando.id),
             modalidad="TODO",
             region_anatomica="TODO",
-            patalogia="TODO"
+            patologia="TODO"
         )
         comando_integracion = IniciarEtiquetado(data=payload)
         self._publicar_mensaje_iniciar_etiquetado(comando_integracion, topico, AvroSchema(IniciarEtiquetado))
