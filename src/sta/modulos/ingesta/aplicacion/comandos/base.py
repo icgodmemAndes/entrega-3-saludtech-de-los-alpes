@@ -27,4 +27,16 @@ class EliminarIngestaBaseHandler(ComandoHandler):
     @property
     def fabrica_ingesta(self):
         return self._fabrica_ingesta
+
+class RevertirIngestaBaseHandler(ComandoHandler):
+    def __init__(self):
+        self._fabrica_repositorio: FabricaRepositorio = FabricaRepositorio()
+        self._fabrica_ingesta: FabricaIngesta = FabricaIngesta()
     
+    @property
+    def fabrica_repositorio(self):
+        return self._fabrica_repositorio
+    
+    @property
+    def fabrica_ingesta(self):
+        return self._fabrica_ingesta

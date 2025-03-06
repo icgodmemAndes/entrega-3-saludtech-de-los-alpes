@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 @dataclass
-class IngestaCreada(EventoDominio):
+class IniciarAnonimizado(EventoDominio):
     id: uuid.UUID = None
     id_proveedor: uuid.UUID = None
     id_paciente: uuid.UUID = None
@@ -20,3 +20,13 @@ class IngestaEliminada(EventoDominio):
     id: uuid.UUID = None
     fecha_eliminacion: datetime = None
     estado: str = None
+
+@dataclass
+class IngestaRevertida(EventoDominio):
+    id: uuid.UUID = None
+    estado: str = None
+    id_proveedor: uuid.UUID = None
+    id_paciente: uuid.UUID = None
+    url_path: str = None
+    fecha_creacion: datetime = None
+    fecha_eliminacion: datetime = None

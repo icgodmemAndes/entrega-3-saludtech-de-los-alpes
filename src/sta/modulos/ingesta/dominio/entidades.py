@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 import sta.modulos.ingesta.dominio.objetos_valor as ov
-from sta.modulos.ingesta.dominio.eventos import IngestaCreada, IngestaEliminada
+from sta.modulos.ingesta.dominio.eventos import IniciarAnonimizado, IngestaEliminada, IngestaRevertida
 from sta.seedwork.dominio.entidades import AgregacionRaiz, Entidad
 
 
@@ -40,7 +40,7 @@ class Ingesta(AgregacionRaiz):
         self.estado = ingesta.estado
 
         self.agregar_evento(
-            IngestaCreada(id=ingesta.id, id_proveedor=self.id_proveedor, id_paciente=self.id_paciente,
+            IniciarAnonimizado(id=ingesta.id, id_proveedor=self.id_proveedor, id_paciente=self.id_paciente,
                           url_path=self.url_path, estado=self.estado, fecha_creacion=datetime.now()))
 
     def eliminar_ingesta(self):
@@ -48,6 +48,23 @@ class Ingesta(AgregacionRaiz):
         self.estado = ov.EstadoIngesta.ELIMINADA
         self.agregar_evento(
             IngestaEliminada(id=self.id, estado=self.estado, fecha_eliminacion=self.fecha_eliminacion)
+        )
+
+        return self.id
+    
+    def revertir_ingesta(self):
+        self.fecha_eliminacion = datetime.now()
+        self.estado = ov.EstadoIngesta.FALLIDA
+        self.agregar_evento(
+            IngestaRevertida(
+                id=self.id, 
+                estado=self.estado, 
+                id_proveedor=self.id_proveedor,
+                id_paciente=self.id_paciente,
+                url_path=self.url_path,
+                fecha_creacion=self.fecha_creacion,
+                fecha_eliminacion=self.fecha_eliminacion
+                )
         )
 
         return self.id
