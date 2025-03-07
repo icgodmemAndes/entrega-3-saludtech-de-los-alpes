@@ -23,9 +23,20 @@ class ImagenProcesadaPayload(Record):
 class EliminarImagenPayload(Record):
     id_imagen = String()
 
-
 class EventoImagenProcesada(EventoIntegracion):
     data = ImagenProcesadaPayload()
 
 class EliminarImagen(EventoIntegracion):
     data = EliminarImagenPayload()
+
+class IngestaRevertidaPayload(Record):
+    id_ingesta = String()
+    id_proveedor = String()
+    id_paciente = String()
+    url_path = String()
+    estado = String()
+    fecha_creacion = String()
+    fecha_eliminacion = String()
+
+class EventoIngestaRevertida(EventoIntegracion):
+    data = IngestaCreadaPayload()

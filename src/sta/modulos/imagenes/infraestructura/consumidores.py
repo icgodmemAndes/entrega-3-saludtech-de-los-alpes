@@ -3,7 +3,7 @@ from pulsar.schema import *
 import logging
 import traceback
 
-from sta.modulos.imagenes.infraestructura.schema.v1.eventos import EventoIngestaCreada
+from sta.modulos.imagenes.infraestructura.schema.v1.eventos import EventoIngestaCreada, EventoIngestaRevertida
 from sta.seedwork.infraestructura import utils
 
 from sta.modulos.imagenes.dominio.entidades import Imagen
@@ -17,17 +17,17 @@ fabrica_imagen = FabricaImagen()
 fabrica_repositorio = FabricaRepositorio()
 
 
-def suscribirse_a_eventos(app):
+def suscribirse_a_evento_ingesta_creada(app):
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('eventos-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
-                                    subscription_name='sta-sub-eventos', schema=AvroSchema(EventoIngestaCreada))
-        print('Consumiendo eventos de eventos-ingesta desde Imagenes.....')
+        consumidor = cliente.subscribe('evento-ingesta-creada', consumer_type=_pulsar.ConsumerType.Shared,
+                                    subscription_name='sta-sub-evento-ingesta-creada', schema=AvroSchema(EventoIngestaCreada))
+        print('Consumiendo evento de evento-ingesta-creada desde Imagenes.....')
 
         while True:
             mensaje = consumidor.receive()
-            print(f'Evento recibido por Imagenes: {mensaje.value().data}')
+            print(f'Evento recibido desde evento-ingesta-creada por Imagenes: {mensaje.value().data}')
             
             with app.app_context():
                 try:
@@ -39,14 +39,48 @@ def suscribirse_a_eventos(app):
                     UnidadTrabajoPuerto.savepoint()
                     UnidadTrabajoPuerto.commit()
                 except Exception as e:
-                    print(f'Se presento un error procesando el eventos-ingesta sobre las Imagenes. {e}')
+                    print(f'Se presento un error procesando el evento ingesta-creada sobre las Imagenes. {e}')
 
             consumidor.acknowledge(mensaje)
 
         cliente.close()
     except:
-        logging.error('ERROR: Suscribiendose al tópico de eventos!')
+        logging.error('ERROR: Suscribiendose al tópico evento-ingesta-creada de imagenes!')
         traceback.print_exc()
         if cliente:
             cliente.close()
         
+def suscribirse_a_evento_ingesta_revertida(app):
+    cliente = None
+    try:
+        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        consumidor = cliente.subscribe('evento-ingesta-revertida', consumer_type=_pulsar.ConsumerType.Shared,
+                                    subscription_name='sta-sub-evento-ingesta-revertida', schema=AvroSchema(EventoIngestaRevertida))
+        print('Consumiendo evento de evento-ingesta-revertida desde Imagenes.....')
+
+        while True:
+            mensaje = consumidor.receive()
+            valor = mensaje.value()
+
+            print(f'Evento recibido desde evento-ingesta-revertida por Imagenes: {valor.data}')
+            
+            with app.app_context():
+                try:
+                    repositorio = fabrica_repositorio.crear_objeto(RepositorioImagen.__class__)
+                    imagen: Imagen = repositorio.obtener_por_id_ingesta(valor.data.id_ingesta)
+                    imagen.revertir_imagen()
+
+                    UnidadTrabajoPuerto.registrar_batch(repositorio.revertir, imagen)
+                    UnidadTrabajoPuerto.savepoint()
+                    UnidadTrabajoPuerto.commit()
+                except Exception as e:
+                    print(f'Se presento un error procesando el evento ingesta-revertida sobre las Imagenes. {e}')
+
+            consumidor.acknowledge(mensaje)
+
+        cliente.close()
+    except:
+        logging.error('ERROR: Suscribiendose al tópico evento-ingesta-revertida de imagenes!')
+        traceback.print_exc()
+        if cliente:
+            cliente.close()

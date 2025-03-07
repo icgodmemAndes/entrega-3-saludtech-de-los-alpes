@@ -13,6 +13,10 @@ class Repositorio(ABC):
     @abstractmethod
     def obtener_por_id(self, id: UUID) -> Entidad:
         ...
+    
+    @abstractmethod
+    def obtener_por_id_ingesta(self, id_ingesta: UUID) -> Entidad:
+        ...
 
     @abstractmethod
     def obtener_todos(self) -> list[Entidad]:
@@ -28,6 +32,10 @@ class Repositorio(ABC):
 
     @abstractmethod
     def eliminar(self, entity_id: UUID):
+        ...
+    
+    @abstractmethod
+    def revertir(self, entity_id: UUID):
         ...
 
 

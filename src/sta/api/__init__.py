@@ -29,12 +29,13 @@ def comenzar_consumidor(app):
     import sta.modulos.imagenes.infraestructura.consumidores as imagenes
 
     # Suscripción a eventos
-    threading.Thread(target=imagenes.suscribirse_a_eventos, args=(app,)).start()
+    threading.Thread(target=imagenes.suscribirse_a_evento_ingesta_creada, args=(app,)).start()
+    threading.Thread(target=imagenes.suscribirse_a_evento_ingesta_revertida, args=(app,)).start()
 
     # Suscripción a comandos
     threading.Thread(target=ingestas.suscribirse_a_comando_crear_ingesta, args=(app,)).start()
     threading.Thread(target=ingestas.suscribirse_a_comando_eliminar_ingesta, args=(app,)).start()
-
+    threading.Thread(target=ingestas.suscribirse_a_comando_revertir_ingesta, args=(app,)).start()
 
 DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="127.0.0.1")
 DB_PORT = os.getenv('DB_PORT', default="3306")

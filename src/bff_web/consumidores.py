@@ -1,31 +1,33 @@
 import logging
 import traceback
-import pulsar, _pulsar
+import _pulsar
 import aiopulsar
 
-from pulsar.schema import *
 from . import utils
 
 
-async def suscribirse_a_topico(topico: str, suscripcion: str, schema: str,
-                               tipo_consumidor: _pulsar.ConsumerType = _pulsar.ConsumerType.Shared, eventos=[]):
-    try:
-        json_schema = utils.consultar_schema_registry(schema)
-        avro_schema = utils.obtener_schema_avro_de_diccionario(json_schema)
+async def subscribe_to_topic(topic: str, schema: str, subscription: str,
+                             consumer_type: _pulsar.ConsumerType = _pulsar.ConsumerType.Shared, events=None):
+    if events is None:
+        events = []
 
-        async with aiopulsar.connect(f'pulsar://{utils.broker_host()}:6650') as cliente:
-            async with cliente.subscribe(
-                    topico,
-                    consumer_type=tipo_consumidor,
-                    subscription_name=suscripcion,
+    try:
+        async with aiopulsar.connect(f'pulsar://{utils.broker_host()}:6650') as client:
+            json_schema = utils.get_schema_registry(schema)
+            avro_schema = utils.get_schema_avro_to_dict(json_schema)
+
+            async with client.subscribe(
+                    topic,
+                    consumer_type=consumer_type,
+                    subscription_name=subscription,
                     schema=avro_schema,
-            ) as consumidor:
+            ) as consumer:
                 while True:
-                    mensaje = await consumidor.receive()
-                    datos = mensaje.value()
-                    print(f'Evento recibido: {datos}')
-                    eventos.append(str(datos))
-                    await consumidor.acknowledge(mensaje)
+                    message = await consumer.receive()
+                    data = message.value()
+                    print(f'Consumed message from {topic}: {data}')
+                    events.append({ 'topic': topic, 'data': str(data) })
+                    await consumer.acknowledge(message)
     except:
-        logging.error(f'ERROR: Suscribiendose al tópico! {topico}, {suscripcion}, {schema}')
+        logging.error(f'Error: During subscription total {subscription} to topic! {topic}')
         traceback.print_exc()

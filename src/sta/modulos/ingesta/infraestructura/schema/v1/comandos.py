@@ -12,6 +12,9 @@ class ComandoCrearIngestaPayload(ComandoIntegracion):
 class ComandoEliminarIngestaPayLoad(ComandoIntegracion):
     id_ingesta = String()
 
+class ComandoRevertirIngestaPayLoad(ComandoIntegracion):
+    id_ingesta = String()
+
 class ComandoCrearIngesta(ComandoIntegracion):
     id = String(default=str(uuid.uuid4()))
     time = Long()
@@ -22,5 +25,18 @@ class ComandoCrearIngesta(ComandoIntegracion):
     service_name = String()
     data = ComandoCrearIngestaPayload()
 
+class ComandoIniciarAnonimizadoPayload(ComandoIntegracion):
+    id_ingesta = String()
+    id_proveedor = String()
+    id_paciente = String()
+    url_path = String()
+
+
+class ComandoIniciarAnonimizado(ComandoIntegracion):
+    data = ComandoCrearIngestaPayload()
+
 class ComandoEliminarIngesta(ComandoIntegracion):
     data = ComandoEliminarIngestaPayLoad()
+
+class ComandoRevertirIngesta(ComandoIntegracion):
+    data = ComandoRevertirIngestaPayLoad()
