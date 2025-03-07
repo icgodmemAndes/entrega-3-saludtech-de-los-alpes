@@ -4,26 +4,26 @@ import strawberry
 import requests
 from datetime import datetime
 
-SALUDTECH_ALPES_HOST = os.getenv("SALUDTECH_ALPES_ADDRESS", default="localhost")
 FORMATO_FECHA = '%Y-%m-%d %H:%M:%S'
+SALUDTECH_ALPES_HOST = os.getenv("SALUDTECH_ALPES_ADDRESS", default="localhost")
 
 
-def obtener_ingestas(root) -> typing.List["Ingesta"]:
-    ingestas_json = requests.get(f'http://{SALUDTECH_ALPES_HOST}:5000/ingesta/todas').json()
-    ingestas = []
+def get_ingests(root) -> typing.List["Ingesta"]:
+    ingests_json = requests.get(f'http://{SALUDTECH_ALPES_HOST}:5000/ingesta/todas').json()
+    ingests = []
 
-    for ingesta in ingestas_json:
-        ingestas.append(
+    for ingest in ingests_json:
+        ingests.append(
             Ingesta(
-                id_proveedor=ingesta.get('id_proveedor'),
-                id_paciente=ingesta.get('id_paciente'),
-                url_path=ingesta.get('url_path'),
-                estado=ingesta.get('estado'),
-                fecha_creacion=datetime.strptime(ingesta.get('fecha_creacion'), FORMATO_FECHA)
+                id_proveedor=ingest.get('id_proveedor'),
+                id_paciente=ingest.get('id_paciente'),
+                url_path=ingest.get('url_path'),
+                estado=ingest.get('estado'),
+                fecha_creacion=datetime.strptime(ingest.get('fecha_creacion'), FORMATO_FECHA)
             )
         )
 
-    return ingestas
+    return ingests
 
 
 @strawberry.type

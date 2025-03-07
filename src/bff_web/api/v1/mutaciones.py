@@ -1,10 +1,10 @@
-import typing
 import uuid
 import strawberry
-
 from strawberry.types import Info
+
 from bff_web import utils
-from bff_web.despachadores import Despachador
+from bff_web.despachadores import Dispatcher
+from bff_web.topics import command_create_ingest
 
 from .esquemas import *
 
@@ -13,11 +13,10 @@ from .esquemas import *
 class Mutation:
 
     @strawberry.mutation
-    async def crear_ingesta(self, id_proveedor: str, id_paciente: str, url_path: str, info: Info) -> IngestaRespuesta:
-        print(f"ID Proveedor: {id_proveedor}, ID Paciente: {id_paciente}, URL Path: {url_path}")
+    async def create_ingest(self, provider_id: str, patient_id: str, url_path: str, info: Info) -> IngestaRespuesta:
         payload = dict(
-            id_proveedor=id_proveedor,
-            id_paciente=id_paciente,
+            id_proveedor=provider_id,
+            id_paciente=patient_id,
             url_path=url_path
         )
         comando = dict(
@@ -30,8 +29,12 @@ class Mutation:
             service_name="BFF Web",
             data=payload
         )
-        despachador = Despachador()
-        info.context["background_tasks"].add_task(despachador.publicar_mensaje, comando, "comando-crear-ingesta",
-                                                  "public/default/comando-crear-ingesta")
+        dispatcher = Dispatcher()
+        info.context["background_tasks"].add_task(
+            dispatcher.publish_message,
+            comando,
+            command_create_ingest,
+            f"public/default/{command_create_ingest}",
+        )
 
         return IngestaRespuesta(mensaje="Procesando Mensaje", codigo=203)

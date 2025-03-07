@@ -45,7 +45,7 @@ def suscribirse_a_evento_ingesta_creada(app):
 
         cliente.close()
     except:
-        logging.error('ERROR: Suscribiendose al tópico de eventos!')
+        logging.error('ERROR: Suscribiendose al tópico evento-ingesta-creada de imagenes!')
         traceback.print_exc()
         if cliente:
             cliente.close()
@@ -80,7 +80,7 @@ def suscribirse_a_evento_ingesta_revertida(app):
 
         cliente.close()
     except:
-        logging.error('ERROR: Suscribiendose al tópico de eventos!')
+        logging.error('ERROR: Suscribiendose al tópico evento-ingesta-revertida de imagenes!')
         traceback.print_exc()
         if cliente:
             cliente.close()

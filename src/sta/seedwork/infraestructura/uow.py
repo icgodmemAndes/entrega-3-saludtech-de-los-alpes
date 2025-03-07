@@ -78,7 +78,7 @@ class UnidadTrabajo(ABC):
                 print(evento)
                 dispatcher.send(signal=f'{type(evento).__name__}Integracion', evento=evento)
         except:
-            logging.error('ERROR: Suscribiendose al tópico de eventos!')
+            logging.error('ERROR: Suscribiendose al tópico de eventos - _publicar_eventos_post_commit!')
             traceback.print_exc()
             
 
