@@ -35,6 +35,10 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         ingesta_dto = db.session.query(IngestaDTO).filter_by(id=str(id)).one()
         return self.fabrica_ingesta.crear_objeto(ingesta_dto, MapeadorIngesta())
 
+    def obtener_por_id_ingesta(self, id_ingesta: UUID) -> Ingesta:
+        # TODO
+        raise NotImplementedError
+
     def obtener_todos(self) -> list[Ingesta]:
         ingestas_dto = db.session.query(IngestaDTO).all()
         ingestas = list()
