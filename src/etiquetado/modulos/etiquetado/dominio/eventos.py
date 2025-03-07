@@ -14,3 +14,12 @@ class EtiquetadoCreada(EventoDominio):
     region_anatomica: str = None
     patologia: str = None
     fecha_creacion: datetime = None
+
+@dataclass
+class RevertirEtiquetado(EventoDominio):
+    id: uuid.UUID = None
+    id_anonimizado: uuid.UUID = None
+    modalidad: uuid.UUID = None
+    region_anatomica: str = None
+    patologia: str = None
+    fecha_creacion: datetime = None

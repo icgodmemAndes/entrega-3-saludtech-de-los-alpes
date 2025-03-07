@@ -11,3 +11,12 @@ class EtiquetadoDTO(DTO):
     region_anatomica: str
     patologia: str
     fecha_creacion: str | None = None
+
+
+@dataclass(frozen=True)
+class RevertirDTO(DTO):
+    id_anonimizado: uuid.UUID
+    modalidad: str
+    region_anatomica: str
+    patologia: str
+    fecha_creacion: str | None = None

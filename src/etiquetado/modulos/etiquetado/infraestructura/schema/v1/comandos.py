@@ -21,3 +21,21 @@ class ComandoCrearEtiquetado(ComandoIntegracion):
     datacontenttype = String()
     service_name = String()
     data = ComandoCrearEtiquetadoPayload()
+
+class RevertirEtiquetadoPayload(ComandoIntegracion):
+    id_anonimizado = String()
+    modalidad = String()
+    region_anatomica = String()
+    patologia = String()
+
+
+class RevertirEtiquetado(ComandoIntegracion):
+    id = String(default=str(uuid.uuid4()))
+    time = Long()
+    ingestion = Long(default=time_millis())
+    specversion = String()
+    type = String()
+    datacontenttype = String()
+    service_name = String()
+    data = RevertirEtiquetadoPayload()
+

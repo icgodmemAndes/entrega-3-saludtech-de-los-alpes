@@ -8,3 +8,11 @@ class HandlerEtiquetadoIntegracion(Handler):
     def handle_etiquetado_creada(evento):
         despachador = Despachador()
         despachador.publicar_evento(evento, 'eventos-etiquetado')
+
+
+class HandlerRevertirIntegracion(Handler):
+
+    @staticmethod
+    def handle_etiquetado_revertir(evento):
+        despachador = Despachador()
+        despachador.publicar_comando_revertir_etiquetado(evento, 'comando-revertir-anonimizado')
