@@ -25,3 +25,17 @@ spec:
                 name: bff-service-service
                 port:
                   number: 80
+          - path: /anonimizador
+            pathType: Prefix
+            backend:
+              service:
+                name: anonimizador-service-service
+                port:
+                  number: 80
+          - path: /etiquetado
+            pathType: Prefix
+            backend:
+              service:
+                name: etiquetado-service-service
+                port:
+                  number: 80
