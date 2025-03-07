@@ -21,7 +21,7 @@ def comenzar_consumidor(app):
 
     # Suscripción a eventos
     threading.Thread(target=anonimizados.suscribirse_a_eventos, args=(app,)).start()
-
+    threading.Thread(target=anonimizados.suscribirse_a_evento_compensacion, args=(app,)).start()
     # Suscripción a comandos
     # ...
 
