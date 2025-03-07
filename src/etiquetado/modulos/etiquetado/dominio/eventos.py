@@ -14,6 +14,7 @@ class EtiquetadoCreada(EventoDominio):
     region_anatomica: str = None
     patologia: str = None
     fecha_creacion: datetime = None
+    estado: str = None
 
 @dataclass
 class RevertirEtiquetado(EventoDominio):
@@ -23,3 +24,4 @@ class RevertirEtiquetado(EventoDominio):
     region_anatomica: str = None
     patologia: str = None
     fecha_creacion: datetime = None
+    estado: str = None

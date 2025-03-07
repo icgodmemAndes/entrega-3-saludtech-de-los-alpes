@@ -12,6 +12,8 @@ from etiquetado.modulos.etiquetado.aplicacion.mapeadores import MapeadorEtiqueta
 
 from etiquetado.modulos.etiquetado.infraestructura.repositorios import RepositorioEtiquetado
 
+from etiquetado.modulos.etiquetado.dominio.objetos_valor import EstadoEtiquetado
+
 
 @dataclass
 class CrearEtiquetado(Comando):
@@ -28,6 +30,7 @@ class CrearEtiquetadoHandler(CrearEtiquetadoBaseHandler):
             modalidad=comando.modalidad,
             region_anatomica=comando.region_anatomica,
             patologia=comando.patologia,
+            estado=EstadoEtiquetado.INICIADO,
         )
 
         etiquetado: Etiquetado = self.fabrica_etiquetado.crear_objeto(etiquetado_dto, MapeadorEtiquetado())

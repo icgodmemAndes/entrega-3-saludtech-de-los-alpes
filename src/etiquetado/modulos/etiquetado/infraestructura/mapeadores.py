@@ -22,6 +22,7 @@ class MapeadorEtiquetado(Mapeador):
             region_anatomica=entidad.region_anatomica,
             patologia=entidad.patologia,
             fecha_creacion=entidad.fecha_creacion,
+            estado=entidad.estado.value,
         )
         return etiquetado_dto
 
@@ -31,5 +32,6 @@ class MapeadorEtiquetado(Mapeador):
         etiquetado.modalidad = dto.modalidad
         etiquetado.region_anatomica = dto.region_anatomica
         etiquetado.patologia = dto.patologia
+        etiquetado.estado = dto.estado
 
         return etiquetado

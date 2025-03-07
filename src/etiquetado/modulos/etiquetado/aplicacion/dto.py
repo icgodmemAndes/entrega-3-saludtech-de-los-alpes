@@ -11,6 +11,7 @@ class EtiquetadoDTO(DTO):
     region_anatomica: str
     patologia: str
     fecha_creacion: str | None = None
+    estado: str
 
 
 @dataclass(frozen=True)
@@ -20,3 +21,4 @@ class RevertirDTO(DTO):
     region_anatomica: str
     patologia: str
     fecha_creacion: str | None = None
+    estado: str

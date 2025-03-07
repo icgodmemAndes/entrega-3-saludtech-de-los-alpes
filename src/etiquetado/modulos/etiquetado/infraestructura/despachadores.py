@@ -33,6 +33,7 @@ class Despachador:
             region_anatomica=str(evento.region_anatomica),
             patologia=str(evento.patologia),
             fecha_creacion=str(evento.fecha_creacion),
+            estado=str(evento.estado)
         )
         evento_integracion = EventoEtiquetadoCreada(data=payload)
         self._publicar_mensaje(evento_integracion, topico, AvroSchema(EventoEtiquetadoCreada))

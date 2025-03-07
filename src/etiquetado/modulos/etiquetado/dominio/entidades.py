@@ -10,6 +10,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
+import etiquetado.modulos.etiquetado.dominio.objetos_valor as ov
 from etiquetado.modulos.etiquetado.dominio.eventos import EtiquetadoCreada,RevertirEtiquetado
 from etiquetado.seedwork.dominio.entidades import AgregacionRaiz, Entidad
 
@@ -20,6 +21,7 @@ class Etiquetado(AgregacionRaiz):
     modalidad: str = field(default_factory=str)
     region_anatomica: str = field(default_factory=str)
     patologia: str = field(default_factory=str)
+    estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.INICIADO)
 
     def crear_etiquetado(self, etiquetado: Etiquetado):
         self.id_anonimizado = etiquetado.id_anonimizado
@@ -27,23 +29,20 @@ class Etiquetado(AgregacionRaiz):
         self.region_anatomica = etiquetado.region_anatomica
         self.patologia = etiquetado.patologia
         print('***** Inicia evento de crear etiquetado ******************')
-        if etiquetado.id_anonimizado[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
+        if str(etiquetado.id_anonimizado)[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
             print("************ Despacha CrearEtiquetado ********************")
+            self.estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.INICIADO)
             self.agregar_evento(
             EtiquetadoCreada(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
                              region_anatomica=self.region_anatomica, patologia=self.patologia,
-                             fecha_creacion=datetime.now()))
+                             fecha_creacion=datetime.now(), estado= self.estado))
         else:
             print("************* Despacha RevertirEtiquetado ****************")
+            self.estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.RECHAZADO)
             self.agregar_evento(
             RevertirEtiquetado(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
                              region_anatomica=self.region_anatomica, patologia=self.patologia,
-                             fecha_creacion=datetime.now()))
-            
-        #self.agregar_evento(
-        #    EtiquetadoCreada(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
-        #                     region_anatomica=self.region_anatomica, patologia=self.patologia,
-        #                     fecha_creacion=datetime.now()))
+                             fecha_creacion=datetime.now(), estado= self.estado))
 
 @dataclass
 class Revertir(AgregacionRaiz):

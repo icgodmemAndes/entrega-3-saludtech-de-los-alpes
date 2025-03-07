@@ -11,6 +11,7 @@ from etiquetado.seedwork.infraestructura.uow import UnidadTrabajoPuerto
 from etiquetado.modulos.etiquetado.aplicacion.mapeadores import MapeadorRevertir
 
 from etiquetado.modulos.etiquetado.infraestructura.repositorios import RepositorioEtiquetado
+from etiquetado.modulos.etiquetado.dominio.objetos_valor import EstadoEtiquetado
 
 
 @dataclass
@@ -28,6 +29,7 @@ class RevertirEtiquetadoHandler(RevertirEtiquetadoBaseHandler):
             modalidad=comando.modalidad,
             region_anatomica=comando.region_anatomica,
             patologia=comando.patologia,
+            estado=EstadoEtiquetado.RECHAZADO,
         )
 
         revertir: Revertir = self.fabrica_etiquetado.crear_objeto(revertir_dto, MapeadorRevertir())

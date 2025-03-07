@@ -51,6 +51,7 @@ class MapeadorRevertirDTOJson(AppMap):
             externo.get('modalidad'),
             externo.get('region_anatomica'),
             externo.get('patologia'),
+            externo.get('estado'),
         )
 
         return revertir_dto
@@ -70,6 +71,7 @@ class MapeadorRevertir(RepMap):
         _region_anatomica = str(entidad.region_anatomica)
         _patologia = str(entidad.patologia)
         _fecha_creacion = str(entidad.fecha_creacion)
+        _estado = str(entidad.estado)
 
         return RevertirDTO(_id_anonimizado, _modalidad, _region_anatomica,_patologia , _fecha_creacion)
 
@@ -79,5 +81,6 @@ class MapeadorRevertir(RepMap):
         revertir.modalidad = dto.modalidad
         revertir.region_anatomica = dto.region_anatomica
         revertir.patologia = dto.patologia
+        revertir.estado = dto.estado
 
         return revertir
