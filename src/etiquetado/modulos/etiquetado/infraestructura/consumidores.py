@@ -8,7 +8,8 @@ import traceback
 from etiquetado.modulos.etiquetado.infraestructura.schema.v1.eventos import EventoEtiquetadoCreada
 from etiquetado.modulos.etiquetado.infraestructura.schema.v1.comandos import ComandoCrearEtiquetado
 from etiquetado.seedwork.infraestructura import utils
-from etiquetado.modulos.etiquetado.aplicacion.comandos.crear_etiquetado import CrearEtiquetado,RevertirEtiquetado
+from etiquetado.modulos.etiquetado.aplicacion.comandos.crear_etiquetado import CrearEtiquetado
+from etiquetado.modulos.etiquetado.aplicacion.comandos.revertir_etiquetado import RevertirEtiquetado
 from etiquetado.seedwork.aplicacion.comandos import ejecutar_commando
 
 
@@ -51,9 +52,9 @@ def suscribirse_a_comando_crear_etiquetado(app):
 
             try:
                 with app.app_context():
-                    # Routeador de creacion o revertir
+                    
                     if valor.data.id_anonimizado[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
-                        print("Despacha CrearEtiquetado")
+                        print("************ Despacha CrearEtiquetado ********************")
                         comando = CrearEtiquetado(
                             id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
                             modalidad=str(valor.data.modalidad),
@@ -61,7 +62,7 @@ def suscribirse_a_comando_crear_etiquetado(app):
                             patologia=str(valor.data.patologia),
                         )
                     else:
-                        print("Despacha RevertirEtiquetado")
+                        print("************* Despacha RevertirEtiquetado ****************")
                         comando = RevertirEtiquetado(
                             id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
                             modalidad=str(valor.data.modalidad),

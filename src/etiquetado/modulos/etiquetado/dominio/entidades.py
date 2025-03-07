@@ -26,11 +26,24 @@ class Etiquetado(AgregacionRaiz):
         self.modalidad = etiquetado.modalidad
         self.region_anatomica = etiquetado.region_anatomica
         self.patologia = etiquetado.patologia
-
-        self.agregar_evento(
+        print('***** Inicia evento de crear etiquetado ******************')
+        if etiquetado.id_anonimizado[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
+            print("************ Despacha CrearEtiquetado ********************")
+            self.agregar_evento(
             EtiquetadoCreada(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
                              region_anatomica=self.region_anatomica, patologia=self.patologia,
                              fecha_creacion=datetime.now()))
+        else:
+            print("************* Despacha RevertirEtiquetado ****************")
+            self.agregar_evento(
+            RevertirEtiquetado(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
+                             region_anatomica=self.region_anatomica, patologia=self.patologia,
+                             fecha_creacion=datetime.now()))
+            
+        #self.agregar_evento(
+        #    EtiquetadoCreada(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
+        #                     region_anatomica=self.region_anatomica, patologia=self.patologia,
+        #                     fecha_creacion=datetime.now()))
 
 @dataclass
 class Revertir(AgregacionRaiz):

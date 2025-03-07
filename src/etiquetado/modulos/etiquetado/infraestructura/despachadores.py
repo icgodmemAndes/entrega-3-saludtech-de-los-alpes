@@ -56,4 +56,4 @@ class Despachador:
             patologia=str(comando.patologia)
         )
         comando_integracion = RevertirEtiquetado(data=payload)
-        self._publicar_mensaje_revertir_etiquetado(comando_integracion, topico, AvroSchema(IniciarEtiquetado))
+        self._publicar_mensaje_revertir_etiquetado(comando_integracion, topico, AvroSchema(RevertirEtiquetado))
