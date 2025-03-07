@@ -36,6 +36,10 @@ class Despachador:
             estado=str(evento.estado)
         )
         evento_integracion = EventoEtiquetadoCreada(data=payload)
+        print("****evento integracion****")
+        print(payload)
+        print(payload.estado)
+        print(evento_integracion)
         self._publicar_mensaje(evento_integracion, topico, AvroSchema(EventoEtiquetadoCreada))
 
     def publicar_comando(self, comando, topico):

@@ -11,7 +11,6 @@ class ComandoCrearEtiquetadoPayload(ComandoIntegracion):
     region_anatomica = String()
     patologia = String()
 
-
 class ComandoCrearEtiquetado(ComandoIntegracion):
     id = String(default=str(uuid.uuid4()))
     time = Long()

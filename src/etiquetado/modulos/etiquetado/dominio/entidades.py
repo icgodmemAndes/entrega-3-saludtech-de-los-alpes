@@ -21,7 +21,7 @@ class Etiquetado(AgregacionRaiz):
     modalidad: str = field(default_factory=str)
     region_anatomica: str = field(default_factory=str)
     patologia: str = field(default_factory=str)
-    estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.INICIADO)
+    estado: ov.EstadoEtiquetado = ov.EstadoEtiquetado.INICIADO
 
     def crear_etiquetado(self, etiquetado: Etiquetado):
         self.id_anonimizado = etiquetado.id_anonimizado
@@ -31,18 +31,18 @@ class Etiquetado(AgregacionRaiz):
         print('***** Inicia evento de crear etiquetado ******************')
         if str(etiquetado.id_anonimizado)[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
             print("************ Despacha CrearEtiquetado ********************")
-            self.estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.INICIADO)
+            self.estado: ov.EstadoEtiquetado = ov.EstadoEtiquetado.INICIADO
             self.agregar_evento(
             EtiquetadoCreada(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
                              region_anatomica=self.region_anatomica, patologia=self.patologia,
-                             fecha_creacion=datetime.now(), estado= self.estado))
+                             fecha_creacion=datetime.now(), estado= self.estado.value))
         else:
             print("************* Despacha RevertirEtiquetado ****************")
-            self.estado: ov.EstadoEtiquetado = field(default=ov.EstadoEtiquetado.RECHAZADO)
+            self.estado: ov.EstadoEtiquetado = ov.EstadoEtiquetado.RECHAZADO
             self.agregar_evento(
             RevertirEtiquetado(id=etiquetado.id, id_anonimizado=self.id_anonimizado, modalidad=self.modalidad,
                              region_anatomica=self.region_anatomica, patologia=self.patologia,
-                             fecha_creacion=datetime.now(), estado= self.estado))
+                             fecha_creacion=datetime.now(), estado= self.estado.value))
 
 @dataclass
 class Revertir(AgregacionRaiz):

@@ -6,6 +6,8 @@ class HandlerEtiquetadoIntegracion(Handler):
 
     @staticmethod
     def handle_etiquetado_creada(evento):
+        print("**********Handler evento***************")
+        print(evento)
         despachador = Despachador()
         despachador.publicar_evento(evento, 'eventos-etiquetado')
 

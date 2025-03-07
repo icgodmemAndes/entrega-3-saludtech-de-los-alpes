@@ -52,7 +52,7 @@ def suscribirse_a_comando_crear_etiquetado(app):
 
             try:
                 with app.app_context():
-                    
+                    print("********* Paso Final *******************")
                     if valor.data.id_anonimizado[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
                         print("************ Despacha CrearEtiquetado ********************")
                         comando = CrearEtiquetado(
@@ -60,6 +60,7 @@ def suscribirse_a_comando_crear_etiquetado(app):
                             modalidad=str(valor.data.modalidad),
                             region_anatomica=str(valor.data.region_anatomica),
                             patologia=str(valor.data.patologia),
+                            estado=str(valor.estado.value)
                         )
                     else:
                         print("************* Despacha RevertirEtiquetado ****************")
@@ -68,6 +69,7 @@ def suscribirse_a_comando_crear_etiquetado(app):
                             modalidad=str(valor.data.modalidad),
                             region_anatomica=str(valor.data.region_anatomica),
                             patologia=str(valor.data.patologia),
+                            estado=str(valor.estado.value)
                         )
 
                     ejecutar_commando(comando)
