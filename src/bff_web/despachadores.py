@@ -1,18 +1,17 @@
 import pulsar
-from pulsar.schema import *
 
 from . import utils
 
 
-class Despachador:
+class Dispatcher:
     def __init__(self):
         ...
 
-    async def publicar_mensaje(self, mensaje, topico, schema):
-        json_schema = utils.consultar_schema_registry(schema)
-        avro_schema = utils.obtener_schema_avro_de_diccionario(json_schema)
+    async def publish_message(self, message, topic, schema):
+        json_schema = utils.get_schema_registry(schema)
+        avro_schema = utils.get_schema_avro_to_dict(json_schema)
 
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        publicador = cliente.create_producer(topico, schema=avro_schema)
-        publicador.send(mensaje)
-        cliente.close()
+        client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        publicador = client.create_producer(topic, schema=avro_schema)
+        publicador.send(message)
+        client.close()

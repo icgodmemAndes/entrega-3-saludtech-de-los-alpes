@@ -27,6 +27,22 @@ class RepositorioImagenSQLite(RepositorioImagen):
         imagen.fecha_creacion = datetime.now()
         imagen_dto = self.fabrica_imagen.crear_objeto(imagen, MapeadorImagen())
         db.session.add(imagen_dto)
+    
+    def obtener_por_id_ingesta(self, id_ingesta: UUID) -> Imagen:
+        imagen_dto = db.session.query(Imagen).filter(Imagen.id_ingesta == str(id_ingesta)).one()
+        
+        return self.fabrica_imagen.crear_objeto(imagen_dto, MapeadorImagen())
+    
+    def revertir(self, id_ingesta: UUID):
+        imagen = db.session.query(Imagen).filter(Imagen.id_ingesta == str(id_ingesta)).one()
+        
+        if imagen is None:
+            raise Exception('Imagen no encontrada')
+        
+        imagen.estado = 'RECHAZADA'
+        imagen.fecha_eliminacion = datetime.now()
+        print(f'RECHAZAR completo imagen id_ingesta: {id_ingesta}')
+
 
     def obtener_por_id(self, id: UUID) -> Imagen:
         raise NotImplementedError

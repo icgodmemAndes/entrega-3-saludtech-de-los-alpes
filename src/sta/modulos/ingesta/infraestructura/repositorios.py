@@ -35,6 +35,10 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         ingesta_dto = db.session.query(IngestaDTO).filter_by(id=str(id)).one()
         return self.fabrica_ingesta.crear_objeto(ingesta_dto, MapeadorIngesta())
 
+    def obtener_por_id_ingesta(self, id_ingesta: UUID) -> Ingesta:
+        # TODO
+        raise NotImplementedError
+
     def obtener_todos(self) -> list[Ingesta]:
         ingestas_dto = db.session.query(IngestaDTO).all()
         ingestas = list()
@@ -57,3 +61,13 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         ingesta.fecha_eliminacion = datetime.now()
         ingesta.estado = EstadoIngesta.ELIMINADA.value
         print(f'ELIMINAR completo id_ingesta: {ingesta_id}')
+    
+    def revertir(self, ingesta_id: UUID):
+        ingesta = db.session.query(IngestaDTO).filter_by(id=str(ingesta_id)).one()
+
+        if ingesta is None:
+            raise Exception('Ingesta no encontrada')
+        
+        ingesta.fecha_eliminacion = datetime.now()
+        ingesta.estado = EstadoIngesta.FALLIDA.value
+        print(f'REVERTIR completo id_ingesta: {ingesta_id}')

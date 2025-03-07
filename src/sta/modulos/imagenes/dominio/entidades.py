@@ -1,9 +1,3 @@
-"""Entidades del dominio de vuelos
-
-En este archivo usted encontrará las entidades del dominio de ingesta
-
-"""
-
 from __future__ import annotations
 
 import uuid
@@ -28,3 +22,6 @@ class Imagen(AgregacionRaiz):
         self.agregar_evento(
             ImagenProcesada(id_imagen=imagen.id, id_ingesta=self.id_ingesta, url_path=self.url_path,
                             estado=self.estado))
+    
+    def revertir_imagen(self):
+        self.estado = ov.EstadoImagen.RECHAZADA
