@@ -38,17 +38,17 @@ def suscribirse_a_comando_crear_etiquetado(app):
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('comando-crear-etiquetado', consumer_type=_pulsar.ConsumerType.Shared,
-                                       subscription_name='etiquetado-sub-comando-crear-etiquetado',
+        consumidor = cliente.subscribe('comando-iniciar-etiquedado', consumer_type=_pulsar.ConsumerType.Shared,
+                                       subscription_name='etiquetado-sub-comando-iniciar-etiquedado',
                                        schema=AvroSchema(ComandoCrearEtiquetado))
         
-        print('Consumiendo eventos de comando-crear-etiquetado desde Etiquetado.....')
+        print('Consumiendo eventos de comando-iniciar-etiquedado desde Etiquetado.....')
 
         while True:
             mensaje = consumidor.receive()
             valor = mensaje.value()
 
-            print(f'Comando comando-crear-etiquetado, recibido: {valor.data}')
+            print(f'Comando comando-iniciar-etiquedado, recibido: {valor.data}')
 
             try:
                 with app.app_context():

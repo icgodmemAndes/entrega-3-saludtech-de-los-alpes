@@ -21,8 +21,9 @@ def comenzar_consumidor(app):
     import anonimizador.modulos.anonimizado.infraestructura.compensacion.compensacion_from_etiquetado as compensacion
 
     # Suscripción a eventos
-    threading.Thread(target=anonimizados.suscribirse_a_eventos, args=(app,)).start()
+
     # Suscripción a comandos
+    threading.Thread(target=anonimizados.suscribirse_a_comando_iniciar_anonimizado, args=(app,)).start()
     threading.Thread(target=compensacion.suscribirse_a_comando_compensacion, args=(app,)).start()
     # ...
 

@@ -23,9 +23,6 @@ class ComandoCrearEtiquetado(ComandoIntegracion):
 
 class RevertirEtiquetadoPayload(ComandoIntegracion):
     id_anonimizado = String()
-    modalidad = String()
-    region_anatomica = String()
-    patologia = String()
 
 
 class RevertirEtiquetado(ComandoIntegracion):

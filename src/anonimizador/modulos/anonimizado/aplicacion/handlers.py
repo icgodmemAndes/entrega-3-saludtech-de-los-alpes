@@ -6,7 +6,7 @@ class HandlerAnonimizadoIntegracion(Handler):
     @staticmethod
     def handle_anonimizado_procesada(evento):
         despachadorIniciarEtiquetado = Despachador()
-        despachadorIniciarEtiquetado.publicar_comando_iniciar_etiquetado(evento, 'comando-crear-etiquetado')
+        despachadorIniciarEtiquetado.publicar_comando_iniciar_etiquetado(evento, 'comando-iniciar-etiquetado')
 
         despachadorEliminarIngesta = Despachador()
         despachadorEliminarIngesta.publicar_comando_eliminar_ingesta(evento, 'comando-eliminar-ingesta')

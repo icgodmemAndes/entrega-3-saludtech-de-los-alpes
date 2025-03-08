@@ -42,3 +42,10 @@ class EliminarIngestaPayload(Record):
 
 class EliminarIngesta(ComandoIntegracion):
     data = EliminarIngestaPayload()
+
+
+class ComandoRevertirIngestaPayLoad(ComandoIntegracion):
+    id_ingesta = String()
+
+class ComandoRevertirIngesta(ComandoIntegracion):
+    data = ComandoRevertirIngestaPayLoad()

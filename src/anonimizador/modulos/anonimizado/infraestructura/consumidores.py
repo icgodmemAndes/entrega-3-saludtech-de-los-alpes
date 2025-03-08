@@ -17,13 +17,13 @@ fabrica_anonimizado = FabricaAnonimizado()
 fabrica_repositorio = FabricaRepositorio()
 
 
-def suscribirse_a_eventos(app):
+def suscribirse_a_comando_iniciar_anonimizado(app):
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('eventos-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
-                                    subscription_name='anonimizador-sub-eventos', schema=AvroSchema(EventoIngestaCreada))
-        print('Consumiendo eventos de Anonimizador para eventos-ingesta.....')
+        consumidor = cliente.subscribe('comando-iniciar-anonimizado', consumer_type=_pulsar.ConsumerType.Shared,
+                                    subscription_name='anonimizador-sub-comando-iniciar-anonimizado', schema=AvroSchema(EventoIngestaCreada))
+        print('Consumiendo eventos de Anonimizador para comando-iniciar-anonimizado.....')
 
         while True:
             mensaje = consumidor.receive()
@@ -39,7 +39,7 @@ def suscribirse_a_eventos(app):
                     UnidadTrabajoPuerto.savepoint()
                     UnidadTrabajoPuerto.commit()
                 except Exception as e:
-                    print(f'Se presento un error procesando el eventos-ingesta sobre las Anonimizador. {e}')
+                    print(f'Se presento un error procesando el comando-iniciar-anonimizado sobre las Anonimizador. {e}')
 
             consumidor.acknowledge(mensaje)
 
