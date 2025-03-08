@@ -32,11 +32,10 @@ def suscribirse_a_comando_compensacion(app):
             with app.app_context():
                 try:
                     anonimizado : Anonimizado = fabrica_anonimizado.crear_objeto(mensaje.value().data, MapeadorRevertirAnonimizado())
-                    print(f'Comando recibido y mapeado: {anonimizado.id}')
-                    
-                    #consulto el anonimizado en la base de datos
-                    anonimizado.revertir(anonimizado)
                     repositorio = fabrica_repositorio.crear_objeto(RepositorioAnonimizado.__class__)
+                    _anonimizado_db = repositorio.obtener_por_id(anonimizado.id)
+                    anonimizado.id_ingesta = _anonimizado_db.id_ingesta
+                    anonimizado.revertir(anonimizado)
                                         
                     #Cargar la entidad anonimizado con el estado revertido en la Unidad de Trabajo
                     UnidadTrabajoPuerto.registrar_batch(repositorio.revertir_anonimizado, anonimizado)

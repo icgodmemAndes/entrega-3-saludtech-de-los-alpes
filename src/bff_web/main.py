@@ -43,17 +43,19 @@ async def app_startup():
     global events_admin
 
     __app_startup_point(
-        topic=event_ingest_created,
-        schema=f"public/default/{event_ingest_created}",
-        subscription='saludtech-bff',
-        events_recollect=events,
-    )
-    __app_startup_point(
         topic=event_failed_ingest,
         schema=f"public/default/{event_failed_ingest}",
         subscription='saludtech-bff-fail',
         events_recollect=events_fail,
     )
+
+    __app_startup_point(
+        topic=event_ingest_created,
+        schema=f"public/default/{event_ingest_created}",
+        subscription='saludtech-bff',
+        events_recollect=events,
+    )
+    
     __app_startup_point(
         topic=event_alert_ingest,
         schema=f"public/default/{event_alert_ingest}",

@@ -61,13 +61,26 @@ class RepositorioIngestaSQLite(RepositorioIngesta):
         ingesta.fecha_eliminacion = datetime.now()
         ingesta.estado = EstadoIngesta.ELIMINADA.value
         print(f'ELIMINAR completo id_ingesta: {ingesta_id}')
+
+    def eliminar_entidad(self, ingesta: Ingesta):
+        ingesta = db.session.query(IngestaDTO).filter_by(id=str(ingesta.id)).one()
+
+        if ingesta is None:
+            raise Exception('Ingesta no encontrada')
+        
+        ingesta.fecha_eliminacion = datetime.now()
+        ingesta.estado = EstadoIngesta.ELIMINADA.value
+        print(f'ELIMINAR completo id_ingesta: {ingesta.id}')
     
-    def revertir(self, ingesta_id: UUID):
-        ingesta = db.session.query(IngestaDTO).filter_by(id=str(ingesta_id)).one()
+    def revertir(self, ingesta: Ingesta):
+        raise NotImplementedError
+    
+    def revertir_entidad(self, ingesta: Ingesta):
+        ingesta = db.session.query(IngestaDTO).filter_by(id=str(ingesta.id)).one()
 
         if ingesta is None:
             raise Exception('Ingesta no encontrada')
         
         ingesta.fecha_eliminacion = datetime.now()
         ingesta.estado = EstadoIngesta.FALLIDA.value
-        print(f'REVERTIR completo id_ingesta: {ingesta_id}')
+        print(f'REVERTIR completo id_ingesta: {ingesta.id}')

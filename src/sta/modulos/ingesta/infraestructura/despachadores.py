@@ -20,6 +20,7 @@ class Despachador:
         cliente.close()
     
     def publicar_evento_ingesta_creada(self, evento, topico):
+        print(f'Publicando evento de Ingesta Creada {topico} = {evento}')
         payload = IngestaCreadaPayload(
             id_ingesta=str(evento.id),
             id_proveedor=str(evento.id_proveedor), 
@@ -32,6 +33,7 @@ class Despachador:
         self._publicar_mensaje(evento_integracion, topico, AvroSchema(EventoIngestaCreada))
     
     def publicar_evento_ingesta_revertida(self, evento, topico):
+        print(f'Publicando evento de Ingesta Revertida {topico} = {evento}')
         payload = IngestaRevertidaPayload(
             id_ingesta=str(evento.id),
             id_proveedor=str(evento.id_proveedor), 
@@ -47,6 +49,7 @@ class Despachador:
 
 
     def publicar_evento_ingesta_eliminada(self, evento, topico):
+        print(f'Publicando evento de Ingesta elimina {topico} = {evento}')
         payload = IngestaEliminadaPayLoad(
             id_ingesta=str(evento.id),
             estado=str(evento.estado),
@@ -75,6 +78,7 @@ class Despachador:
         self._publicar_mensaje(comando_integracion, topico, AvroSchema(ComandoIniciarAnonimizado))
     
     def publicar_evento_ingesta_alertada(self, evento, topico):
+        print(f'Publicando evento de Ingesta Alerta {topico} = {evento}')
         payload = IngestaAlertadaPayLoad(
             id_ingesta=str(evento.id),
             estado=str(evento.estado),

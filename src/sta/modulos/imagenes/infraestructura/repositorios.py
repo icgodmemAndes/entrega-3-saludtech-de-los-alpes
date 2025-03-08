@@ -58,3 +58,9 @@ class RepositorioImagenSQLite(RepositorioImagen):
     def eliminar(self, imagen_id: UUID):
         # TODO
         raise NotImplementedError
+
+    def eliminar_entidad(self, imagen: Imagen):
+        raise NotImplementedError
+
+    def revertir_entidad(self, imagen: Imagen):
+        raise NotImplementedError

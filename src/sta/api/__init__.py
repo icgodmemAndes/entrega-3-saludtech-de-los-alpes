@@ -65,8 +65,8 @@ def create_app(configuracion={}):
     registrar_handlers()
 
     # Configurar el logger de SQLAlchemy
-    logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+    #logging.basicConfig()
+    #logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
     with app.app_context():
         db.create_all()

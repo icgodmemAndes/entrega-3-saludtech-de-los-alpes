@@ -33,9 +33,17 @@ class Repositorio(ABC):
     @abstractmethod
     def eliminar(self, entity_id: UUID):
         ...
+
+    @abstractmethod
+    def eliminar_entidad(self, entity: Entidad):
+        ...
     
     @abstractmethod
     def revertir(self, entity_id: UUID):
+        ...
+
+    @abstractmethod
+    def revertir_entidad(self, entity: Entidad):
         ...
 
 

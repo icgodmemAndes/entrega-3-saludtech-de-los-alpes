@@ -18,9 +18,11 @@ class RevertirIngestaHandler(RevertirIngestaBaseHandler):
     def handle(self, comando: RevertirIngesta):
         repositorio = self.fabrica_repositorio.crear_objeto(RepositorioIngesta.__class__)
         ingesta: Ingesta = repositorio.obtener_por_id(comando.id_ingesta)
+        ingesta._id = comando.id_ingesta
         ingesta.revertir_ingesta()
+        print(f'RRRRRRRRRR {ingesta}')
 
-        UnidadTrabajoPuerto.registrar_batch(repositorio.revertir, comando.id_ingesta)
+        UnidadTrabajoPuerto.registrar_batch(repositorio.revertir_entidad, ingesta)
         UnidadTrabajoPuerto.savepoint()
         UnidadTrabajoPuerto.commit()
 

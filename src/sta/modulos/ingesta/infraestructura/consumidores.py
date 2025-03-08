@@ -13,6 +13,10 @@ from sta.modulos.ingesta.aplicacion.comandos.revertir_ingesta import RevertirIng
 from sta.modulos.ingesta.aplicacion.comandos.alerta_ingesta import AlertaIngesta
 from sta.seedwork.aplicacion.comandos import ejecutar_commando
 
+from .despachadores import Despachador
+import sta.modulos.ingesta.dominio.objetos_valor as ov
+from sta.modulos.ingesta.dominio.eventos import IngestaAlertada
+
 
 def suscribirse_a_comando_crear_ingesta(app):
     cliente = None
@@ -69,16 +73,17 @@ def suscribirse_a_comando_eliminar_ingesta(app):
 
             try:
                 with app.app_context():
-                    if random.randint(0, 10) <= 3:
+                    has_rand = random.randint(0, 10) <= 3
+                    print(f'Aleatorio de comando-eliminar-ingesta {has_rand}')
+                    if has_rand:
                         comando = EliminarIngesta(
                             id_ingesta=uuid.UUID(valor.data.id_ingesta),
                         )
+                        ejecutar_commando(comando)
                     else:
-                        comando = AlertaIngesta(
-                            id_ingesta=uuid.UUID(valor.data.id_ingesta),
-                        )
-
-                    ejecutar_commando(comando)
+                        dto = IngestaAlertada(id=valor.data.id_ingesta, estado=ov.EstadoIngesta.ALERTADA)
+                        despachador = Despachador()
+                        despachador.publicar_evento_ingesta_alertada(dto, 'evento-alerta-ingesta')
             except:
                 logging.error('ERROR: Procesando comando de eliminacion de ingesta!')
                 traceback.print_exc()

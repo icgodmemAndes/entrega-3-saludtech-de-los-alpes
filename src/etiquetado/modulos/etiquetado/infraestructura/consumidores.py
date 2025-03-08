@@ -53,7 +53,7 @@ def suscribirse_a_comando_crear_etiquetado(app):
             try:
                 with app.app_context():
                     print("********* Paso Final *******************")
-                    if valor.data.id_anonimizado[-1] in "-":
+                    if valor.data.id_anonimizado[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
                         print("************ Despacha CrearEtiquetado ********************")
                         comando = CrearEtiquetado(
                             id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
