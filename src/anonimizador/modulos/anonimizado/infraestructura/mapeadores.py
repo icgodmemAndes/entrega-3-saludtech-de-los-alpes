@@ -49,8 +49,7 @@ class MapeadorRevertirAnonimizado(Mapeador):
         return anonimizado_dto
 
     def dto_a_entidad(self, dto: AnonimizadoDTO) -> Anonimizado:
-        print(f'Xxxxxxxxxxxxxxx {dto}')
         anonimizado = Anonimizado(dto.id_anonimizado)
-        print(f'Xxxxxxxxxxxxxxx22222222 {anonimizado.__dict__}')
+        anonimizado._id = dto.id_anonimizado
 
         return anonimizado

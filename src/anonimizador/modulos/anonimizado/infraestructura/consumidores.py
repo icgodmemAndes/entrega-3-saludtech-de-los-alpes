@@ -43,7 +43,7 @@ def suscribirse_a_comando_iniciar_anonimizado(app):
 
             consumidor.acknowledge(mensaje)
 
-        cliente.close()
+         
     except:
         logging.error('ERROR: Suscribiendose al tópico de eventos-ingesta desde Anonimizador!')
         traceback.print_exc()

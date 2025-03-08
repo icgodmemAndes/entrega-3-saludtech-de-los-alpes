@@ -31,11 +31,11 @@ def suscribirse_a_comando_compensacion(app):
             
             with app.app_context():
                 try:
-                    anonimizado : Anonimizado = Anonimizado(mensaje.value().data.id_anonimizado)
-                    print(f'Comando recibido y mapeado: {anonimizado.__dict__}')
+                    anonimizado : Anonimizado = fabrica_anonimizado.crear_objeto(mensaje.value().data, MapeadorRevertirAnonimizado())
+                    print(f'Comando recibido y mapeado: {anonimizado.id}')
                     
                     #consulto el anonimizado en la base de datos
-                    anonimizado = anonimizado.revertir(anonimizado)
+                    anonimizado.revertir(anonimizado)
                     repositorio = fabrica_repositorio.crear_objeto(RepositorioAnonimizado.__class__)
                                         
                     #Cargar la entidad anonimizado con el estado revertido en la Unidad de Trabajo
@@ -47,6 +47,7 @@ def suscribirse_a_comando_compensacion(app):
 
             consumidor.acknowledge(mensaje)
 
+        cliente.close()
     except:
         logging.error('ERROR: Suscribiendose al tópico de comando-revertir-anonimizado desde Anonimizador!')
         traceback.print_exc()

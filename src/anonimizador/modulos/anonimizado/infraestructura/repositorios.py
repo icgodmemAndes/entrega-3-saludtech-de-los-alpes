@@ -6,6 +6,7 @@ from anonimizador.modulos.anonimizado.dominio.entidades import Anonimizado, Esta
 from anonimizador.modulos.anonimizado.dominio.fabricas import FabricaAnonimizado
 from .mapeadores import MapeadorAnonimizado, revertir_base64
 from anonimizador.modulos.anonimizado.dominio.repositorios import RepositorioAnonimizado
+from .dto import Anonimizado as AnonimizadoDTO
 
 
 class RepositorioAnonimizadoSQLite(RepositorioAnonimizado):
@@ -23,7 +24,7 @@ class RepositorioAnonimizadoSQLite(RepositorioAnonimizado):
         db.session.add(anonimizado_dto)
 
     def obtener_por_id(self, id: UUID) -> Anonimizado:
-        anonimizado_dto = db.session.query(Anonimizado).filter(Anonimizado.id == id).first()
+        anonimizado_dto = db.session.query(AnonimizadoDTO).filter_by(id=str(id)).one()
         return self.fabrica_anonimizado.crear_objeto(anonimizado_dto, MapeadorAnonimizado())
 
     def obtener_todos(self) -> list[Anonimizado]:
@@ -38,8 +39,9 @@ class RepositorioAnonimizadoSQLite(RepositorioAnonimizado):
         # TODO
         raise NotImplementedError
     
-    def revertir_anonimizado(self, id_anonimizado: UUID):
-        anonimizado = self.obtener_por_id(id_anonimizado)
+    def revertir_anonimizado(self, anonimizado: Anonimizado):
+        anonimizado = db.session.query(AnonimizadoDTO).filter_by(id=str(anonimizado.id)).one()
+
         anonimizado.estado = EstadoAnonimizado.REVERTIDA
-        anonimizado.url_path = revertir_base64(anonimizado.url_path)
+        anonimizado.url_path = 'revertida'
        

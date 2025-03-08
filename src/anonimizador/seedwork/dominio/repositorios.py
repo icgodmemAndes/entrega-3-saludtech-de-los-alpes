@@ -23,6 +23,10 @@ class Repositorio(ABC):
     def eliminar(self, entity_id: UUID):
         ...
 
+    @abstractmethod
+    def revertir_anonimizado(self, entity: Entidad):
+        ...
+
 
 class Mapeador(ABC):
     @abstractmethod
