@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 
-from anonimizador.modulos.anonimizado.dominio.eventos import AnonimizadoProcesada
+from anonimizador.modulos.anonimizado.dominio.eventos import AnonimizadoProcesada, AnonimizadoRevertido
 from anonimizador.seedwork.dominio.entidades import AgregacionRaiz, Entidad
 from enum import Enum
 
@@ -26,9 +26,13 @@ class Anonimizado(AgregacionRaiz):
             AnonimizadoProcesada(id=anonimizado.id, id_ingesta=self.id_ingesta, url_path=self.url_path)
         )
     
-    def revertir(self):
+    def revertir(self, anonimizado: Anonimizado):
         self.status = EstadoAnonimizado.REVERTIDA   
-        self.url_path = self.url_path      
+        self.url_path = anonimizado.url_path      
+
+        self.agregar_evento(
+            AnonimizadoRevertido(id=anonimizado.id, id_ingesta=self.id_ingesta, url_path=self.url_path)
+        )
        
 
 

@@ -22,8 +22,8 @@ def suscribirse_a_comando_compensacion(app):
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
         consumidor = cliente.subscribe('comandos-ingesta', consumer_type=_pulsar.ConsumerType.Shared,
-                                    subscription_name='anonimizador-sub-comandos', schema=AvroSchema(ComandoCompensacionEtiquetado))
-        print('Recibiendo comando de compensacion por parte de Etiquetado.....')
+                                    subscription_name='anonimizador-compensacion-comandos', schema=AvroSchema(ComandoCompensacionEtiquetado))
+        print('[/] Escuchando por comandos de compensacion por parte de Etiquetado.....')
 
         while True:
             mensaje = consumidor.receive()

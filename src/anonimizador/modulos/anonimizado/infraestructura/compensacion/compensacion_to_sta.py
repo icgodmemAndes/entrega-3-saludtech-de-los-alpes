@@ -29,5 +29,8 @@ class Despachador:
         payload = ComandoRevertirIngestaPayLoad(
             id_ingesta=str(comando.id_ingesta),
         )
+
+        print(f'publicando comando de compensacion a sta ...')
+
         comando_integracion = ComandoRevertirIngesta(data=payload)
         self._publicar_mensaje_revertir_ingesta(comando_integracion, topico, AvroSchema(ComandoRevertirIngesta))
