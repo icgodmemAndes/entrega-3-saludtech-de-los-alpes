@@ -7,8 +7,6 @@ class IngestaCreadaPayload(Record):
     id_proveedor = String()
     id_paciente = String()
     url_path = String()
-    estado = String()
-    fecha_creacion = String()
 
 
 class EventoIngestaCreada(EventoIntegracion):

@@ -4,15 +4,21 @@ from sta.seedwork.infraestructura.schema.v1.comandos import (ComandoIntegracion)
 from sta.seedwork.infraestructura.utils import time_millis
 import uuid
 
-class ComandoCrearIngestaPayload(ComandoIntegracion):
+class ComandoCrearIngestaPayload(Record):
     id_proveedor = String()
     id_paciente = String()
     url_path = String()
 
-class ComandoEliminarIngestaPayLoad(ComandoIntegracion):
+class ComandoIniciarAnonimizadoPayload(Record):
+    id_ingesta = String()
+    id_proveedor = String()
+    id_paciente = String()
+    url_path = String()
+
+class ComandoEliminarIngestaPayLoad(Record):
     id_ingesta = String()
 
-class ComandoRevertirIngestaPayLoad(ComandoIntegracion):
+class ComandoRevertirIngestaPayLoad(Record):
     id_ingesta = String()
 
 class ComandoCrearIngesta(ComandoIntegracion):
@@ -25,15 +31,8 @@ class ComandoCrearIngesta(ComandoIntegracion):
     service_name = String()
     data = ComandoCrearIngestaPayload()
 
-class ComandoIniciarAnonimizadoPayload(ComandoIntegracion):
-    id_ingesta = String()
-    id_proveedor = String()
-    id_paciente = String()
-    url_path = String()
-
-
 class ComandoIniciarAnonimizado(ComandoIntegracion):
-    data = ComandoCrearIngestaPayload()
+    data = ComandoIniciarAnonimizadoPayload()
 
 class ComandoEliminarIngesta(ComandoIntegracion):
     data = ComandoEliminarIngestaPayLoad()

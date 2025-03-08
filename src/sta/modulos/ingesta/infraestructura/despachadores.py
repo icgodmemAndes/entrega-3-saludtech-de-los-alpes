@@ -66,6 +66,7 @@ class Despachador:
 
     def publicar_comando_iniciar_anonimizado(self, comando, topico):
         payload = ComandoIniciarAnonimizadoPayload(
+            id_ingesta=str(comando.id),
             id_proveedor=str(comando.id_proveedor), 
             id_paciente=str(comando.id_paciente), 
             url_path=str(comando.url_path)

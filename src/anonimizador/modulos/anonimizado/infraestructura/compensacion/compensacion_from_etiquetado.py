@@ -47,7 +47,7 @@ def suscribirse_a_comando_compensacion(app):
             consumidor.acknowledge(mensaje)
 
     except:
-        logging.error('ERROR: Suscribiendose al tópico de comandos-ingesta desde Anonimizador!')
+        logging.error('ERROR: Suscribiendose al tópico de comando-revertir-anonimizado desde Anonimizador!')
         traceback.print_exc()
         if cliente:
             cliente.close()
