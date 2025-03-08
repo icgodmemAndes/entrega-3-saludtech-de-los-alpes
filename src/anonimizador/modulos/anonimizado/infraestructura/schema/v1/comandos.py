@@ -1,8 +1,22 @@
 import uuid
 from pulsar.schema import *
-from anonimizador.seedwork.infraestructura.schema.v1.comandos import ComandoIntegracion
+from anonimizador.seedwork.infraestructura.schema.v1.comandos import ComandoIntegracion, ComandoCompensacion
 from anonimizador.seedwork.infraestructura.utils import time_millis
 
+
+
+class ComandoCompensacionEtiquetadoPayload(Record):
+    id_anonimizado = String()
+
+class ComandoCompensacionEtiquetado(ComandoCompensacion):
+    id = String(default=str(uuid.uuid4()))
+    time = Long()
+    ingestion = Long(default=time_millis())
+    specversion = String()
+    type = String()
+    datacontenttype = String()
+    service_name = String()
+    data = ComandoCompensacionEtiquetadoPayload()
 
 class IniciarEtiquetadoPayload(Record):
     id_anonimizado = String()

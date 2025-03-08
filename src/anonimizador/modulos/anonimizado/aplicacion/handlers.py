@@ -10,3 +10,8 @@ class HandlerAnonimizadoIntegracion(Handler):
 
         despachadorEliminarIngesta = Despachador()
         despachadorEliminarIngesta.publicar_comando_eliminar_ingesta(evento, 'comando-eliminar-ingesta')
+    
+    @staticmethod
+    def handle_anonimizado_revertida(evento):
+        despachadorRevertirIngesta = Despachador()
+        despachadorRevertirIngesta.publicar_comando_revertir_ingesta(evento, 'comando-revertir-ingesta')
