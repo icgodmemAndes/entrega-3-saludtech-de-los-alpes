@@ -51,7 +51,7 @@ class Revertir(AgregacionRaiz):
     region_anatomica: str = field(default_factory=str)
     patologia: str = field(default_factory=str)
 
-    def revetir_etiquetado(self, revertir: Revertir):
+    def revertir_etiquetado(self, revertir: Revertir):
         self.id_anonimizado = revertir.id_anonimizado
         self.modalidad = revertir.modalidad
         self.region_anatomica = revertir.region_anatomica

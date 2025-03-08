@@ -38,29 +38,28 @@ def suscribirse_a_comando_crear_etiquetado(app):
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('comando-iniciar-etiquedado', consumer_type=_pulsar.ConsumerType.Shared,
-                                       subscription_name='etiquetado-sub-comando-iniciar-etiquedado',
+        consumidor = cliente.subscribe('comando-iniciar-etiquetado', consumer_type=_pulsar.ConsumerType.Shared,
+                                       subscription_name='etiquetado-sub-comando-iniciar-etiquetado',
                                        schema=AvroSchema(ComandoCrearEtiquetado))
         
-        print('Consumiendo eventos de comando-iniciar-etiquedado desde Etiquetado.....')
+        print('Consumiendo eventos de comando-iniciar-etiquetado desde Etiquetado.....')
 
         while True:
             mensaje = consumidor.receive()
             valor = mensaje.value()
 
-            print(f'Comando comando-iniciar-etiquedado, recibido: {valor.data}')
+            print(f'Comando comando-iniciar-etiquetado, recibido: {valor.data}')
 
             try:
                 with app.app_context():
                     print("********* Paso Final *******************")
-                    if valor.data.id_anonimizado[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
+                    if valor.data.id_anonimizado[-1] in "-":
                         print("************ Despacha CrearEtiquetado ********************")
                         comando = CrearEtiquetado(
                             id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
                             modalidad=str(valor.data.modalidad),
                             region_anatomica=str(valor.data.region_anatomica),
                             patologia=str(valor.data.patologia),
-                            estado=str(valor.estado.value)
                         )
                     else:
                         print("************* Despacha RevertirEtiquetado ****************")
@@ -69,7 +68,6 @@ def suscribirse_a_comando_crear_etiquetado(app):
                             modalidad=str(valor.data.modalidad),
                             region_anatomica=str(valor.data.region_anatomica),
                             patologia=str(valor.data.patologia),
-                            estado=str(valor.estado.value)
                         )
 
                     ejecutar_commando(comando)

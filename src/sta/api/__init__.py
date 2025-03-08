@@ -53,7 +53,7 @@ def create_app(configuracion={}):
 
     app.secret_key = '9d58f98f-3ae8-4149-a09f-3a8c2012e32c'
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.config['TESTING'] = configuracion.get('TESTING')
+    # app.config['TESTING'] = configuracion.get('TESTING')
 
     # Inicializa la DB
     from sta.config.db import init_db
@@ -65,8 +65,8 @@ def create_app(configuracion={}):
     registrar_handlers()
 
     # Configurar el logger de SQLAlchemy
-    logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+    #logging.basicConfig()
+    #logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
     with app.app_context():
         db.create_all()

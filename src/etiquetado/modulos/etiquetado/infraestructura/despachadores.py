@@ -55,7 +55,7 @@ class Despachador:
 
     def publicar_comando_revertir_etiquetado(self, comando, topico):
         payload = RevertirEtiquetadoPayload(
-            id_anonimizado=str(comando.id),
+            id_anonimizado=str(comando.id_anonimizado),
         )
         comando_integracion = RevertirEtiquetado(data=payload)
         self._publicar_mensaje_revertir_etiquetado(comando_integracion, topico, AvroSchema(RevertirEtiquetado))

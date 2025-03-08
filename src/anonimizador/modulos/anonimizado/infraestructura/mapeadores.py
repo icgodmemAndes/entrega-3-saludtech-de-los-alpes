@@ -44,13 +44,13 @@ class MapeadorRevertirAnonimizado(Mapeador):
 
     def entidad_a_dto(self, entidad: Anonimizado) -> AnonimizadoDTO:
         anonimizado_dto = AnonimizadoDTO(                
-            id_ingesta=str(entidad.id_ingesta),                
+            id=str(entidad.id_anonimizado),
         )
         return anonimizado_dto
 
     def dto_a_entidad(self, dto: AnonimizadoDTO) -> Anonimizado:
-        anonimizado = Anonimizado()
-        anonimizado.id_ingesta = dto.id_ingesta
-        anonimizado.url_path = dto.url_path
+        print(f'Xxxxxxxxxxxxxxx {dto}')
+        anonimizado = Anonimizado(dto.id_anonimizado)
+        print(f'Xxxxxxxxxxxxxxx22222222 {anonimizado.__dict__}')
 
         return anonimizado

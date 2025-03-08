@@ -31,7 +31,8 @@ def suscribirse_a_comando_compensacion(app):
             
             with app.app_context():
                 try:
-                    anonimizado : Anonimizado = fabrica_anonimizado.crear_objeto(mensaje.value().data, MapeadorRevertirAnonimizado())
+                    anonimizado : Anonimizado = Anonimizado(mensaje.value().data.id_anonimizado)
+                    print(f'Comando recibido y mapeado: {anonimizado.__dict__}')
                     
                     #consulto el anonimizado en la base de datos
                     anonimizado = anonimizado.revertir(anonimizado)
