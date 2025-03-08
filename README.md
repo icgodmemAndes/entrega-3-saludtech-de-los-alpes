@@ -215,7 +215,7 @@ apachepulsar/pulsar:4.0.3 \
 bin/pulsar standalone
 ```
 ```bash
-curl http://34.16.96.125:8080/admin/v2/clusters
+curl http://34.70.47.199:8080/admin/v2/clusters
 ```
 
 
@@ -231,26 +231,26 @@ gcloud config set project nomoniliticasmiso2025
 
 #### STA para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.3 -f sta.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.0.3
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.1.0 -f sta.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/sta-service:1.1.0
 ```
 
 #### BFF para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.3 -f bff.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.0.3
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.1.0 -f bff.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/bff-service:1.1.0
 ```
 
 ### Anonimizador para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.0.3 -f anonimizador.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.0.3
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.1.0 -f anonimizador.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/anonimizador-service:1.1.0
 ```
 
 ### Etiquetado para Deploy
 ```bash
-docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/etiquetado-service:1.0.3 -f etiquetado.Dockerfile . && \
-docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/etiquetado-service:1.0.3
+docker build -t us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/etiquetado-service:1.1.0 -f etiquetado.Dockerfile . && \
+docker push us-central1-docker.pkg.dev/nomoniliticasmiso2025/no-monoliticas/etiquetado-service:1.1.0
 ```
 
 ### Desplegar en GCP
