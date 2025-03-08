@@ -3,12 +3,14 @@ from pulsar.schema import *
 import uuid
 import logging
 import traceback
+import random
 
 from sta.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoCrearIngesta, ComandoEliminarIngesta, ComandoRevertirIngesta
 from sta.seedwork.infraestructura import utils
 from sta.modulos.ingesta.aplicacion.comandos.crear_ingesta import CrearIngesta
 from sta.modulos.ingesta.aplicacion.comandos.eliminar_ingesta import EliminarIngesta
 from sta.modulos.ingesta.aplicacion.comandos.revertir_ingesta import RevertirIngesta
+from sta.modulos.ingesta.aplicacion.comandos.alerta_ingesta import AlertaIngesta
 from sta.seedwork.aplicacion.comandos import ejecutar_commando
 
 
@@ -67,9 +69,14 @@ def suscribirse_a_comando_eliminar_ingesta(app):
 
             try:
                 with app.app_context():
-                    comando = EliminarIngesta(
-                        id_ingesta=uuid.UUID(valor.data.id_ingesta),
-                    )
+                    if random.randint(0, 10) <= 3:
+                        comando = EliminarIngesta(
+                            id_ingesta=uuid.UUID(valor.data.id_ingesta),
+                        )
+                    else:
+                        comando = AlertaIngesta(
+                            id_ingesta=uuid.UUID(valor.data.id_ingesta),
+                        )
 
                     ejecutar_commando(comando)
             except:

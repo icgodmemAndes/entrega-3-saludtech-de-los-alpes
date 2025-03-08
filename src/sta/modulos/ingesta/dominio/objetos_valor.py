@@ -16,3 +16,4 @@ class EstadoIngesta(str, Enum):
     FINALIZADA = "Finalizada"
     ELIMINADA = "Eliminada"
     FALLIDA = "Fallida"
+    ALERTADA = "Alertada"

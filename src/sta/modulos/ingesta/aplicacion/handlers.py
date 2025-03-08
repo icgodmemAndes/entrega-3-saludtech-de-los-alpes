@@ -18,3 +18,8 @@ class HandlerIngestaIntegracion(Handler):
     def handle_ingesta_revertida(evento):
         despachador = Despachador()
         despachador.publicar_evento_ingesta_revertida(evento, 'evento-fallo-ingesta')
+    
+    @staticmethod
+    def handle_ingesta_alertada(evento):
+        despachador = Despachador()
+        despachador.publicar_evento_ingesta_alertada(evento, 'evento-alerta-ingesta')
