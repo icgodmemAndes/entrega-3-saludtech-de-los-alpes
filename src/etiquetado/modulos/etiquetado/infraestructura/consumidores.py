@@ -9,6 +9,7 @@ from etiquetado.modulos.etiquetado.infraestructura.schema.v1.eventos import Even
 from etiquetado.modulos.etiquetado.infraestructura.schema.v1.comandos import ComandoCrearEtiquetado
 from etiquetado.seedwork.infraestructura import utils
 from etiquetado.modulos.etiquetado.aplicacion.comandos.crear_etiquetado import CrearEtiquetado
+from etiquetado.modulos.etiquetado.aplicacion.comandos.revertir_etiquetado import RevertirEtiquetado
 from etiquetado.seedwork.aplicacion.comandos import ejecutar_commando
 
 
@@ -51,12 +52,25 @@ def suscribirse_a_comando_crear_etiquetado(app):
 
             try:
                 with app.app_context():
-                    comando = CrearEtiquetado(
-                        id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
-                        modalidad=str(valor.data.modalidad),
-                        region_anatomica=str(valor.data.region_anatomica),
-                        patologia=str(valor.data.patologia),
-                    )
+                    print("********* Paso Final *******************")
+                    if valor.data.id_anonimizado[-1] in "abcdefghijklmABCDEFGHIJKLM12345":
+                        print("************ Despacha CrearEtiquetado ********************")
+                        comando = CrearEtiquetado(
+                            id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
+                            modalidad=str(valor.data.modalidad),
+                            region_anatomica=str(valor.data.region_anatomica),
+                            patologia=str(valor.data.patologia),
+                            estado=str(valor.estado.value)
+                        )
+                    else:
+                        print("************* Despacha RevertirEtiquetado ****************")
+                        comando = RevertirEtiquetado(
+                            id_anonimizado=uuid.UUID(valor.data.id_anonimizado),
+                            modalidad=str(valor.data.modalidad),
+                            region_anatomica=str(valor.data.region_anatomica),
+                            patologia=str(valor.data.patologia),
+                            estado=str(valor.estado.value)
+                        )
 
                     ejecutar_commando(comando)
             except:

@@ -8,6 +8,7 @@ encargados de la transformación entre formatos de dominio y DTOs
 from etiquetado.seedwork.dominio.repositorios import Mapeador
 from etiquetado.modulos.etiquetado.dominio.entidades import Etiquetado
 from .dto import Etiquetado as EtiquetadoDTO
+from etiquetado.modulos.etiquetado.dominio.objetos_valor import EstadoEtiquetado
 
 class MapeadorEtiquetado(Mapeador):
 
@@ -22,6 +23,7 @@ class MapeadorEtiquetado(Mapeador):
             region_anatomica=entidad.region_anatomica,
             patologia=entidad.patologia,
             fecha_creacion=entidad.fecha_creacion,
+            estado=str(entidad.estado.value),
         )
         return etiquetado_dto
 
@@ -31,5 +33,6 @@ class MapeadorEtiquetado(Mapeador):
         etiquetado.modalidad = dto.modalidad
         etiquetado.region_anatomica = dto.region_anatomica
         etiquetado.patologia = dto.patologia
+        etiquetado.estado = dto.estado
 
         return etiquetado

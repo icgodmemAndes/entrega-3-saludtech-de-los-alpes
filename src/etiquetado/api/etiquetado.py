@@ -4,7 +4,7 @@ from etiquetado.seedwork.dominio.excepciones import ExcepcionDominio
 
 from flask import request
 from flask import Response
-from etiquetado.modulos.etiquetado.aplicacion.mapeadores import MapeadorEtiquetadoDTOJson
+from etiquetado.modulos.etiquetado.aplicacion.mapeadores import MapeadorEtiquetadoDTOJson, MapeadorRevertirDTOJson
 from etiquetado.modulos.etiquetado.aplicacion.comandos.crear_etiquetado import CrearEtiquetado
 
 from etiquetado.seedwork.aplicacion.comandos import ejecutar_commando
