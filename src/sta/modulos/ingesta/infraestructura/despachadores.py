@@ -1,7 +1,7 @@
 import pulsar
 from pulsar.schema import *
 
-from sta.modulos.ingesta.infraestructura.schema.v1.eventos import EventoIngestaCreada, IngestaCreadaPayload, EventoIngestaRevertida, IngestaRevertidaPayload, EventoIngestaEliminada, IngestaEliminadaPayLoad
+from sta.modulos.ingesta.infraestructura.schema.v1.eventos import EventoIngestaCreada, IngestaCreadaPayload, EventoIngestaRevertida, IngestaRevertidaPayload, EventoIngestaEliminada, IngestaEliminadaPayLoad, EventoIngestaAlertada, IngestaAlertadaPayLoad
 from sta.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoCrearIngesta, ComandoCrearIngestaPayload, ComandoIniciarAnonimizado, ComandoIniciarAnonimizadoPayload
 from sta.seedwork.infraestructura import utils
 
@@ -72,3 +72,11 @@ class Despachador:
         )
         comando_integracion = ComandoIniciarAnonimizado(data=payload)
         self._publicar_mensaje(comando_integracion, topico, AvroSchema(ComandoIniciarAnonimizado))
+    
+    def publicar_evento_ingesta_alertada(self, evento, topico):
+        payload = IngestaAlertadaPayLoad(
+            id_ingesta=str(evento.id),
+            estado=str(evento.estado),
+        )
+        evento_integracion = EventoIngestaAlertada(data=payload)
+        self._publicar_mensaje(evento_integracion, topico, AvroSchema(EventoIngestaAlertada))

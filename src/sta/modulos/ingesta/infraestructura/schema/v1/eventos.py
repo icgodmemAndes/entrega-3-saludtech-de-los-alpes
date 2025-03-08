@@ -31,3 +31,10 @@ class IngestaEliminadaPayLoad(Record):
 
 class EventoIngestaEliminada(EventoIntegracion):
     data = IngestaEliminadaPayLoad()
+
+class IngestaAlertadaPayLoad(Record):
+    id_ingesta = String()
+    estado = String()
+
+class EventoIngestaAlertada(EventoIntegracion):
+    data = IngestaAlertadaPayLoad()

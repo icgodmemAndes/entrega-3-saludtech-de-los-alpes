@@ -30,3 +30,8 @@ class IngestaRevertida(EventoDominio):
     url_path: str = None
     fecha_creacion: datetime = None
     fecha_eliminacion: datetime = None
+
+@dataclass
+class IngestaAlertada(EventoDominio):
+    id: uuid.UUID = None
+    estado: str = None
